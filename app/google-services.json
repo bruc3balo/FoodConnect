@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "251114602096",
+    "project_id": "foodconnectemergency",
+    "storage_bucket": "foodconnectemergency.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:251114602096:android:dc64b083fea56e5aba7eb5",
+        "android_client_info": {
+          "package_name": "com.victoria.foodconnect"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "251114602096-3gh0kr8co268n17e855bmpj5b6a2r0bq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDufwrgwBHOf4U8u61sge3CudCAvK_g2k0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "251114602096-3gh0kr8co268n17e855bmpj5b6a2r0bq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">FoodConnect</string>
+    <string name="logo">Logo</string>
+    <string name="forgot_password">Forgot Password ? </string>
+    <string name="names_hint">Names</string>
+    <string name="names">Names</string>
+    <string name="username">Username</string>
+    <string name="email_address">Email Address</string>
+    <string name="email_address_hint">xyz@email.com</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="phone_hint">+2547xxxxxxxx</string>
+    <string name="new_password">New Password</string>
+    <string name="password_hint">* * * * * *</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="role">Role</string>
+    <string name="cancel">Cancel</string>
+    <string name="confirm">Confirm</string>
+    <string name="beneficiary">Beneficiary</string>
+    <string name="transporter">Transporter</string>
+    <string name="certified_authority">Certified Authority</string>
+    <string name="seller">Seller</string>
+    <string name="register">Register</string>
+    <string name="password">Password</string>
+    <string name="sign_in">Sign in</string>
+    <string name="admin">Admin</string>
+    <string name="next">next</string>
+</resources>

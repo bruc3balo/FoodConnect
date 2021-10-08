@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".login.LoginActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_gravity="center"
+            android:layout_margin="30dp"
+            android:src="@mipmap/food_connect_logo"
+            android:contentDescription="@string/logo" />
+
+       <!-- <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="5dp"
+            android:gravity="center"
+            android:padding="5dp"
+            android:text="@string/enter_credentials_to_continue"
+            android:textColor="@color/coolGrey"
+            android:textStyle="bold" />-->
+
+        <com.google.android.material.tabs.TabLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:elevation="12dp"
+            android:background="@color/black"
+            app:tabSelectedTextColor="@color/white"
+            app:tabTextColor="@android:color/darker_gray"
+            app:tabIndicatorFullWidth="true"
+            app:tabInlineLabel="true"
+            app:tabIndicator="@drawable/ic_tab_indicator"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            app:tabIndicatorColor="@android:color/darker_gray"
+            android:id="@+id/loginTabLayout"/>
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_margin="5dp"
+            android:layout_gravity="center"
+            android:id="@+id/loginViewPager"/>
+
+        <TextView
+            android:id="@+id/ForgotPassTv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="25dp"
+            android:gravity="center"
+            android:text="@string/forgot_password"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/loginPb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="20dp"
+        android:progressTint="@color/black"/>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

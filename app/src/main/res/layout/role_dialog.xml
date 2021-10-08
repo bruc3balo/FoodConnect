@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:minHeight="350dp"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    app:cardElevation="12dp"
+    app:cardCornerRadius="20dp" >
+
+    <ScrollView
+        android:padding="10dp"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:minWidth="350dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:gravity="center_vertical"
+                android:padding="20dp"
+                android:text="@string/role"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <RadioGroup
+                android:id="@+id/roleRadioGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <RadioButton
+                    android:id="@+id/beneficiaryRadio"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center_vertical"
+                    android:padding="10dp"
+                    android:text="@string/beneficiary"
+                    android:textColor="@color/black"
+                    android:textStyle="bold" />
+
+                <RadioButton
+                    android:id="@+id/transporterRadio"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center_vertical"
+                    android:minHeight="48dp"
+                    android:padding="10dp"
+                    android:text="@string/transporter"
+                    android:textColor="@color/black"
+                    android:textStyle="bold" />
+
+                <RadioButton
+                    android:id="@+id/certifiedAuthorityRadio"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center_vertical"
+                    android:minHeight="48dp"
+                    android:padding="10dp"
+                    android:text="@string/certified_authority"
+                    android:textColor="@color/black"
+                    android:textStyle="bold" />
+
+                <RadioButton
+                    android:id="@+id/sellerRadio"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center_vertical"
+                    android:minHeight="48dp"
+                    android:padding="10dp"
+                    android:text="@string/seller"
+                    android:textColor="@color/black"
+                    android:textStyle="bold" />
+
+
+
+                <Button
+                    android:id="@+id/confirmRoleButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginTop="25dp"
+                    android:layout_marginEnd="25dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="@drawable/login_bg_button"
+                    android:backgroundTint="@color/black"
+                    android:gravity="center"
+                    android:padding="15dp"
+                    android:text="@string/confirm"
+                    android:textColor="@color/white"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/cancel_button"
+                    android:layout_width="wrap_content"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginTop="25dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_gravity="center"
+                    android:layout_marginEnd="25dp"
+                    android:padding="10dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/login_bg_button_white"
+                    android:backgroundTint="@android:color/holo_red_dark"
+                    android:textStyle="bold"
+                    android:textSize="15sp"
+                    android:textColor="@color/white"
+                    android:text="@string/cancel" />
+
+
+            </RadioGroup>
+
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.cardview.widget.CardView>
