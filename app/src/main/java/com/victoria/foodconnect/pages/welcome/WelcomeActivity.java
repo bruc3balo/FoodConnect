@@ -55,7 +55,7 @@ public class WelcomeActivity extends AppCompatActivity {
             if (tutorialViewPager.getCurrentItem() != tutorialList.size() - 1) {
                 tutorialViewPager.setCurrentItem(tutorialViewPager.getCurrentItem() + 1);
             } else {
-                goToNextPage(this,userRepository.getUser().getRole());
+                goToNextPage(this, userRepository.getUser().getRole());
             }
         });
 
@@ -64,8 +64,8 @@ public class WelcomeActivity extends AppCompatActivity {
     }
 
     private void populateTutorials() {
-        Models.TutorialModel tutorialModel = new Models.TutorialModel("https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.clker.com%2Fcliparts%2F3%2Fm%2F1%2FO%2F7%2Fu%2Fsearch-icon-red-hi.png&f=1&nofb=1", "Look for the job you want ", "Search");
-        Models.TutorialModel tutorialModel1 = new Models.TutorialModel("https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fthumbs.dreamstime.com%2Fb%2Fattractive-man-sleeping-home-couch-mobile-phone-digital-tablet-pad-his-hands-young-shirt-jeans-internet-61244350.jpg&f=1&nofb=1", "At the comfort of your couch", "Convinience");
+        Models.TutorialModel tutorialModel = new Models.TutorialModel("https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.clker.com%2Fcliparts%2F3%2Fm%2F1%2FO%2F7%2Fu%2Fsearch-icon-red-hi.png&f=1&nofb=1", "This is a solution oriented application aimed at achieving the 2nd Sustainable development goal ", "About");
+        Models.TutorialModel tutorialModel1 = new Models.TutorialModel("https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fthumbs.dreamstime.com%2Fb%2Fattractive-man-sleeping-home-couch-mobile-phone-digital-tablet-pad-his-hands-young-shirt-jeans-internet-61244350.jpg&f=1&nofb=1", "It does it by linking and tracking the food distributors  within our country ", "How");
         tutorialList.add(tutorialModel);
         tutorialList.add(tutorialModel1);
     }
@@ -81,9 +81,10 @@ public class WelcomeActivity extends AppCompatActivity {
 
     }
 
-    public static void goToNextPage(Activity activity,String role) {
+    public static void goToNextPage(Activity activity, String role) {
         switch (role) {
-            case "ROLE_ADMIN": case "ROLE_ADMIN_TRAINEE":
+            case "ROLE_ADMIN":
+            case "ROLE_ADMIN_TRAINEE":
                 goToAdminPage(activity);
                 break;
 
@@ -99,7 +100,8 @@ public class WelcomeActivity extends AppCompatActivity {
                 goToDistributorPage();
                 break;*/
 
-            default: case "ROLE_BUYER":
+            default:
+            case "ROLE_BUYER":
                 goToBuyerPage(activity);
                 break;
 

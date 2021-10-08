@@ -1,6 +1,7 @@
 package com.victoria.foodconnect;
 
 import static com.victoria.foodconnect.globals.GlobalRepository.userRepository;
+import static com.victoria.foodconnect.login.LoginActivity.setWindowColors;
 import static com.victoria.foodconnect.pages.welcome.WelcomeActivity.goToNextPage;
 
 import android.annotation.SuppressLint;
@@ -42,18 +43,21 @@ public class SplashScreen extends AppCompatActivity {
 
         GlobalRepository.init(getApplication());
 
+        setWindowColors(this);
+
     }
 
 
     private void goToLoginScreen() {
         startActivity(new Intent(SplashScreen.this, LoginActivity.class));
+        finish();
     }
 
     public static void logout(Activity activity) {
         FirebaseAuth.getInstance().signOut();
         userRepository.deleteUserDb();
         activity.startActivity(new Intent(activity, LoginActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
-        activity.finishAffinity();
+        activity.finish();
     }
 
     private void showPb() {
@@ -86,6 +90,16 @@ public class SplashScreen extends AppCompatActivity {
                     if (appUser != null) {
                         userRepository.insert(appUser);
                         goToNextPage(SplashScreen.this, userRepository.getUser().getRole());
+                    } else {
+                        new ViewModelProvider(this).get(UserViewModel.class).getLiveUser(user.getUid()).observe(this, new Observer<Domain.AppUser>() {
+                            @Override
+                            public void onChanged(Domain.AppUser appUser) {
+                                if (appUser != null) {
+                                    userRepository.insert(appUser);
+                                    goToNextPage(SplashScreen.this, userRepository.getUser().getRole());
+                                }
+                            }
+                        });
                     }
                 });
             } else {

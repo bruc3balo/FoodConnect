@@ -11,6 +11,8 @@ import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,6 +48,8 @@ public class CreateFragment extends Fragment {
 
     private boolean isWaiting = false;
 
+    private boolean emailValid = false;
+
     public CreateFragment() {
         // Required empty public constructor
     }
@@ -65,7 +69,7 @@ public class CreateFragment extends Fragment {
         final View v = inflater.inflate(R.layout.fragment_create, container, false);
 
         createB = v.findViewById(R.id.registerUserButton);
-        outProgress(loginPb,createB);
+        outProgress(loginPb, createB);
 
         EditText namesField = v.findViewById(R.id.namesField);
         EditText userNameField = v.findViewById(R.id.usernameField);
@@ -74,9 +78,42 @@ public class CreateFragment extends Fragment {
         EditText cPasswordF = v.findViewById(R.id.cPasswordF);
         EditText phoneNumberField = v.findViewById(R.id.phoneNumberField);
 
+        emailAddressField.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (!charSequence.toString().isEmpty()) {
+                    if (!emailList.isEmpty()) {
+                        if (emailList.contains(charSequence.toString())) {
+                            emailAddressField.setError("Email already taken");
+                            emailAddressField.requestFocus();
+                            emailValid = false;
+                        } else {
+                            emailValid = true;
+                        }
+                    } else {
+                        emailValid = true;
+                    }
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
         createB.setOnClickListener(view -> {
-            if (validateForm(userNameField, namesField, emailAddressField, phoneNumberField, passwordF, cPasswordF)) {
-                showRoleDialog();
+            if (emailValid) {
+                if (validateForm(userNameField, namesField, emailAddressField, phoneNumberField, passwordF, cPasswordF)) {
+                    showRoleDialog();
+                }
+            } else {
+                Toast.makeText(requireContext(), "Email not valid", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -166,7 +203,7 @@ public class CreateFragment extends Fragment {
             password.setError("Passwords don't match");
         } else {
 
-            newUser = new Domain.AppUser(name.getText().toString(), username.getText().toString(), email.getText().toString(), password.getText().toString(), phone.getText().toString(), new Date().toString(), new Date().toString(),false, false, role);
+            newUser = new Domain.AppUser(name.getText().toString(), username.getText().toString(), email.getText().toString(), password.getText().toString(), phone.getText().toString(), new Date().toString(), new Date().toString(), false, false, role);
             valid = true;
         }
         return valid;

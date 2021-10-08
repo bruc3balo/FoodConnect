@@ -1,6 +1,8 @@
 package com.victoria.foodconnect.pages.beneficiary;
 
 import static com.victoria.foodconnect.SplashScreen.logout;
+import static com.victoria.foodconnect.globals.GlobalRepository.userRepository;
+import static com.victoria.foodconnect.login.LoginActivity.setWindowColors;
 
 import android.os.Bundle;
 import android.view.Menu;
@@ -24,6 +26,15 @@ public class BeneficiaryActivity extends AppCompatActivity {
 
         Toolbar toolbar = binding.toolbar;
         setSupportActionBar(toolbar);
+
+        userRepository.getUserLive().observe(this, appUser -> {
+            if (appUser != null) {
+                toolbar.setTitle(appUser.getUsername());
+                toolbar.setSubtitle(appUser.getRole());
+            }
+        });
+
+        setWindowColors(this);
     }
 
     @Override

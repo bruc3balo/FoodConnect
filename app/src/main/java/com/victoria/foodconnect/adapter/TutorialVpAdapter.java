@@ -50,7 +50,8 @@ public class TutorialVpAdapter extends RecyclerView.Adapter<TutorialVpAdapter.Vi
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        Glide.with(mContext).load(tutorialList.get(position).getImageId()).into(holder.tutorialImage);
+        //Glide.with(mContext).load(tutorialList.get(position).getImageId()).into(holder.tutorialImage);
+        Glide.with(mContext).load(mContext.getResources().getDrawable(R.drawable.ic_give_food)).into(holder.tutorialImage);
         holder.title.setText(tutorialList.get(position).getTitle());
         holder.description.setText(tutorialList.get(position).getExplanation());
 

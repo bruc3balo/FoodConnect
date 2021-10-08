@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -24,6 +25,9 @@
                 android:textStyle="bold" />
 
             <EditText
+                android:drawablePadding="10dp"
+
+                android:drawableStart="@drawable/ic_person"
                 android:id="@+id/namesField"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -33,6 +37,7 @@
                 android:background="@drawable/edit_text_field_white"
                 android:gravity="center_vertical"
                 android:hint="@string/names_hint"
+                android:textColor="@color/black"
                 android:importantForAutofill="auto"
                 android:inputType="textPersonName"
                 android:padding="10dp"
@@ -51,6 +56,9 @@
                 android:textStyle="bold" />
 
             <EditText
+                android:drawablePadding="10dp"
+
+                android:drawableStart="@drawable/ic_person"
                 android:id="@+id/usernameField"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -60,6 +68,7 @@
                 android:background="@drawable/edit_text_field_white"
                 android:gravity="center_vertical"
                 android:hint="@string/username"
+                android:textColor="@color/black"
                 android:importantForAutofill="auto"
                 android:inputType="textPersonName"
                 android:padding="10dp"
@@ -78,6 +87,9 @@
                 android:textStyle="bold" />
 
             <EditText
+                android:drawablePadding="10dp"
+
+                android:drawableStart="@android:drawable/sym_action_email"
                 android:id="@+id/emailAddressField"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -87,6 +99,7 @@
                 android:background="@drawable/edit_text_field_white"
                 android:gravity="center_vertical"
                 android:hint="@string/email_address_hint"
+                android:textColor="@color/black"
                 android:importantForAutofill="auto"
                 android:inputType="textEmailAddress"
                 android:padding="10dp"
@@ -105,6 +118,9 @@
                 android:textStyle="bold" />
 
             <EditText
+                android:drawablePadding="10dp"
+                android:drawableTint="@android:color/darker_gray"
+                android:drawableStart="@android:drawable/stat_sys_phone_call"
                 android:id="@+id/phoneNumberField"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -114,10 +130,12 @@
                 android:background="@drawable/edit_text_field_white"
                 android:gravity="center_vertical"
                 android:hint="@string/phone_hint"
+                android:textColor="@color/black"
                 android:importantForAutofill="auto"
                 android:inputType="phone"
                 android:padding="10dp"
-                android:textColorHint="@android:color/darker_gray" />
+                android:textColorHint="@android:color/darker_gray"
+                tools:targetApi="m" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -132,6 +150,9 @@
                 android:textStyle="bold" />
 
             <EditText
+                android:drawablePadding="10dp"
+                android:drawableTint="@android:color/darker_gray"
+                android:drawableStart="@drawable/ic_lock"
                 android:id="@+id/passwordF"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -144,7 +165,9 @@
                 android:importantForAutofill="auto"
                 android:inputType="textPassword"
                 android:padding="10dp"
-                android:textColorHint="@android:color/darker_gray" />
+                android:textColor="@color/black"
+                android:textColorHint="@android:color/darker_gray"
+                tools:targetApi="m" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -159,6 +182,9 @@
                 android:textStyle="bold" />
 
             <EditText
+                android:drawablePadding="10dp"
+                android:drawableTint="@android:color/darker_gray"
+                android:drawableStart="@drawable/ic_lock"
                 android:id="@+id/cPasswordF"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -171,9 +197,12 @@
                 android:importantForAutofill="auto"
                 android:inputType="textPassword"
                 android:padding="10dp"
-                android:textColorHint="@android:color/darker_gray" />
+                android:textColor="@color/black"
+                android:textColorHint="@android:color/darker_gray"
+                tools:targetApi="m" />
 
             <Button
+
                 android:id="@+id/registerUserButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

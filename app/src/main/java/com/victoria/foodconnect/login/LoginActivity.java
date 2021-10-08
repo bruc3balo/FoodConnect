@@ -2,6 +2,7 @@ package com.victoria.foodconnect.login;
 
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -40,9 +41,14 @@ public class LoginActivity extends AppCompatActivity {
 
         setUpLoginPager();
 
+        setWindowColors(this);
     }
 
 
+    public static void setWindowColors(Activity activity) {
+        activity.getWindow().setStatusBarColor(Color.BLACK);
+        activity.getWindow().setNavigationBarColor(Color.BLACK);
+    }
 
     private void setUpLoginPager() {
         LoginPagerAdapter loginPagerAdapter = new LoginPagerAdapter(getSupportFragmentManager(), getLifecycle());

@@ -114,31 +114,30 @@ public class SignInFragment extends Fragment {
     }
 
     private void updateUi(FirebaseUser user) {
-        loginPb.setVisibility(View.VISIBLE);
         if (user != null) {
             UserViewModel userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
             userViewModel.getLiveUser(user.getUid()).observe(getViewLifecycleOwner(), appUser -> {
                 if (appUser != null) {
                     userRepository.insert(appUser);
+                    outProgress(loginPb, signInB);
                     goToNextPage(requireActivity(), userRepository.getUser().getRole());
                 }
             });
         } else {
-            outProgress(loginPb,signInB);
+            outProgress(loginPb, signInB);
             Toast.makeText(requireContext(), "Sign in to continue", Toast.LENGTH_SHORT).show();
         }
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onResume() {
+        super.onResume();
         FirebaseAuth.getInstance().addAuthStateListener(authStateListener);
-        new Handler(Looper.myLooper()).postDelayed(() -> FirebaseAuth.getInstance().removeAuthStateListener(authStateListener), 3000);
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onPause() {
+        super.onPause();
         FirebaseAuth.getInstance().removeAuthStateListener(authStateListener);
     }
 
