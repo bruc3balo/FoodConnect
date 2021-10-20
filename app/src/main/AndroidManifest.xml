@@ -4,7 +4,6 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
 
-
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_give_food"
@@ -12,6 +11,9 @@
         android:roundIcon="@drawable/ic_give_food"
         android:supportsRtl="true"
         android:theme="@style/Theme.FoodConnect">
+        <activity
+            android:name=".pages.seller.AddNewProduct"
+            android:exported="true" />
         <activity android:name=".pages.admin.AdminActivity" />
         <activity android:name=".pages.beneficiary.BeneficiaryActivity" />
         <activity android:name=".pages.certifiedAuth.CertifiedAuthorityActivity" />
@@ -19,7 +21,8 @@
         <activity android:name=".pages.transporter.TransporterActivity" />
         <activity android:name=".pages.welcome.WelcomeActivity" />
         <activity android:name=".login.LoginActivity" />
-        <activity android:name=".SplashScreen"
+        <activity
+            android:name=".SplashScreen"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

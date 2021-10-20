@@ -24,4 +24,14 @@
     <string name="sign_in">Sign in</string>
     <string name="admin">Admin</string>
     <string name="next">next</string>
+    <string name="my_products">My Products</string>
+    <string name="orders">Orders</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="product_category">Product Category</string>
+    <string name="product_name">Product Name</string>
+    <string name="product_description">Product Description</string>
+    <string name="product_price">Product Price Per Unit</string>
+    <string name="product_unit">Product Unit</string>
+    <string name="products">Products</string>
+
 </resources>
