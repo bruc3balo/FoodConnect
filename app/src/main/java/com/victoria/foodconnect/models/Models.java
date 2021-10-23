@@ -3,6 +3,8 @@ package com.victoria.foodconnect.models;
 
 import static com.victoria.foodconnect.globals.GlobalVariables.HY;
 
+import com.victoria.foodconnect.domain.Domain;
+
 import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -341,7 +343,13 @@ public class Models {
 
         }
 
-        public AppUser(String uid, String names, String username, String id_number, String email_address, String phone_number, String password, String bio, String last_known_location, String created_at, String updated_at, AppRole role, String preferred_working_hours, String specialities, Boolean disabled, Boolean deleted, Boolean tutorial) {
+        public AppUser(String names, String username, String id_number,String email_address,String phone_number, String created_at, String updated_at, Boolean disabled, Boolean deleted, AppRole role, Boolean tutorial) {
+
+        }
+
+
+
+        public AppUser(String uid, String names, String username, String id_number, String email_address, String phone_number, String password, String bio, String last_known_location, String created_at, String updated_at, AppRole role, Boolean disabled, Boolean deleted, Boolean tutorial) {
             this.uid = uid;
             this.names = names;
             this.username = username;
@@ -471,11 +479,19 @@ public class Models {
         public void setDeleted(Boolean deleted) {
             this.deleted = deleted;
         }
+
+        public String getCreated_at() {
+            return created_at;
+        }
+
+        public String getUpdated_at() {
+            return updated_at;
+        }
     }
 
-    public static class AppRole implements Serializable{
+    public static class AppRole {
 
-        private Long id;
+        private String id;
         private String name;
         private Set<Permissions> permissions = new LinkedHashSet<>();
 
@@ -487,22 +503,16 @@ public class Models {
             this.name = name;
         }
 
-        public AppRole(Long id, String name, Set<Permissions> permissions) {
-            this.id = id;
-            this.name = name;
-            this.permissions = permissions;
-        }
-
         public AppRole(String name, Set<Permissions> permissions) {
             this.name = name;
             this.permissions = permissions;
         }
 
-        public Long getId() {
+        public String getId() {
             return id;
         }
 
-        public void setId(Long id) {
+        public void setId(String id) {
             this.id = id;
         }
 
@@ -523,9 +533,9 @@ public class Models {
         }
     }
 
-    public static class Permissions implements Serializable{
+    public static class Permissions {
 
-        private Long id;
+        private String id;
         private String name;
 
         public Permissions() {
@@ -535,16 +545,16 @@ public class Models {
             this.name = name;
         }
 
-        public Permissions(Long id, String name) {
+        public Permissions(String id, String name) {
             this.id = id;
             this.name = name;
         }
 
-        public Long getId() {
+        public String getId() {
             return id;
         }
 
-        public void setId(Long id) {
+        public void setId(String id) {
             this.id = id;
         }
 
@@ -554,6 +564,42 @@ public class Models {
 
         public void setName(String name) {
             this.name = name;
+        }
+    }
+
+    public static class TutorialModel implements Serializable{
+        private String imageId;
+        private String explanation;
+        private String title;
+
+        public TutorialModel(String imageId, String explanation, String title) {
+            this.imageId = imageId;
+            this.explanation = explanation;
+            this.title = title;
+        }
+
+        public String getImageId() {
+            return imageId;
+        }
+
+        public void setImageId(String imageId) {
+            this.imageId = imageId;
+        }
+
+        public String getExplanation() {
+            return explanation;
+        }
+
+        public void setExplanation(String explanation) {
+            this.explanation = explanation;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
         }
     }
 

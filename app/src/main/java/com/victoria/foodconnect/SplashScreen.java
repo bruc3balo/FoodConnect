@@ -1,8 +1,13 @@
 package com.victoria.foodconnect;
 
 import static com.victoria.foodconnect.globals.GlobalRepository.userRepository;
+import static com.victoria.foodconnect.globals.GlobalVariables.UID;
+import static com.victoria.foodconnect.login.LoginActivity.loginPb;
 import static com.victoria.foodconnect.login.LoginActivity.setWindowColors;
 import static com.victoria.foodconnect.pages.welcome.WelcomeActivity.goToNextPage;
+import static com.victoria.foodconnect.utils.DataOpts.getDomainUserFromModelUser;
+import static com.victoria.foodconnect.utils.DataOpts.getObjectMapper;
+import static com.victoria.foodconnect.utils.DataOpts.proceed;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -17,6 +22,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.victoria.foodconnect.databinding.ActivitySplashScreenBinding;
@@ -24,8 +31,16 @@ import com.victoria.foodconnect.domain.Domain;
 import com.victoria.foodconnect.globals.GlobalRepository;
 import com.victoria.foodconnect.globals.userDb.UserViewModel;
 import com.victoria.foodconnect.login.LoginActivity;
+import com.victoria.foodconnect.models.Models;
+import com.victoria.foodconnect.utils.JsonResponse;
 
 import org.mindrot.jbcrypt.BCrypt;
+
+import java.util.HashMap;
+import java.util.Optional;
+
+import io.vertx.core.json.JsonObject;
+import retrofit2.Response;
 
 
 @SuppressLint("CustomSplashScreen")
@@ -59,7 +74,7 @@ public class SplashScreen extends AppCompatActivity {
 
     public static void logout(Activity activity) {
         FirebaseAuth.getInstance().signOut();
-        userRepository.deleteUserDb();
+        userRepository.deleteAppUserDb();
         activity.startActivity(new Intent(activity, LoginActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
         activity.finish();
     }
@@ -86,33 +101,72 @@ public class SplashScreen extends AppCompatActivity {
     }
 
     private void updateUi(FirebaseUser user) {
-        if (user != null) {
 
-            if (userRepository.getUser() == null) {
-                UserViewModel userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
-                userViewModel.getLiveUser(user.getUid()).observe(this, appUser -> {
-                    if (appUser != null) {
-                        userRepository.insert(appUser);
-                        goToNextPage(SplashScreen.this, userRepository.getUser().getRole());
-                    } else {
-                        new ViewModelProvider(this).get(UserViewModel.class).getLiveUser(user.getUid()).observe(this, new Observer<Domain.AppUser>() {
-                            @Override
-                            public void onChanged(Domain.AppUser appUser) {
-                                if (appUser != null) {
-                                    userRepository.insert(appUser);
-                                    goToNextPage(SplashScreen.this, userRepository.getUser().getRole());
-                                }
-                            }
-                        });
-                    }
-                });
-            } else {
-                goToNextPage(SplashScreen.this, userRepository.getUser().getRole());
-            }
-        } else {
+        if (user == null) {
             Toast.makeText(this, "Sign in to continue", Toast.LENGTH_SHORT).show();
             FirebaseAuth.getInstance().removeAuthStateListener(authStateListener);
             goToLoginScreen();
+            return;
         }
+
+        userRepository.getUserLive().observe(this, appUser -> {
+            if (!appUser.isPresent()) { //if user no data -> get user data
+
+                HashMap<String,String> params = new HashMap<>();
+                params.put(UID,user.getUid());
+
+                new ViewModelProvider(SplashScreen.this).get(UserViewModel.class).getLiveUser(params).observe(SplashScreen.this, jsonResponseResponse -> {
+                    if (!jsonResponseResponse.isPresent()) {
+                        logout(SplashScreen.this);
+                        return;
+                    }
+
+                    JsonResponse response = jsonResponseResponse.get().body();
+
+                    if (response == null) {
+                        logout(SplashScreen.this);
+                        return;
+                    }
+
+                    if (response.isHas_error()) {
+                        logout(SplashScreen.this);
+                        return;
+                    }
+
+                    if (response.getData() == null) {
+                        logout(SplashScreen.this);
+                        return;
+                    }
+
+                    ObjectMapper mapper = getObjectMapper();
+
+                    try {
+                        JsonObject userJson = new JsonObject(mapper.writeValueAsString(response.getData()));
+
+                        //save user to offline db
+                        Models.AppUser firebaseDbUser = mapper.readValue(userJson.toString(), Models.AppUser.class);
+
+                        userRepository.insert(getDomainUserFromModelUser(firebaseDbUser));
+
+                        Thread.sleep(2000);
+
+                        proceed(SplashScreen.this);
+
+                    } catch (JsonProcessingException | InterruptedException e) {
+
+                        if (e instanceof JsonProcessingException) {
+                            Toast.makeText(SplashScreen.this, "Problem mapping user data", Toast.LENGTH_SHORT).show();
+                            logout(SplashScreen.this);
+
+                            e.printStackTrace();
+                        }
+
+                    }
+                });
+                return;
+            }
+              proceed(SplashScreen.this);
+        });
+
     }
 }

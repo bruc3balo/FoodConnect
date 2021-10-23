@@ -52,9 +52,11 @@ public class LoginPagerAdapter extends FragmentStateAdapter {
     }
 
 
+
     public void setAllTabIcons(TabLayout tab) {
         for (int i = 0; i <= loginIcons.length - 1; i++) {
             Objects.requireNonNull(tab.getTabAt(i)).setIcon(loginIcons[i]);
+            Objects.requireNonNull(tab.getTabAt(i)).setText(loginTitles[i]);
         }
     }
 

@@ -24,7 +24,7 @@ public abstract class UserDB extends RoomDatabase {
     public abstract UserDao userDao();
 
     //only 1 instance of db and thread
-    static synchronized UserDB getInstance(Context context) {
+    public static synchronized UserDB getInstance(Context context) {
         if (instance == null) {
             //use builder due to abstract
             instance = Room.databaseBuilder(context.getApplicationContext(), UserDB.class, USER_COLLECTION)

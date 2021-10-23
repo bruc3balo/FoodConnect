@@ -52,6 +52,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void setUpLoginPager() {
         LoginPagerAdapter loginPagerAdapter = new LoginPagerAdapter(getSupportFragmentManager(), getLifecycle());
+        loginViewPager.setUserInputEnabled(false);
         loginViewPager.setAdapter(loginPagerAdapter);
         loginViewPager.setPageTransformer(new DepthPageTransformer());
         loginTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {

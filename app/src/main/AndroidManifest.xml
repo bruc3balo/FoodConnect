@@ -16,7 +16,7 @@
             android:exported="true" />
         <activity android:name=".pages.admin.AdminActivity" />
         <activity android:name=".pages.beneficiary.BeneficiaryActivity" />
-        <activity android:name=".pages.certifiedAuth.CertifiedAuthorityActivity" />
+        <activity android:name=".pages.donor.DonorActivity" />
         <activity android:name=".pages.seller.SellerActivity" />
         <activity android:name=".pages.transporter.TransporterActivity" />
         <activity android:name=".pages.welcome.WelcomeActivity" />

@@ -28,7 +28,7 @@ public class GlobalVariables {
     public static final String TUTORIAL = "tutorial";
 
 
-    public static final String API_URL = "https://food-dstribution-api-vic.herokuapp.com/";
+    public static final String API_URL = "https://food-dstribution-api-vic.herokuapp.com";
     public static final String CONTEXT_URL = "/api/v1/";
     public static final String HY = "-";
 

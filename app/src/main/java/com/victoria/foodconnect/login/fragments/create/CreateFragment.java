@@ -2,8 +2,11 @@ package com.victoria.foodconnect.login.fragments.create;
 
 
 import static com.victoria.foodconnect.globals.GlobalRepository.userRepository;
-import static com.victoria.foodconnect.globals.GlobalVariables.USER_COLLECTION;
+import static com.victoria.foodconnect.globals.GlobalVariables.HY;
 import static com.victoria.foodconnect.login.LoginActivity.loginPb;
+import static com.victoria.foodconnect.utils.DataOpts.getDomainUserFromModelUser;
+import static com.victoria.foodconnect.utils.DataOpts.getObjectMapper;
+import static com.victoria.foodconnect.utils.DataOpts.proceed;
 
 import android.app.Dialog;
 import android.content.Intent;
@@ -11,8 +14,6 @@ import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,30 +26,28 @@ import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.victoria.foodconnect.R;
 import com.victoria.foodconnect.databinding.RoleDialogBinding;
-import com.victoria.foodconnect.domain.Domain;
 import com.victoria.foodconnect.globals.userDb.UserViewModel;
 import com.victoria.foodconnect.models.AppRolesEnum;
+import com.victoria.foodconnect.models.Models;
 import com.victoria.foodconnect.pages.welcome.WelcomeActivity;
+import com.victoria.foodconnect.utils.JsonResponse;
 
-import java.util.Date;
 import java.util.LinkedList;
-import java.util.Objects;
+
+import io.vertx.core.json.JsonObject;
 
 
 public class CreateFragment extends Fragment {
 
-    private Domain.AppUser newUser;
+    private Models.NewUserForm newUserForm;
     private final LinkedList<String> emailList = new LinkedList<>();
     private Button createB;
-    private String role = "ROLE_BUYER";
+    private String role = HY;
 
-    private boolean isWaiting = false;
-
-    private boolean emailValid = false;
 
     public CreateFragment() {
         // Required empty public constructor
@@ -78,45 +77,13 @@ public class CreateFragment extends Fragment {
         EditText cPasswordF = v.findViewById(R.id.cPasswordF);
         EditText phoneNumberField = v.findViewById(R.id.phoneNumberField);
 
-        emailAddressField.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (!charSequence.toString().isEmpty()) {
-                    if (!emailList.isEmpty()) {
-                        if (emailList.contains(charSequence.toString())) {
-                            emailAddressField.setError("Email already taken");
-                            emailAddressField.requestFocus();
-                            emailValid = false;
-                        } else {
-                            emailValid = true;
-                        }
-                    } else {
-                        emailValid = true;
-                    }
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        });
-
         createB.setOnClickListener(view -> {
-            if (emailValid) {
-                if (validateForm(userNameField, namesField, emailAddressField, phoneNumberField, passwordF, cPasswordF)) {
-                    showRoleDialog();
-                }
-            } else {
-                Toast.makeText(requireContext(), "Email not valid", Toast.LENGTH_SHORT).show();
-            }
-        });
 
+            if (validateForm(userNameField, namesField, emailAddressField, phoneNumberField, passwordF, cPasswordF)) {
+                showRoleDialog();
+            }
+
+        });
 
         populateEmailList();
 
@@ -126,16 +93,63 @@ public class CreateFragment extends Fragment {
 
     private void authNewUser(String s, String s1) {
         inProgress(loginPb, createB);
-        FirebaseAuth.getInstance().createUserWithEmailAndPassword(s, s1).addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                newUser.setId(Objects.requireNonNull(Objects.requireNonNull(task.getResult()).getUser()).getUid());
-                Toast.makeText(requireContext(), newUser.getUsername() + " Created", Toast.LENGTH_SHORT).show();
-                saveUserDetails(newUser);
-            } else {
+
+        new ViewModelProvider(this).get(UserViewModel.class).createNewUser(newUserForm).observe(getViewLifecycleOwner(), jsonResponseResponse ->  {
+
+            if (!jsonResponseResponse.isPresent()) {
                 outProgress(loginPb, createB);
-                Toast.makeText(requireContext(), Objects.requireNonNull(task.getException()).toString(), Toast.LENGTH_SHORT).show();
+                return;
             }
+
+            JsonResponse response = jsonResponseResponse.get().body();
+
+            if (response == null) {
+                Toast.makeText(requireContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
+                outProgress(loginPb, createB);
+                return;
+            }
+
+            if (response.isHas_error()) {
+                Toast.makeText(requireContext(), response.getApi_code_description(), Toast.LENGTH_SHORT).show();
+                outProgress(loginPb, createB);
+                return;
+            }
+
+            if (response.getData() == null) {
+                Toast.makeText(requireContext(), "No user data", Toast.LENGTH_SHORT).show();
+                outProgress(loginPb, createB);
+                return;
+            }
+
+            ObjectMapper mapper = getObjectMapper();
+
+            try {
+                JsonObject userJson = new JsonObject(mapper.writeValueAsString(response.getData()));
+
+                //save user to offline db
+                Models.AppUser firebaseDbUser = mapper.readValue(userJson.toString(), Models.AppUser.class);
+
+                userRepository.insert(getDomainUserFromModelUser(firebaseDbUser));
+
+                Thread.sleep(2000);
+
+
+                proceed(requireActivity());
+
+
+            } catch (JsonProcessingException | InterruptedException e) {
+                outProgress(loginPb, createB);
+                if (e instanceof JsonProcessingException) {
+                    Toast.makeText(requireContext(), "Problem mapping user data", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(requireContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
+                }
+                e.printStackTrace();
+            }
+
         });
+
+
     }
 
     private void showRoleDialog() {
@@ -164,15 +178,15 @@ public class CreateFragment extends Fragment {
                 role = AppRolesEnum.valueOf("ROLE_TRANSPORTER").name();
             }
 
-            newUser.setRole(role);
+            newUserForm.setRole(role);
         });
 
         confirmRoleButton.setOnClickListener(view -> {
-            if (role.equals("")) {
+            if (role.equals(HY)) {
                 Toast.makeText(requireContext(), "Pick a role", Toast.LENGTH_SHORT).show();
             } else {
                 d.dismiss();
-                authNewUser(newUser.getEmail_address(), newUser.getPassword());
+                authNewUser(newUserForm.getEmail_address(), newUserForm.getPassword());
             }
         });
         neverMindButton.setOnClickListener(view -> d.dismiss());
@@ -189,9 +203,23 @@ public class CreateFragment extends Fragment {
         } else if (email.getText().toString().isEmpty()) {
             email.requestFocus();
             email.setError("Required");
+        }  else if (!email.getText().toString().contains("@")) {
+            email.requestFocus();
+            email.setError("Invalid email");
+        }  else if (emailList.contains(email.getText().toString())) {
+            email.requestFocus();
+            email.setError("Email already taken");
+        } else if (!phone.getText().toString().isEmpty()) {
+            phone.requestFocus();
+            phone.setError("Required");
         } else if (!phone.getText().toString().startsWith("+254")) {
             phone.requestFocus();
             phone.setError("Wrong phone format must start with +254");
+            if (phone.getText().toString().length() > 5) {
+                phone.setSelection(3);
+            } else {
+                phone.setSelection(phone.getText().toString().length());
+            }
         } else if (phone.getText().toString().length() < 12) {
             phone.requestFocus();
             phone.setError("Phone is to have 12 digits");
@@ -202,8 +230,7 @@ public class CreateFragment extends Fragment {
             password.requestFocus();
             password.setError("Passwords don't match");
         } else {
-
-            newUser = new Domain.AppUser(name.getText().toString(), username.getText().toString(), email.getText().toString(), password.getText().toString(), phone.getText().toString(), new Date().toString(), new Date().toString(), false, false, role);
+            newUserForm = new Models.NewUserForm(name.getText().toString(), username.getText().toString(), email.getText().toString(), password.getText().toString(), phone.getText().toString(), HY, HY, role);
             valid = true;
         }
         return valid;
@@ -212,46 +239,28 @@ public class CreateFragment extends Fragment {
     private void inProgress(ProgressBar progressBar, Button button) {
         progressBar.setVisibility(View.VISIBLE);
         button.setEnabled(false);
-        isWaiting = true;
+
     }
 
     private void outProgress(ProgressBar progressBar, Button button) {
         progressBar.setVisibility(View.GONE);
         button.setEnabled(true);
-        isWaiting = false;
     }
 
     private void populateEmailList() {
         UserViewModel userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
-        userViewModel.getEmailList().observe(getViewLifecycleOwner(), strings -> {
-            if (!isWaiting) {
-                outProgress(loginPb, createB);
-                if (!strings.isEmpty()) {
-                    emailList.clear();
-                    emailList.addAll(strings);
-                }
+        userViewModel.getEmailList().observe(getViewLifecycleOwner(), emails -> {
+            if (!emails.isPresent()) {
+                return;
+            }
+
+            if (!emails.get().isEmpty()) {
+                emailList.clear();
+                emailList.addAll(emails.get());
             }
         });
     }
 
-    private void saveUserDetails(Domain.AppUser user) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection(USER_COLLECTION).document(user.getId()).set(user).addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                Toast.makeText(requireContext(), "User details saved", Toast.LENGTH_SHORT).show();
-                userRepository.insert(newUser);
-                new Handler(Looper.myLooper()).postDelayed(this::showWelcomeScreen, 2000);
-            } else {
-                outProgress(loginPb, createB);
-                Toast.makeText(requireContext(), Objects.requireNonNull(task.getException()).toString(), Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    private void showWelcomeScreen() {
-        startActivity(new Intent(requireContext(), WelcomeActivity.class));
-        requireActivity().finish();
-    }
 
     public static void setAnimatedBg(ViewGroup viewGroup) {
         AnimationDrawable animationDrawable = (AnimationDrawable) viewGroup.getBackground();

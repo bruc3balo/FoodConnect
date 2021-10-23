@@ -7,6 +7,7 @@ import static com.victoria.foodconnect.models.Models.*;
 
 import com.victoria.foodconnect.utils.JsonResponse;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import retrofit2.Call;
@@ -31,10 +32,10 @@ public interface UserApi {
 
     //users
     @GET(baseUser + "/all")
-    Call<JsonResponse> getUsers(@Query(USERNAME) String username, @Header(AUTHORIZATION) String token);
+    Call<JsonResponse> getAllUsers(@Header(AUTHORIZATION) String token);
 
     @GET(baseUser + "/specific")
-    Call<JsonResponse> getUser(@QueryMap Map<String, String> parameters, @Header(AUTHORIZATION) String token);
+    Call<JsonResponse> getUser(@QueryMap HashMap<String,String> parameters, @Header(AUTHORIZATION) String token);
 
     @GET(baseUser + "/numbers")
     Call<JsonResponse> getAllPhoneNumbers();

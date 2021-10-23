@@ -17,7 +17,7 @@ import com.victoria.foodconnect.databinding.ActivityTutorialBinding;
 import com.victoria.foodconnect.models.Models;
 import com.victoria.foodconnect.pages.admin.AdminActivity;
 import com.victoria.foodconnect.pages.beneficiary.BeneficiaryActivity;
-import com.victoria.foodconnect.pages.certifiedAuth.CertifiedAuthorityActivity;
+import com.victoria.foodconnect.pages.donor.DonorActivity;
 import com.victoria.foodconnect.pages.seller.SellerActivity;
 import com.victoria.foodconnect.pages.transporter.TransporterActivity;
 
@@ -55,7 +55,8 @@ public class WelcomeActivity extends AppCompatActivity {
             if (tutorialViewPager.getCurrentItem() != tutorialList.size() - 1) {
                 tutorialViewPager.setCurrentItem(tutorialViewPager.getCurrentItem() + 1);
             } else {
-                goToNextPage(this, userRepository.getUser().getRole());
+                //todo update user
+                goToNextPage(this, userRepository.getUser().get().getRole());
             }
         });
 
@@ -71,13 +72,8 @@ public class WelcomeActivity extends AppCompatActivity {
     }
 
     private void setWindowColors() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            getWindow().setStatusBarColor(getColor(R.color.white));
-            getWindow().setNavigationBarColor(getColor(R.color.white));
-        } else {
-            getWindow().setStatusBarColor(getResources().getColor(R.color.white));
-            getWindow().setNavigationBarColor(getResources().getColor(R.color.white));
-        }
+        getWindow().setStatusBarColor(getColor(R.color.white));
+        getWindow().setNavigationBarColor(getColor(R.color.white));
 
     }
 
@@ -93,7 +89,7 @@ public class WelcomeActivity extends AppCompatActivity {
                 break;
 
             case "ROLE_CERTIFIED_AUTHORITY":
-                goToCertifiedAuthorityPage(activity);
+                goToDonorPage(activity);
                 break;
 
           /*  case "ROLE_DISTRIBUTOR":
@@ -116,13 +112,18 @@ public class WelcomeActivity extends AppCompatActivity {
         activity.finish();
     }
 
+    public static void goToTutorialsPage(Activity activity) {
+        activity.startActivity(new Intent(activity, WelcomeActivity.class));
+        activity.finish();
+    }
 
-    private static void goToBuyerPage(Activity activity) {
+
+    public static void goToBuyerPage(Activity activity) {
         activity.startActivity(new Intent(activity, BeneficiaryActivity.class));
         activity.finish();
     }
 
-    private static void goToSellerPage(Activity activity) {
+    public static void goToSellerPage(Activity activity) {
         activity.startActivity(new Intent(activity, SellerActivity.class));
         activity.finish();
     }
@@ -132,13 +133,13 @@ public class WelcomeActivity extends AppCompatActivity {
         finish();
     }*/
 
-    private static void goToTransporterProviderPage(Activity activity) {
+    public static void goToTransporterProviderPage(Activity activity) {
         activity.startActivity(new Intent(activity, TransporterActivity.class));
         activity.finish();
     }
 
-    private static void goToCertifiedAuthorityPage(Activity activity) {
-        activity.startActivity(new Intent(activity, CertifiedAuthorityActivity.class));
+    public static void goToDonorPage(Activity activity) {
+        activity.startActivity(new Intent(activity, DonorActivity.class));
         activity.finish();
     }
 }

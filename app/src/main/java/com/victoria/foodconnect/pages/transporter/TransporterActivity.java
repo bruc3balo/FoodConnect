@@ -29,9 +29,9 @@ public class TransporterActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         userRepository.getUserLive().observe(this, appUser -> {
-            if (appUser != null) {
-                toolbar.setTitle(appUser.getUsername());
-                toolbar.setSubtitle(appUser.getRole());
+            if (appUser.isPresent()) {
+                toolbar.setTitle(appUser.get().getUsername());
+                toolbar.setSubtitle(appUser.get().getRole());
             }
         });
 

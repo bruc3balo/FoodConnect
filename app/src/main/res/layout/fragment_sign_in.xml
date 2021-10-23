@@ -18,13 +18,13 @@
             android:layout_marginTop="20dp"
             android:gravity="center_vertical"
             android:padding="10dp"
-            android:text="@string/email_address"
+            android:text="@string/username"
             android:textColor="@color/black"
             android:textSize="15sp"
             android:textStyle="bold" />
 
         <EditText
-            android:id="@+id/emailF"
+            android:id="@+id/usernameF"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -34,7 +34,7 @@
             android:drawablePadding="10dp"
             android:drawableTint="@android:color/darker_gray"
             android:gravity="center_vertical"
-            android:hint="@string/email_address"
+            android:hint="@string/username"
             android:inputType="textEmailAddress"
             android:padding="10dp"
             android:background="@drawable/edit_text_field_white"

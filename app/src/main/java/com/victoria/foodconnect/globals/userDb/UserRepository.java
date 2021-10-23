@@ -3,16 +3,19 @@ package com.victoria.foodconnect.globals.userDb;
 import android.app.Application;
 
 import androidx.lifecycle.LiveData;
+import androidx.room.Transaction;
 
 import com.victoria.foodconnect.domain.Domain;
-import com.victoria.foodconnect.domain.Domain.AppUser;
+
+import java.util.List;
+import java.util.Optional;
 
 
 public class UserRepository {
     private final UserDao userDao;
 
 
-    //methods are to store just one users data, not many
+    //methods are to store just one AppUsers data, not many
     //to be used to cache
 
     public UserRepository(Application application) {
@@ -21,66 +24,80 @@ public class UserRepository {
 
     }
 
-
     //Abstraction layer for encapsulation
 
-    private void insertUser(AppUser user) {
+    @Transaction
+    private void insertUser(Domain.AppUser appUser) {
         new Thread(() -> {
             try {
-                userDao.clear();
-                userDao.insert(user);
-                System.out.println(user.getName() + " inserted");
+                /*clearAppUser();
+                Thread.sleep(1500);*/
+                userDao.insert(appUser);
+                System.out.println(appUser.getUsername() + " inserted");
             } catch (Exception e) {
-                e.printStackTrace();
+                System.out.println(appUser.getUsername() + " failed instead");
             }
         }).start();
     }
 
-    private void updateUser(AppUser user) {
+    @Transaction
+    private Domain.AppUser updateUser(Domain.AppUser appUser) {
         new Thread(() -> {
             try {
-                userDao.update(user);
-                System.out.println(user.getName() + " updated");
+                userDao.update(appUser);
+                System.out.println(appUser.getUsername() + " updated");
             } catch (Exception e) {
-                e.printStackTrace();
+                System.out.println(appUser.getUsername() + " inserted instead");
+                insertUser(appUser);
             }
+        }).start();
+        return appUser;
+    }
+
+    @Transaction
+    private void deleteUser(Domain.AppUser appUser) {
+        new Thread(() -> {
+            userDao.delete(appUser);
+            System.out.println(appUser.getUsername() + " deleted");
         }).start();
     }
 
-    private void deleteUser(AppUser user) {
+    @Transaction
+    private void clearAppUser() {
         new Thread(() -> {
             userDao.clear();
-            System.out.println(user.getName() + " deleted");
+            System.out.println("CLEARING AppUser DB");
         }).start();
-    }
-
-    private void clearUser() {
-        userDao.clear();
     }
 
 
     //Used Methods
-    public void insert(AppUser user) {
-        insertUser(user);
+    public void insert(Domain.AppUser AppUser) {
+        insertUser(AppUser);
     }
 
-    public void update(AppUser user) {
-        updateUser(user);
+    public void update(Domain.AppUser AppUser) {
+        updateUser(AppUser);
     }
 
-    public void delete(AppUser user) {
-        deleteUser(user);
+    public void delete(Domain.AppUser AppUser) {
+        deleteUser(AppUser);
     }
 
-    public void deleteUserDb() {
-        clearUser();
+    public void deleteAppUserDb() {
+        clearAppUser();
     }
 
-    public AppUser getUser() {
-        return userDao.getUserObject();
+    public Optional<Domain.AppUser> getUser() {
+        List<Domain.AppUser> user = userDao.getUserObject();
+        if (user == null || user.isEmpty()) {
+            return Optional.empty();
+        } else {
+            return Optional.of(user.get(0));
+        }
     }
 
-    public LiveData<AppUser> getUserLive() {
+    public LiveData<Optional<Domain.AppUser>> getUserLive() {
         return userDao.getUserLiveData();
     }
 

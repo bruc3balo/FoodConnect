@@ -4,9 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ScrollView
+<!--    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content">-->
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -26,7 +26,6 @@
 
             <EditText
                 android:drawablePadding="10dp"
-
                 android:drawableStart="@drawable/ic_person"
                 android:id="@+id/namesField"
                 android:layout_width="match_parent"
@@ -57,7 +56,6 @@
 
             <EditText
                 android:drawablePadding="10dp"
-
                 android:drawableStart="@drawable/ic_person"
                 android:id="@+id/usernameField"
                 android:layout_width="match_parent"
@@ -221,6 +219,6 @@
                 android:textStyle="bold" />
         </LinearLayout>
 
-    </ScrollView>
+    <!--</ScrollView>-->
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

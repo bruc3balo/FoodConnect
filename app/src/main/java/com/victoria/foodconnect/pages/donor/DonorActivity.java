@@ -1,4 +1,4 @@
-package com.victoria.foodconnect.pages.certifiedAuth;
+package com.victoria.foodconnect.pages.donor;
 
 import static com.victoria.foodconnect.SplashScreen.logout;
 import static com.victoria.foodconnect.globals.GlobalRepository.userRepository;
@@ -12,26 +12,25 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.victoria.foodconnect.R;
-import com.victoria.foodconnect.databinding.ActivityCertifiedAuthorityBinding;
-import com.victoria.foodconnect.pages.beneficiary.BeneficiaryActivity;
+import com.victoria.foodconnect.databinding.ActivityDonorBinding;
 
-public class CertifiedAuthorityActivity extends AppCompatActivity {
+public class DonorActivity extends AppCompatActivity {
 
-    ActivityCertifiedAuthorityBinding binding;
+    ActivityDonorBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityCertifiedAuthorityBinding.inflate(getLayoutInflater());
+        binding = ActivityDonorBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         Toolbar toolbar = binding.toolbar;
         setSupportActionBar(toolbar);
 
         userRepository.getUserLive().observe(this, appUser -> {
-            if (appUser != null) {
-                toolbar.setTitle(appUser.getUsername());
-                toolbar.setSubtitle(appUser.getRole());
+            if (appUser.isPresent()) {
+                toolbar.setTitle(appUser.get().getUsername());
+                toolbar.setSubtitle(appUser.get().getRole());
             }
         });
 
@@ -43,7 +42,7 @@ public class CertifiedAuthorityActivity extends AppCompatActivity {
         menu.add("Logout").setIcon(R.drawable.logout).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
-                logout(CertifiedAuthorityActivity.this);
+                logout(DonorActivity.this);
                 return false;
             }
         }).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
