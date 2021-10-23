@@ -2,7 +2,7 @@ package com.victoria.foodconnect.login.fragments.create;
 
 
 import static com.victoria.foodconnect.globals.GlobalRepository.userRepository;
-import static com.victoria.foodconnect.globals.GlobalVariables.USERS;
+import static com.victoria.foodconnect.globals.GlobalVariables.USER_COLLECTION;
 import static com.victoria.foodconnect.login.LoginActivity.loginPb;
 
 import android.app.Dialog;
@@ -236,7 +236,7 @@ public class CreateFragment extends Fragment {
 
     private void saveUserDetails(Domain.AppUser user) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection(USERS).document(user.getId()).set(user).addOnCompleteListener(task -> {
+        db.collection(USER_COLLECTION).document(user.getId()).set(user).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 Toast.makeText(requireContext(), "User details saved", Toast.LENGTH_SHORT).show();
                 userRepository.insert(newUser);

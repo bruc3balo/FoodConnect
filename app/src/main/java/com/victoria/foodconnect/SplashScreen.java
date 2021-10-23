@@ -25,6 +25,8 @@ import com.victoria.foodconnect.globals.GlobalRepository;
 import com.victoria.foodconnect.globals.userDb.UserViewModel;
 import com.victoria.foodconnect.login.LoginActivity;
 
+import org.mindrot.jbcrypt.BCrypt;
+
 
 @SuppressLint("CustomSplashScreen")
 public class SplashScreen extends AppCompatActivity {
@@ -36,12 +38,14 @@ public class SplashScreen extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        GlobalRepository.init(getApplication());
+
         splashScreenBinding = ActivitySplashScreenBinding.inflate(getLayoutInflater());
         setContentView(splashScreenBinding.getRoot());
 
         showPb();
 
-        GlobalRepository.init(getApplication());
 
         setWindowColors(this);
 

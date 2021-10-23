@@ -1,7 +1,7 @@
 package com.victoria.foodconnect.globals.userDb;
 
 import static com.victoria.foodconnect.globals.GlobalVariables.EMAIL_ADDRESS;
-import static com.victoria.foodconnect.globals.GlobalVariables.USERS;
+import static com.victoria.foodconnect.globals.GlobalVariables.USER_COLLECTION;
 
 import android.app.Application;
 
@@ -29,7 +29,7 @@ public class UserViewModel extends AndroidViewModel {
         MutableLiveData<List<Domain.AppUser>> userMutableLiveData = new MutableLiveData<>();
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection(USERS).get().addOnCompleteListener(task -> {
+        db.collection(USER_COLLECTION).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 QuerySnapshot qs = task.getResult();
                 userMutableLiveData.setValue(Objects.requireNonNull(qs).toObjects(Domain.AppUser.class));
@@ -45,7 +45,7 @@ public class UserViewModel extends AndroidViewModel {
         MutableLiveData<Domain.AppUser> userMutableLiveData = new MutableLiveData<>();
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection(USERS).document(uid).get().addOnCompleteListener(task -> {
+        db.collection(USER_COLLECTION).document(uid).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 Domain.AppUser user = Objects.requireNonNull(task.getResult()).toObject(Domain.AppUser.class);
                 userMutableLiveData.setValue(user);
@@ -62,7 +62,7 @@ public class UserViewModel extends AndroidViewModel {
         List<String> emailList = new ArrayList<>();
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection(USERS).get().addOnCompleteListener(task -> {
+        db.collection(USER_COLLECTION).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 QuerySnapshot qs = task.getResult();
                 for (int i = 0; i <= Objects.requireNonNull(qs).size() - 1; i++) {
@@ -82,6 +82,9 @@ public class UserViewModel extends AndroidViewModel {
         return emailMutable;
     }
 
+
+
+    //expose
     public LiveData<List<String>> getEmailList() {
         return getAllEmailList();
     }

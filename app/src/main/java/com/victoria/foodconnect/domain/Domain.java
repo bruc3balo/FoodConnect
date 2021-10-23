@@ -1,6 +1,6 @@
 package com.victoria.foodconnect.domain;
 
-import static com.victoria.foodconnect.globals.GlobalVariables.USERS;
+import static com.victoria.foodconnect.globals.GlobalVariables.USER_COLLECTION;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
@@ -13,7 +13,7 @@ import java.util.Set;
 
 public class Domain {
 
-    @Entity(tableName = USERS)
+    @Entity(tableName = USER_COLLECTION)
     public static class AppUser {
 
         @PrimaryKey
