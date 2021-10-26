@@ -13,6 +13,7 @@ import static com.victoria.foodconnect.pages.welcome.WelcomeActivity.goToDonorPa
 import static com.victoria.foodconnect.pages.welcome.WelcomeActivity.goToSellerPage;
 import static com.victoria.foodconnect.pages.welcome.WelcomeActivity.goToTransporterProviderPage;
 import static com.victoria.foodconnect.pages.welcome.WelcomeActivity.goToTutorialsPage;
+import static com.victoria.foodconnect.pages.welcome.WelcomeActivity.showEmailVerificationDialog;
 
 import android.app.Activity;
 import android.app.Application;
@@ -98,7 +99,7 @@ public class DataOpts {
     }
 
     public static Domain.AppUser getDomainUserFromModelUser(Models.AppUser user) {
-        return new Domain.AppUser(user.getUid(), user.getId_number(), user.getPhone_number(), user.getBio(), user.getEmail_address(), user.getNames(), user.getUsername(), user.getRole().getName(), user.getCreated_at(), user.getUpdated_at(), user.getDeleted(), user.getDisabled(), user.getTutorial(), user.getLast_known_location(), user.getPassword());
+        return new Domain.AppUser(user.getUid(), user.getId_number(), user.getPhone_number(), user.getBio(), user.getEmail_address(), user.getNames(), user.getUsername(), user.getRole().getName(), user.getCreated_at(), user.getUpdated_at(), user.getDeleted(), user.getDisabled(), user.getTutorial(), user.getVerified(),user.getLast_known_location(), user.getPassword());
     }
 
 
@@ -118,8 +119,8 @@ public class DataOpts {
 
                 case "ROLE_TRANSPORTER":
 
-                    if (!appUser.get().isTutorial()) {
-                        goToTutorialsPage(activity);
+                    if (!appUser.get().isVerified()) {
+                        showEmailVerificationDialog(activity);
                         return;
                     }
 
@@ -128,8 +129,8 @@ public class DataOpts {
                     break;
 
                 case "ROLE_DONOR":
-                    if (!appUser.get().isTutorial()) {
-                        goToTutorialsPage(activity);
+                    if (!appUser.get().isVerified()) {
+                        showEmailVerificationDialog(activity);
                         return;
                     }
 
@@ -138,8 +139,8 @@ public class DataOpts {
 
                 default:
                 case "ROLE_BUYER":
-                    if (!appUser.get().isTutorial()) {
-                        goToTutorialsPage(activity);
+                    if (!appUser.get().isVerified()) {
+                        showEmailVerificationDialog(activity);
                         return;
                     }
 
@@ -147,8 +148,8 @@ public class DataOpts {
                     break;
 
                 case "ROLE_SELLER":
-                    if (!appUser.get().isTutorial()) {
-                        goToTutorialsPage(activity);
+                    if (!appUser.get().isVerified()) {
+                        showEmailVerificationDialog(activity);
                         return;
                     }
 

@@ -33,5 +33,17 @@
     <string name="product_price">Product Price Per Unit</string>
     <string name="product_unit">Product Unit</string>
     <string name="products">Products</string>
+    <string name="hy">-</string>
+    <string name="click_to_pick_product_category">Click to pick product category</string>
+    <string name="solid">Solid</string>
+    <string name="liquid">Liquid</string>
+    <string name="gas">Gas</string>
+    <string name="email_verification">Email Verification</string>
+    <string name="verification">Verification</string>
+    <string name="choose_a_method_for_verification">Choose a method for verification</string>
+    <string name="or">OR</string>
+    <string name="mobile_number">Mobile Number</string>
+    <string name="logout">Logout</string>
+    <string name="code">Code</string>
 
 </resources>

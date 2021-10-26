@@ -69,4 +69,6 @@ public interface UserApi {
     @POST(baseAdmin + "/changePassword")
     Call<JsonResponse> changePassword(@Query(value = EMAIL_ADDRESS) String email, @Header(AUTHORIZATION) String token);
 
+    @POST(baseAdmin + "/verify")
+    Call<JsonResponse> verifyEmail(@Query(value = EMAIL_ADDRESS) String email, @Header(AUTHORIZATION) String token);
 }

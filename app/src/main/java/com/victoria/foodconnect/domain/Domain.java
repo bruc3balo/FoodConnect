@@ -31,6 +31,7 @@ public class Domain {
         private boolean deleted;
         private boolean disabled;
         private boolean tutorial;
+        private boolean verified;
         private String last_known_location;
         private String password;
 
@@ -39,7 +40,7 @@ public class Domain {
 
         }
 
-        public AppUser(@NotNull String uid, String id_number, String phone_number, String bio, String email_address, String names, String username, String role, String createdAt, String updatedAt, boolean deleted, boolean disabled, boolean tutorial, String last_known_location, String password) {
+        public AppUser(@NotNull String uid, String id_number, String phone_number, String bio, String email_address, String names, String username, String role, String createdAt, String updatedAt, boolean deleted, boolean disabled, boolean tutorial, boolean verified,String last_known_location, String password) {
             this.uid = uid;
             this.id_number = id_number;
             this.phone_number = phone_number;
@@ -51,6 +52,7 @@ public class Domain {
             this.created_at = createdAt;
             this.updated_at = updatedAt;
             this.deleted = deleted;
+            this.verified = verified;
             this.disabled = disabled;
             this.tutorial = tutorial;
             this.last_known_location = last_known_location;
@@ -58,6 +60,7 @@ public class Domain {
         }
 
 
+        @NonNull
         public String getUid() {
             return uid;
         }
@@ -176,6 +179,14 @@ public class Domain {
 
         public void setPassword(String password) {
             this.password = password;
+        }
+
+        public boolean isVerified() {
+            return verified;
+        }
+
+        public void setVerified(boolean verified) {
+            this.verified = verified;
         }
     }
 

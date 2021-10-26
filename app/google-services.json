@@ -1,33 +1,41 @@
 {
   "project_info": {
-    "project_number": "251114602096",
-    "project_id": "foodconnectemergency",
-    "storage_bucket": "foodconnectemergency.appspot.com"
+    "project_number": "335766465401",
+    "project_id": "foodconnect-2df96",
+    "storage_bucket": "foodconnect-2df96.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:251114602096:android:dc64b083fea56e5aba7eb5",
+        "mobilesdk_app_id": "1:335766465401:android:e219b686a246694b7c5da8",
         "android_client_info": {
           "package_name": "com.victoria.foodconnect"
         }
       },
       "oauth_client": [
         {
-          "client_id": "251114602096-3gh0kr8co268n17e855bmpj5b6a2r0bq.apps.googleusercontent.com",
+          "client_id": "335766465401-e0863kkgan7rl4g9m5p4f1aib9kk5kvv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.victoria.foodconnect",
+            "certificate_hash": "d41214d3df1aa409bc779b41e91951f020692820"
+          }
+        },
+        {
+          "client_id": "335766465401-dt77veqdr20npl9u84mim72d92m7f46q.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDufwrgwBHOf4U8u61sge3CudCAvK_g2k0"
+          "current_key": "AIzaSyAZpH4BtIB-vHeYcVcZnFBV42ZV7a8GeeI"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "251114602096-3gh0kr8co268n17e855bmpj5b6a2r0bq.apps.googleusercontent.com",
+              "client_id": "335766465401-dt77veqdr20npl9u84mim72d92m7f46q.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

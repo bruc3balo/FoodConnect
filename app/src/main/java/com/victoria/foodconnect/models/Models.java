@@ -2,10 +2,18 @@ package com.victoria.foodconnect.models;
 
 
 import static com.victoria.foodconnect.globals.GlobalVariables.HY;
+import static com.victoria.foodconnect.globals.GlobalVariables.IMAGE;
+import static com.victoria.foodconnect.globals.GlobalVariables.PRODUCT_CATEGORY_NAME;
+import static com.victoria.foodconnect.globals.GlobalVariables.PRODUCT_DESCRIPTION;
+import static com.victoria.foodconnect.globals.GlobalVariables.PRODUCT_NAME;
+import static com.victoria.foodconnect.globals.GlobalVariables.PRODUCT_PRICE;
+import static com.victoria.foodconnect.globals.GlobalVariables.UNIT;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.victoria.foodconnect.domain.Domain;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -211,8 +219,7 @@ public class Models {
         }
 
 
-
-        public UserUpdateForm(String id_number, String bio,Boolean tutorial) {
+        public UserUpdateForm(String id_number, String bio, Boolean tutorial) {
             this.id_number = id_number;
             this.bio = bio;
 
@@ -225,7 +232,7 @@ public class Models {
 
         }
 
-        public UserUpdateForm(String names,String role, String phone_number, String id_number, String bio,Boolean tutorial) {
+        public UserUpdateForm(String names, String role, String phone_number, String id_number, String bio, Boolean tutorial) {
             this.names = names;
             this.role = role;
             this.phone_number = phone_number;
@@ -321,7 +328,7 @@ public class Models {
         }
     }
 
-    public static class AppUser implements Serializable{
+    public static class AppUser implements Serializable {
 
         private String uid;
         private String names;
@@ -338,18 +345,18 @@ public class Models {
         private Boolean disabled;
         private Boolean deleted;
         private Boolean tutorial;
+        private Boolean verified;
 
         public AppUser() {
 
         }
 
-        public AppUser(String names, String username, String id_number,String email_address,String phone_number, String created_at, String updated_at, Boolean disabled, Boolean deleted, AppRole role, Boolean tutorial) {
+        public AppUser(String names, String username, String id_number, String email_address, String phone_number, String created_at, String updated_at, Boolean disabled, Boolean deleted, AppRole role, Boolean tutorial) {
 
         }
 
 
-
-        public AppUser(String uid, String names, String username, String id_number, String email_address, String phone_number, String password, String bio, String last_known_location, String created_at, String updated_at, AppRole role, Boolean disabled, Boolean deleted, Boolean tutorial) {
+        public AppUser(String uid, String names, String username, String id_number, String email_address, String phone_number, String password, String bio, String last_known_location, String created_at, String updated_at, AppRole role, Boolean disabled, Boolean deleted, Boolean tutorial, Boolean verified) {
             this.uid = uid;
             this.names = names;
             this.username = username;
@@ -365,6 +372,7 @@ public class Models {
             this.disabled = disabled;
             this.deleted = deleted;
             this.tutorial = tutorial;
+            this.verified = verified;
         }
 
         public String getUid() {
@@ -487,6 +495,14 @@ public class Models {
         public String getUpdated_at() {
             return updated_at;
         }
+
+        public Boolean getVerified() {
+            return verified;
+        }
+
+        public void setVerified(Boolean verified) {
+            this.verified = verified;
+        }
     }
 
     public static class AppRole {
@@ -567,7 +583,7 @@ public class Models {
         }
     }
 
-    public static class TutorialModel implements Serializable{
+    public static class TutorialModel implements Serializable {
         private String imageId;
         private String explanation;
         private String title;
@@ -600,6 +616,172 @@ public class Models {
 
         public void setTitle(String title) {
             this.title = title;
+        }
+    }
+
+    public static class ProductCreationFrom {
+
+        @JsonProperty(PRODUCT_NAME)
+        private String product_name;
+
+        @JsonProperty(PRODUCT_PRICE)
+        private String product_price;
+
+        @JsonProperty(PRODUCT_CATEGORY_NAME)
+        private String product_category_name;
+
+        @JsonProperty(IMAGE)
+        private String image;
+
+        @JsonProperty(UNIT)
+        private String unit;
+
+        @JsonProperty(PRODUCT_DESCRIPTION)
+        private String productDescription;
+
+
+        public ProductCreationFrom() {
+
+        }
+
+        public ProductCreationFrom(String product_name, String product_price, String product_category_name, String image) {
+            this.product_name = product_name;
+            this.product_price = product_price;
+            this.product_category_name = product_category_name;
+            this.image = image;
+        }
+
+        public String getProduct_name() {
+            return product_name;
+        }
+
+        public void setProduct_name(String product_name) {
+            this.product_name = product_name;
+        }
+
+        public String getProduct_price() {
+            return product_price;
+        }
+
+        public void setProduct_price(String product_price) {
+            this.product_price = product_price;
+        }
+
+        public String getProduct_category_name() {
+            return product_category_name;
+        }
+
+        public void setProduct_category_name(String product_category_name) {
+            this.product_category_name = product_category_name;
+        }
+
+        public String getImage() {
+            return image;
+        }
+
+        public void setImage(String image) {
+            this.image = image;
+        }
+
+        public String getUnit() {
+            return unit;
+        }
+
+        public void setUnit(String unit) {
+            this.unit = unit;
+        }
+    }
+
+    public static class ProductCategory {
+
+        private String id;
+
+        private String name;
+
+        private Boolean deleted;
+
+        private Boolean disabled;
+
+        private Date createdAt;
+
+        private Date updatedAt;
+
+        public ProductCategory() {
+
+        }
+
+        public ProductCategory(String name) {
+            this.name = name;
+        }
+
+
+
+        public ProductCategory(String name, Boolean deleted, Boolean disabled, Date createdAt, Date updatedAt) {
+            this.name = name;
+            this.deleted = deleted;
+            this.disabled = disabled;
+            this.createdAt = createdAt;
+            this.updatedAt = updatedAt;
+        }
+
+        public ProductCategory(String id, String name, Boolean deleted, Boolean disabled) {
+            this.name = name;
+            this.deleted = deleted;
+            this.disabled = disabled;
+            this.id = id;
+        }
+
+        public ProductCategory(String id, String name) {
+            this.id =id;
+            this.name = name;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public Boolean getDeleted() {
+            return deleted;
+        }
+
+        public void setDeleted(Boolean deleted) {
+            this.deleted = deleted;
+        }
+
+        public Boolean getDisabled() {
+            return disabled;
+        }
+
+        public void setDisabled(Boolean disabled) {
+            this.disabled = disabled;
+        }
+
+        public Date getCreatedAt() {
+            return createdAt;
+        }
+
+        public void setCreatedAt(Date createdAt) {
+            this.createdAt = createdAt;
+        }
+
+        public Date getUpdatedAt() {
+            return updatedAt;
+        }
+
+        public void setUpdatedAt(Date updatedAt) {
+            this.updatedAt = updatedAt;
         }
     }
 

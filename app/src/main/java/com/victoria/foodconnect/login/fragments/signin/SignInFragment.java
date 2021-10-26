@@ -111,8 +111,8 @@ public class SignInFragment extends Fragment {
 
             LoginResponse response = loginResponseResponse.get().body();
 
-            if (loginResponseResponse.get().code() == 404) {
-                Toast.makeText(requireContext(), "Not found", Toast.LENGTH_SHORT).show();
+            if (loginResponseResponse.get().code() == 403) {
+                Toast.makeText(requireContext(), "User doesn't exist", Toast.LENGTH_SHORT).show();
                 outProgress();
                 return;
             } else if (loginResponseResponse.get().code() == 401) {
