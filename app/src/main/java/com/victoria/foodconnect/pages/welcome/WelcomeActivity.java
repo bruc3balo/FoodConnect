@@ -39,6 +39,7 @@ import com.victoria.foodconnect.R;
 import com.victoria.foodconnect.adapter.TutorialVpAdapter;
 import com.victoria.foodconnect.databinding.ActivityTutorialBinding;
 import com.victoria.foodconnect.databinding.EmailVerificationDialogBinding;
+import com.victoria.foodconnect.domain.Domain;
 import com.victoria.foodconnect.globals.userDb.UserViewModel;
 import com.victoria.foodconnect.models.Models;
 import com.victoria.foodconnect.pages.admin.AdminActivity;
@@ -150,7 +151,7 @@ public class WelcomeActivity extends AppCompatActivity {
         activity.finish();
     }
 
-    public static void showEmailVerificationDialog(Activity activity) {
+    public static void showEmailVerificationDialog(Activity activity, Domain.AppUser user) {
         Dialog d = new Dialog(activity);
         EmailVerificationDialogBinding binding = EmailVerificationDialogBinding.inflate(activity.getLayoutInflater());
         d.setContentView(binding.getRoot());
@@ -160,12 +161,16 @@ public class WelcomeActivity extends AppCompatActivity {
 
         Toolbar toolbar = binding.verificationTb;
 
+        getVerificationStatus(activity,user.getUid()).observe((LifecycleOwner) activity, verified -> {
+            if (verified) proceed(activity);
+        });
+
         Button email = binding.email;
         email.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                emailVerification(activity);
+                emailVerification(activity,user.getEmail_address());
             }
         });
 
@@ -296,7 +301,7 @@ public class WelcomeActivity extends AppCompatActivity {
     }
 
     private static LiveData<Boolean> getVerificationStatus (Activity activity, String uid) {
-        return checkVerification(activity,uid)
+        return checkVerification(activity,uid);
     }
 
 }
