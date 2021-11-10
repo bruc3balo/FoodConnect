@@ -6,6 +6,7 @@ import static com.victoria.foodconnect.login.LoginActivity.setWindowColors;
 import static com.victoria.foodconnect.pages.seller.SellerActivity.addFragmentToContainer;
 import static com.victoria.foodconnect.pages.seller.SellerActivity.closeDrawer;
 import static com.victoria.foodconnect.pages.seller.SellerActivity.isDrawerOpen;
+import static com.victoria.foodconnect.pages.seller.SellerActivity.setNavDetails;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -26,6 +27,7 @@ import com.victoria.foodconnect.R;
 import com.victoria.foodconnect.databinding.ActivityAdminBinding;
 import com.victoria.foodconnect.domain.Domain;
 import com.victoria.foodconnect.pages.admin.fragments.ProductsFragment;
+import com.victoria.foodconnect.pages.admin.fragments.UsersFragment;
 import com.victoria.foodconnect.pages.beneficiary.BeneficiaryActivity;
 import com.victoria.foodconnect.pages.seller.fragments.MyOrdersSeller;
 import com.victoria.foodconnect.pages.seller.fragments.MyProductsSeller;
@@ -81,8 +83,8 @@ public class AdminActivity extends AppCompatActivity {
 
         //addFragmentToContainer(getSupportFragmentManager(), binding.adminFragment, new ProductsFragment());
 
-        NavigationView sellerDrawer = binding.adminNavigation;
-        sellerDrawer.setNavigationItemSelectedListener(item -> {
+        NavigationView adminDrawer = binding.adminNavigation;
+        adminDrawer.setNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 default:
                 case R.id.products:
@@ -90,12 +92,21 @@ public class AdminActivity extends AppCompatActivity {
                     closeDrawer(drawerLayout);
                     break;
 
-              /*  case R.id.myOrders:
-                    addFragmentToContainer(getSupportFragmentManager(), binding.adminFragment, new MyOrdersSeller());
+                case R.id.users:
+                    addFragmentToContainer(getSupportFragmentManager(), binding.adminFragment, new UsersFragment());
                     closeDrawer(drawerLayout);
-                    break;*/
+                    break;
             }
             return false;
+        });
+
+        View header = adminDrawer.getHeaderView(0);
+        userRepository.getUserLive().observe(this, appUser -> {
+            if (appUser.isPresent()) {
+                toolbar.setTitle(appUser.get().getUsername());
+                toolbar.setSubtitle(appUser.get().getRole());
+                setNavDetails(appUser.get(), header, AdminActivity.this);
+            }
         });
 
         setWindowColors(this);

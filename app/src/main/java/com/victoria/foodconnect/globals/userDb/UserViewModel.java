@@ -63,17 +63,22 @@ public class UserViewModel extends AndroidViewModel {
         super(application);
     }
 
-    private MutableLiveData<Optional<Response<JsonResponse>>> getAllUserData() {
-        MutableLiveData<Optional<Response<JsonResponse>>> userMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<Optional<JsonResponse>> getAllUserData() {
+        MutableLiveData<Optional<JsonResponse>> userMutableLiveData = new MutableLiveData<>();
 
-        String header = getAccessToken(application);
 
-        System.out.println("===== header ==== " + header);
-
-        userApi.getAllUsers(header, APPLICATION_JSON).enqueue(new Callback<JsonResponse>() {
+        userApi.getAllUsers(getAccessToken(application), APPLICATION_JSON).enqueue(new Callback<JsonResponse>() {
             @Override
             public void onResponse(@NonNull Call<JsonResponse> call, @NonNull Response<JsonResponse> response) {
-                userMutableLiveData.setValue(Optional.of(response));
+
+                JsonResponse jsonResponse = response.body();
+
+                if (jsonResponse == null || jsonResponse.getData() == null || jsonResponse.isHas_error() || !jsonResponse.isSuccess()) {
+                    userMutableLiveData.setValue(Optional.empty());
+                    return;
+                }
+
+                userMutableLiveData.setValue(Optional.of(jsonResponse));
             }
 
             @Override
@@ -136,7 +141,7 @@ public class UserViewModel extends AndroidViewModel {
 
                 try {
                     List emails = getObjectMapper().readValue(new JSONArray(jsonResponse.getData().toString()).toString(), List.class);
-                    emails.forEach(e->emailList.add(e.toString()));
+                    emails.forEach(e -> emailList.add(e.toString()));
                     emailMutable.setValue(Optional.of(emailList));
                 } catch (JsonProcessingException | JSONException e) {
                     e.printStackTrace();
@@ -186,7 +191,7 @@ public class UserViewModel extends AndroidViewModel {
 
                 try {
                     List numbers = getObjectMapper().readValue(new JSONArray(jsonResponse.getData().toString()).toString(), List.class);
-                    numbers.forEach(e->mobileList.add(e.toString()));
+                    numbers.forEach(e -> mobileList.add(e.toString()));
                     numbersMutable.setValue(Optional.of(mobileList));
                 } catch (JsonProcessingException | JSONException e) {
                     e.printStackTrace();
@@ -236,7 +241,7 @@ public class UserViewModel extends AndroidViewModel {
 
                 try {
                     List numbers = getObjectMapper().readValue(new JSONArray(jsonResponse.getData().toString()).toString(), List.class);
-                    numbers.forEach(e->usernameList.add(e.toString()));
+                    numbers.forEach(e -> usernameList.add(e.toString()));
                     usernameMutable.setValue(Optional.of(usernameList));
                 } catch (JsonProcessingException | JSONException e) {
                     e.printStackTrace();
@@ -277,10 +282,10 @@ public class UserViewModel extends AndroidViewModel {
     }
 
 
-    private MutableLiveData<Optional<Response<JsonResponse>>> updateUserMutable(String uid,Models.UserUpdateForm form) {
+    private MutableLiveData<Optional<Response<JsonResponse>>> updateUserMutable(String uid, Models.UserUpdateForm form) {
         MutableLiveData<Optional<Response<JsonResponse>>> mutableLiveData = new MutableLiveData<>();
 
-        userApi.updateUser(uid,getAccessToken(application),form, APPLICATION_JSON).enqueue(new Callback<JsonResponse>() {
+        userApi.updateUser(uid, getAccessToken(application), form, APPLICATION_JSON).enqueue(new Callback<JsonResponse>() {
             @Override
             public void onResponse(@NonNull Call<JsonResponse> call, @NonNull Response<JsonResponse> response) {
                 mutableLiveData.setValue(Optional.of(response));
@@ -376,12 +381,12 @@ public class UserViewModel extends AndroidViewModel {
         return result;
     }
 
-    private MutableLiveData<Boolean> refreshToken () {
+    private MutableLiveData<Boolean> refreshToken() {
         MutableLiveData<Boolean> tokenRefreshed = new MutableLiveData<>();
 
         String token = Objects.requireNonNull(getSp(USER_COLLECTION, application).get(ACCESS_TOKEN)).toString();
 
-        userApi.refreshAccessToken(token,APPLICATION_JSON).enqueue(new Callback<LoginResponse>() {
+        userApi.refreshAccessToken(token, APPLICATION_JSON).enqueue(new Callback<LoginResponse>() {
             @Override
             public void onResponse(@NonNull Call<LoginResponse> call, @NonNull Response<LoginResponse> response) {
 
@@ -393,10 +398,10 @@ public class UserViewModel extends AndroidViewModel {
                     return;
                 }
 
-                Map<String,String> map = new HashMap<>();
-                map.put(ACCESS_TOKEN,loginResponse.getAccess_token());
+                Map<String, String> map = new HashMap<>();
+                map.put(ACCESS_TOKEN, loginResponse.getAccess_token());
 
-                editSp(USER_COLLECTION,map,application);
+                editSp(USER_COLLECTION, map, application);
 
                 tokenRefreshed.setValue(true);
             }
@@ -409,13 +414,13 @@ public class UserViewModel extends AndroidViewModel {
         return tokenRefreshed;
     }
 
-    public static MutableLiveData<Boolean> refreshStaticToken () {
+    public static MutableLiveData<Boolean> refreshStaticToken() {
         MutableLiveData<Boolean> tokenRefreshed = new MutableLiveData<>();
 
         String token = Objects.requireNonNull(getSp(USER_COLLECTION, application).get(ACCESS_TOKEN)).toString();
 
         try {
-            userApi.refreshAccessToken(token,APPLICATION_JSON).enqueue(new Callback<LoginResponse>() {
+            userApi.refreshAccessToken(token, APPLICATION_JSON).enqueue(new Callback<LoginResponse>() {
                 @Override
                 public void onResponse(@NonNull Call<LoginResponse> call, @NonNull Response<LoginResponse> response) {
 
@@ -427,10 +432,10 @@ public class UserViewModel extends AndroidViewModel {
                         return;
                     }
 
-                    Map<String,String> map = new HashMap<>();
-                    map.put(ACCESS_TOKEN,loginResponse.getAccess_token());
+                    Map<String, String> map = new HashMap<>();
+                    map.put(ACCESS_TOKEN, loginResponse.getAccess_token());
 
-                    editSp(USER_COLLECTION,map,application);
+                    editSp(USER_COLLECTION, map, application);
 
                     tokenRefreshed.setValue(true);
                 }
@@ -447,6 +452,30 @@ public class UserViewModel extends AndroidViewModel {
         return tokenRefreshed;
     }
 
+    private MutableLiveData<Optional<JsonResponse>> getAllRoles() {
+        MutableLiveData<Optional<JsonResponse>> mutableLiveData = new MutableLiveData<>();
+        userApi.getRoles(getAccessToken(application), APPLICATION_JSON).enqueue(new Callback<JsonResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<JsonResponse> call, @NonNull Response<JsonResponse> response) {
+
+                JsonResponse jsonResponse = response.body();
+
+                if (jsonResponse == null || !jsonResponse.isSuccess() || jsonResponse.isHas_error() || jsonResponse.getData() == null) {
+                    mutableLiveData.setValue(Optional.empty());
+                    return;
+                }
+
+                mutableLiveData.setValue(Optional.of(jsonResponse));
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<JsonResponse> call, @NonNull Throwable t) {
+                mutableLiveData.setValue(Optional.empty());
+            }
+        });
+        return mutableLiveData;
+    }
+
     //expose
     public LiveData<Optional<List<String>>> getEmailList() {
         return getAllEmailList();
@@ -460,7 +489,7 @@ public class UserViewModel extends AndroidViewModel {
         return getAllUsernameList();
     }
 
-    public LiveData<Optional<Response<JsonResponse>>> getLiveAllUsers() {
+    public LiveData<Optional<JsonResponse>> getLiveAllUsers() {
         return getAllUserData();
     }
 
@@ -472,8 +501,8 @@ public class UserViewModel extends AndroidViewModel {
         return createNewUserMutable(form);
     }
 
-    public LiveData<Optional<Response<JsonResponse>>> updateAUser(String uid,Models.UserUpdateForm form) {
-        return updateUserMutable(uid,form);
+    public LiveData<Optional<Response<JsonResponse>>> updateAUser(String uid, Models.UserUpdateForm form) {
+        return updateUserMutable(uid, form);
     }
 
     public LiveData<Optional<Response<LoginResponse>>> getToken(Models.UsernameAndPasswordAuthenticationRequest request) {
@@ -484,8 +513,12 @@ public class UserViewModel extends AndroidViewModel {
         return checkVerification(uid);
     }
 
-    public LiveData<Boolean> refreshAccessToken () {
+    public LiveData<Boolean> refreshAccessToken() {
         return refreshToken();
+    }
+
+    public LiveData<Optional<JsonResponse>> getRoles() {
+        return getAllRoles();
     }
 
 }

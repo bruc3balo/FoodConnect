@@ -57,7 +57,11 @@ public interface UserApi {
 
 
     //roles
-    @POST(baseAdmin + "saveRole")
+
+    @GET(baseUser +"/roles")
+    Call<JsonResponse> getRoles (@Header(AUTHORIZATION) String token, @Header(CONTENT_TYPE_ME) String contentType);
+
+    @POST(baseAdmin + "/saveRole")
     Call<JsonResponse> saveRole(@Body RoleCreationForm form, @Header(AUTHORIZATION) String token, @Header(CONTENT_TYPE_ME) String contentType);
 
     @PUT(baseAdmin + "/role2user")
