@@ -1,23 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.victoria.foodconnect">
-
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
          location permissions for the "MyLocation" functionality.
     -->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission
+        android:name="android.permission.ACCESS_FINE_LOCATION"
+        tools:ignore="CoarseFineLocation" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
-        android:allowBackup="true"
+        android:name=".utils.NotificationChannelClass"
+        android:allowBackup="false"
         android:icon="@drawable/ic_give_food"
         android:label="@string/app_name"
         android:roundIcon="@drawable/ic_give_food"
         android:supportsRtl="true"
         android:theme="@style/Theme.FoodConnect">
-
+        <activity
+            android:name=".pages.donor.DonorProfile"
+            android:exported="true" />
+        <activity
+            android:name=".pages.admin.ProductCategoryManagement"
+            android:exported="true" />
+        <activity
+            android:name=".login.VerifyAccount"
+            android:exported="true" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -38,7 +54,6 @@
         <activity android:name=".pages.donor.DonorActivity" />
         <activity android:name=".pages.seller.SellerActivity" />
         <activity android:name=".pages.transporter.TransporterActivity" />
-        <activity android:name=".pages.welcome.WelcomeActivity" />
         <activity android:name=".login.LoginActivity" />
         <activity
             android:name=".SplashScreen"
@@ -49,6 +64,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service android:name=".service.UploadPictureService" />
     </application>
 
 </manifest>

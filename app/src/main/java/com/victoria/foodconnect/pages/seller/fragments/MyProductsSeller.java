@@ -1,21 +1,46 @@
 package com.victoria.foodconnect.pages.seller.fragments;
 
+import static com.victoria.foodconnect.utils.DataOpts.getObjectMapper;
+
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.victoria.foodconnect.R;
+import com.victoria.foodconnect.adapter.ProductRvAdapter;
 import com.victoria.foodconnect.databinding.FragmentMyProductsSellerBinding;
+import com.victoria.foodconnect.globals.productDb.ProductViewModel;
+import com.victoria.foodconnect.models.Models;
+
+import java.util.LinkedList;
+
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
 
 
 public class MyProductsSeller extends Fragment {
 
-    FragmentMyProductsSellerBinding binding;
+    private FragmentMyProductsSellerBinding binding;
+    private ArrayAdapter<String> adapter;
+    private final LinkedList<String> categoryList = new LinkedList<>();
+    private ProductRvAdapter productRvAdapter;
+    private ProductViewModel productViewModel;
+    private final LinkedList<Models.Product> productList = new LinkedList<>();
+    private final LinkedList<Models.Product> allProductList = new LinkedList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -28,10 +53,119 @@ public class MyProductsSeller extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentMyProductsSellerBinding.inflate(inflater);
-        final View v = binding.getRoot();
+        productViewModel = new ViewModelProvider(this).get(ProductViewModel.class);
 
 
+        AppCompatSpinner productCategorySpinner = binding.productCategorySpinner;
+        adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, categoryList);
+        productCategorySpinner.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+        productCategorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(requireActivity(), categoryList.get(position), Toast.LENGTH_SHORT).show();
+                filterProducts(binding.productCategorySpinner.getSelectedItem().toString());
+            }
 
-        return v;
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        RecyclerView productsRv = binding.productsRv;
+        productsRv.setLayoutManager(new LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false));
+        productRvAdapter = new ProductRvAdapter(requireContext(), productList);
+        productsRv.setAdapter(productRvAdapter);
+
+        getProductCategories();
+
+        return binding.getRoot();
+    }
+
+
+    private void getProductCategories() {
+
+        System.out.println("GET PRODUCT CATEGORY DATA");
+
+
+        productViewModel.getAllProductCategoriesLive().observe(requireActivity(), jsonResponse -> {
+            if (!jsonResponse.isPresent()) {
+                Toast.makeText(requireContext(), "No product categories", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            categoryList.clear();
+            try {
+                JsonArray serviceArray = new JsonArray(getObjectMapper().writeValueAsString(jsonResponse.get().getData()));
+
+                for (int i = 0; i < serviceArray.size(); i++) {
+
+                    try {
+                        System.out.println("count " + i);
+                        Models.ProductCategory productCategory = getObjectMapper().readValue(new JsonObject(serviceArray.getJsonObject(i).getMap()).toString(), Models.ProductCategory.class);
+                        categoryList.add(productCategory.getName());
+                        adapter.notifyDataSetChanged();
+
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+
+                getProducts();
+
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    private void getProducts() {
+
+        System.out.println("GET PRODUCT DATA");
+
+        productViewModel.getAllProductsLive().observe(requireActivity(), jsonResponse -> {
+            if (!jsonResponse.isPresent()) {
+                Toast.makeText(requireContext(), "No products", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            productList.clear();
+            try {
+                JsonArray serviceArray = new JsonArray(getObjectMapper().writeValueAsString(jsonResponse.get().getData()));
+
+                for (int i = 0; i < serviceArray.size(); i++) {
+
+                    try {
+                        System.out.println("count " + i);
+                        Models.Product product = getObjectMapper().readValue(new JsonObject(serviceArray.getJsonObject(i).getMap()).toString(), Models.Product.class);
+                        allProductList.add(product);
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+
+                filterProducts(binding.productCategorySpinner.getSelectedItem().toString());
+
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private void filterProducts(String productCategory) {
+        productList.clear();
+        productRvAdapter.notifyDataSetChanged();
+        allProductList.forEach(p -> {
+            if (p.getProduct_category().getName().equals(productCategory)) {
+                productList.add(p);
+                if (!productList.isEmpty()) {
+                    productRvAdapter.notifyItemInserted(productList.size() - 1);
+                }
+            }
+        });
     }
 }

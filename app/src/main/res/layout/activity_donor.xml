@@ -21,11 +21,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
-        <ImageView
+        <TextView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@mipmap/food_connect_logo"
-            android:scaleType="fitXY"/>
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textColor="@android:color/holo_red_dark"
+            android:textSize="15sp"
+            android:text="@string/hy"
+            android:textStyle="bold"
+            android:id="@+id/donorStatus"/>
 
     </LinearLayout>
 

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".pages.donor.DonorProfile">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:background="@color/black"
+            app:navigationIcon="@drawable/ic_back"
+            app:subtitleTextColor="@android:color/darker_gray"
+            app:titleTextColor="@color/white" />
+
+
+        <RelativeLayout
+            android:layout_width="220dp"
+            android:layout_height="200dp"
+            android:layout_gravity="center"
+            android:layout_margin="30dp"
+            android:gravity="center">
+
+            <com.makeramen.roundedimageview.RoundedImageView
+                android:id="@+id/donorDp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_gravity="center"
+                app:riv_border_color="@color/semiGrey"
+                app:riv_border_width="5dp"
+                app:riv_corner_radius="10dp"
+                app:riv_mutate_background="true"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_person" />
+
+
+
+        </RelativeLayout>
+
+        <ImageButton
+            android:id="@+id/changeDp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:background="@drawable/ic_circle"
+            android:backgroundTint="@color/semiGrey"
+            android:src="@drawable/ic_image"
+            app:tint="@color/black" />
+
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

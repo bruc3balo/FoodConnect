@@ -33,38 +33,15 @@
 
 
 
-            <Button
-                android:id="@+id/productCategoryButton"
-                android:layout_width="wrap_content"
-                android:padding="10dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="5dp"
-                android:layout_marginStart="30dp"
-                android:layout_marginEnd="30dp"
-                android:layout_marginTop="20dp"
-                android:textStyle="bold"
-                android:textColor="@color/white"
-                android:text="@string/click_to_pick_product_category"
-                android:background="@drawable/login_bg_button"
-                android:gravity="center"
-                android:minHeight="48dp"
-                tools:ignore="SpeakableTextPresentCheck" />
-
-            <TextView
-                android:id="@+id/categoryChosen"
+            <androidx.appcompat.widget.AppCompatSpinner
+                android:id="@+id/productCategorySpinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginBottom="5dp"
+                android:layout_margin="5dp"
                 android:gravity="center"
-                android:padding="10dp"
-                android:text="@string/hy"
-                android:textColor="@color/black"
-                android:textStyle="bold" />
+                android:minHeight="48dp"
+                tools:ignore="SpeakableTextPresentCheck" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -74,6 +51,7 @@
                 android:background="@color/black">
 
                 <ImageButton
+                    android:id="@+id/getImage"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_alignParentTop="true"
@@ -85,6 +63,7 @@
                     app:tint="@color/white" />
 
                 <ImageButton
+                    android:id="@+id/removeImage"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_alignParentStart="true"
@@ -95,8 +74,8 @@
                     android:src="@android:drawable/ic_menu_close_clear_cancel"
                     app:tint="@android:color/holo_red_light" />
 
-                <androidx.viewpager2.widget.ViewPager2
-                    android:id="@+id/productImagesViewPager"
+                <ImageView
+                    android:id="@+id/productImagesView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_alignParentStart="true"
@@ -192,6 +171,7 @@
             </RadioGroup>
 
             <Button
+                android:id="@+id/addProductButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"

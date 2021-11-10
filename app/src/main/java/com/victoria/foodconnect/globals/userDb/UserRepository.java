@@ -30,12 +30,14 @@ public class UserRepository {
     private void insertUser(Domain.AppUser appUser) {
         new Thread(() -> {
             try {
-                /*clearAppUser();
-                Thread.sleep(1500);*/
+                clearAppUser();
+                Thread.sleep(1500);
+
+            } catch (Exception e) {
+                System.out.println(appUser.getUsername() + " failed insert");
+            } finally {
                 userDao.insert(appUser);
                 System.out.println(appUser.getUsername() + " inserted");
-            } catch (Exception e) {
-                System.out.println(appUser.getUsername() + " failed instead");
             }
         }).start();
     }

@@ -17,6 +17,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.Observer;
 
@@ -32,7 +33,7 @@ import com.victoria.foodconnect.pages.seller.fragments.MyProductsSeller;
 
 public class AdminActivity extends AppCompatActivity {
 
-    ActivityAdminBinding binding;
+    private ActivityAdminBinding binding;
     private boolean backPressed = false;
 
     @SuppressLint("NonConstantResourceId")
@@ -42,9 +43,12 @@ public class AdminActivity extends AppCompatActivity {
         binding = ActivityAdminBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        DrawerLayout drawerLayout = binding.getRoot();
 
         Toolbar toolbar = binding.toolbar;
         setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_hamburger);
+        toolbar.setNavigationOnClickListener(view -> drawerLayout.openDrawer(GravityCompat.START));
 
         userRepository.getUserLive().observe(this, appUser -> {
             if (appUser.isPresent()) {
@@ -53,7 +57,6 @@ public class AdminActivity extends AppCompatActivity {
             }
         });
 
-        DrawerLayout drawerLayout = binding.getRoot();
         drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
             public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
@@ -75,6 +78,8 @@ public class AdminActivity extends AppCompatActivity {
 
             }
         });
+
+        //addFragmentToContainer(getSupportFragmentManager(), binding.adminFragment, new ProductsFragment());
 
         NavigationView sellerDrawer = binding.adminNavigation;
         sellerDrawer.setNavigationItemSelectedListener(item -> {
@@ -98,12 +103,9 @@ public class AdminActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        menu.add("Logout").setIcon(R.drawable.logout).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                logout(AdminActivity.this);
-                return false;
-            }
+        menu.add("Logout").setIcon(R.drawable.logout).setOnMenuItemClickListener(menuItem -> {
+            logout(AdminActivity.this);
+            return false;
         }).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         return super.onCreateOptionsMenu(menu);
     }
@@ -112,6 +114,8 @@ public class AdminActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         backPressed = false;
+        addFragmentToContainer(getSupportFragmentManager(), binding.adminFragment, new MyProductsSeller());
+
     }
 
     @Override

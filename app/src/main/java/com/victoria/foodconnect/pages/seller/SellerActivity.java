@@ -3,15 +3,23 @@ package com.victoria.foodconnect.pages.seller;
 import static com.victoria.foodconnect.SplashScreen.logout;
 import static com.victoria.foodconnect.globals.GlobalRepository.userRepository;
 import static com.victoria.foodconnect.login.LoginActivity.setWindowColors;
+import static com.victoria.foodconnect.utils.DataOpts.doIHavePermission;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -25,29 +33,24 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.victoria.foodconnect.R;
 import com.victoria.foodconnect.databinding.ActivitySellerBinding;
+import com.victoria.foodconnect.login.VerifyAccount;
 import com.victoria.foodconnect.pages.seller.fragments.MyOrdersSeller;
 import com.victoria.foodconnect.pages.seller.fragments.MyProductsSeller;
+import com.victoria.foodconnect.utils.DataOpts;
 
 public class SellerActivity extends AppCompatActivity {
 
     ActivitySellerBinding binding;
     private boolean backPressed = false;
 
+
+
+    @SuppressLint("NonConstantResourceId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivitySellerBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
-        Toolbar toolbar = binding.toolbar;
-        setSupportActionBar(toolbar);
-
-        userRepository.getUserLive().observe(this, appUser -> {
-            if (appUser.isPresent()) {
-                toolbar.setTitle(appUser.get().getUsername());
-                toolbar.setSubtitle(appUser.get().getRole());
-            }
-        });
 
         DrawerLayout drawerLayout = binding.getRoot();
         drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
@@ -72,7 +75,22 @@ public class SellerActivity extends AppCompatActivity {
             }
         });
 
+        Toolbar toolbar = binding.toolbar;
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_hamburger);
+        toolbar.setNavigationOnClickListener(view -> drawerLayout.openDrawer(GravityCompat.START));
+
+        userRepository.getUserLive().observe(this, appUser -> {
+            if (appUser.isPresent()) {
+                toolbar.setTitle(appUser.get().getUsername());
+                toolbar.setSubtitle(appUser.get().getRole());
+            }
+        });
+
         NavigationView sellerDrawer = binding.sellerNavigation;
+
+        //addFragmentToContainer(getSupportFragmentManager(), binding.sellerDrawerFragment, new MyProductsSeller());
+
         sellerDrawer.setNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 default:
@@ -97,12 +115,9 @@ public class SellerActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        menu.add("Logout").setIcon(R.drawable.logout).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                logout(SellerActivity.this);
-                return false;
-            }
+        menu.add("Logout").setIcon(R.drawable.logout).setOnMenuItemClickListener(menuItem -> {
+            logout(SellerActivity.this);
+            return false;
         }).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         return super.onCreateOptionsMenu(menu);
     }
@@ -111,6 +126,8 @@ public class SellerActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         backPressed = false;
+        addFragmentToContainer(getSupportFragmentManager(), binding.sellerDrawerFragment, new MyProductsSeller());
+
     }
 
     @Override
@@ -143,4 +160,5 @@ public class SellerActivity extends AppCompatActivity {
     public static boolean isDrawerOpen(DrawerLayout drawerLayout) {
         return drawerLayout.isDrawerOpen(GravityCompat.START);
     }
+
 }

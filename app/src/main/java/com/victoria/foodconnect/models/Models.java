@@ -10,11 +10,12 @@ import static com.victoria.foodconnect.globals.GlobalVariables.PRODUCT_PRICE;
 import static com.victoria.foodconnect.globals.GlobalVariables.UNIT;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.victoria.foodconnect.domain.Domain;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.math.BigDecimal;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 
@@ -204,7 +205,7 @@ public class Models {
         }
     }
 
-    public static class UserUpdateForm {
+    public static class UserUpdateForm implements Serializable{
 
         private String names;
         private String role;
@@ -212,12 +213,16 @@ public class Models {
         private String id_number;
         private String bio;
         private Boolean tutorial;
+        private String profile_picture;
 
 
         public UserUpdateForm() {
 
         }
 
+        public UserUpdateForm(String profile_picture) {
+            this.profile_picture = profile_picture;
+        }
 
         public UserUpdateForm(String id_number, String bio, Boolean tutorial) {
             this.id_number = id_number;
@@ -239,6 +244,14 @@ public class Models {
             this.id_number = id_number;
             this.bio = bio;
             this.tutorial = tutorial;
+        }
+
+        public String getProfile_picture() {
+            return profile_picture;
+        }
+
+        public void setProfile_picture(String profile_picture) {
+            this.profile_picture = profile_picture;
         }
 
         public UserUpdateForm(Boolean tutorial) {
@@ -297,7 +310,6 @@ public class Models {
 
     public static class LoginResponse implements Serializable {
         private String access_token;
-        private String refresh_token;
         private String auth_type;
 
         public LoginResponse() {
@@ -311,13 +323,7 @@ public class Models {
             this.access_token = access_token;
         }
 
-        public String getRefresh_token() {
-            return refresh_token;
-        }
 
-        public void setRefresh_token(String refresh_token) {
-            this.refresh_token = refresh_token;
-        }
 
         public String getAuth_type() {
             return auth_type;
@@ -346,17 +352,15 @@ public class Models {
         private Boolean deleted;
         private Boolean tutorial;
         private Boolean verified;
+        private String profile_picture;
+
 
         public AppUser() {
 
         }
 
-        public AppUser(String names, String username, String id_number, String email_address, String phone_number, String created_at, String updated_at, Boolean disabled, Boolean deleted, AppRole role, Boolean tutorial) {
 
-        }
-
-
-        public AppUser(String uid, String names, String username, String id_number, String email_address, String phone_number, String password, String bio, String last_known_location, String created_at, String updated_at, AppRole role, Boolean disabled, Boolean deleted, Boolean tutorial, Boolean verified) {
+        public AppUser(String uid, String names, String username, String id_number, String email_address, String phone_number, String password, String bio, String last_known_location, String created_at, String updated_at, AppRole role, Boolean disabled, Boolean deleted, Boolean tutorial, Boolean verified, String profile_picture) {
             this.uid = uid;
             this.names = names;
             this.username = username;
@@ -373,6 +377,7 @@ public class Models {
             this.deleted = deleted;
             this.tutorial = tutorial;
             this.verified = verified;
+            this.profile_picture = profile_picture;
         }
 
         public String getUid() {
@@ -381,6 +386,14 @@ public class Models {
 
         public void setUid(String uid) {
             this.uid = uid;
+        }
+
+        public String getProfile_picture() {
+            return profile_picture;
+        }
+
+        public void setProfile_picture(String profile_picture) {
+            this.profile_picture = profile_picture;
         }
 
         public void setCreated_at(String created_at) {
@@ -619,7 +632,7 @@ public class Models {
         }
     }
 
-    public static class ProductCreationFrom {
+    public static class ProductCreationFrom implements Serializable{
 
         @JsonProperty(PRODUCT_NAME)
         private String product_name;
@@ -637,8 +650,9 @@ public class Models {
         private String unit;
 
         @JsonProperty(PRODUCT_DESCRIPTION)
-        private String productDescription;
+        private String product_description;
 
+        private String username;
 
         public ProductCreationFrom() {
 
@@ -649,6 +663,14 @@ public class Models {
             this.product_price = product_price;
             this.product_category_name = product_category_name;
             this.image = image;
+        }
+
+        public String getUsername() {
+            return username;
+        }
+
+        public void setUsername(String username) {
+            this.username = username;
         }
 
         public String getProduct_name() {
@@ -690,6 +712,179 @@ public class Models {
         public void setUnit(String unit) {
             this.unit = unit;
         }
+
+        public String getProduct_description() {
+            return product_description;
+        }
+
+        public void setProduct_description(String product_description) {
+            this.product_description = product_description;
+        }
+    }
+
+    public static class Product {
+
+        private String id;
+
+        private String name;
+
+        private ProductCategory product_category;
+
+        private BigDecimal price;
+
+        private String image;
+
+        private final List<String> sellersId = new LinkedList<>();
+
+        private final List<String> buyersId = new LinkedList<>();
+
+        private String created_at;
+
+        private String updated_at;
+
+        private Boolean deleted;
+
+        private Boolean disabled;
+
+        private String unit;
+
+        private String product_description;
+
+        public Product() {
+
+        }
+
+        public Product(String id, String name) {
+            this.id = id;
+            this.name = name;
+        }
+
+        public Product(String name, BigDecimal price, String image, String created_at, String updated_at, Boolean deleted, Boolean disabled) {
+            this.name = name;
+            this.price = price;
+            this.image = image;
+            this.created_at = created_at;
+            this.updated_at = updated_at;
+            this.deleted = deleted;
+            this.disabled = disabled;
+        }
+
+        public Product(String id, String name, ProductCategory product_category, BigDecimal price, String image, String created_at, String updated_at, Boolean deleted, Boolean disabled, String unit, String product_description) {
+            this.id = id;
+            this.name = name;
+            this.product_category = product_category;
+            this.price = price;
+            this.image = image;
+            this.created_at = created_at;
+            this.updated_at = updated_at;
+            this.deleted = deleted;
+            this.disabled = disabled;
+            this.unit = unit;
+            this.product_description = product_description;
+        }
+
+        public Product(String id, String name, Boolean deleted, Boolean disabled) {
+            this.id = id;
+            this.name = name;
+            this.deleted = deleted;
+            this.disabled = disabled;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public Models.ProductCategory getProduct_category() {
+            return product_category;
+        }
+
+        public void setProduct_category(Models.ProductCategory product_category) {
+            this.product_category = product_category;
+        }
+
+        public BigDecimal getPrice() {
+            return price;
+        }
+
+        public void setPrice(BigDecimal price) {
+            this.price = price;
+        }
+
+        public String getImage() {
+            return image;
+        }
+
+        public void setImage(String image) {
+            this.image = image;
+        }
+
+        public List<String> getSellersId() {
+            return sellersId;
+        }
+
+        public List<String> getBuyersId() {
+            return buyersId;
+        }
+
+        public String getCreated_at() {
+            return created_at;
+        }
+
+        public void setCreated_at(String created_at) {
+            this.created_at = created_at;
+        }
+
+        public String getUpdated_at() {
+            return updated_at;
+        }
+
+        public void setUpdated_at(String updated_at) {
+            this.updated_at = updated_at;
+        }
+
+        public Boolean getDeleted() {
+            return deleted;
+        }
+
+        public void setDeleted(Boolean deleted) {
+            this.deleted = deleted;
+        }
+
+        public Boolean getDisabled() {
+            return disabled;
+        }
+
+        public void setDisabled(Boolean disabled) {
+            this.disabled = disabled;
+        }
+
+        public String getUnit() {
+            return unit;
+        }
+
+        public void setUnit(String unit) {
+            this.unit = unit;
+        }
+
+        public String getProduct_description() {
+            return product_description;
+        }
+
+        public void setProduct_description(String product_description) {
+            this.product_description = product_description;
+        }
     }
 
     public static class ProductCategory {
@@ -702,9 +897,9 @@ public class Models {
 
         private Boolean disabled;
 
-        private Date createdAt;
+        private String created_at;
 
-        private Date updatedAt;
+        private String updated_at;
 
         public ProductCategory() {
 
@@ -715,13 +910,12 @@ public class Models {
         }
 
 
-
-        public ProductCategory(String name, Boolean deleted, Boolean disabled, Date createdAt, Date updatedAt) {
+        public ProductCategory(String name, Boolean deleted, Boolean disabled, String created_at, String updated_at) {
             this.name = name;
             this.deleted = deleted;
             this.disabled = disabled;
-            this.createdAt = createdAt;
-            this.updatedAt = updatedAt;
+            this.created_at = created_at;
+            this.updated_at = updated_at;
         }
 
         public ProductCategory(String id, String name, Boolean deleted, Boolean disabled) {
@@ -732,7 +926,7 @@ public class Models {
         }
 
         public ProductCategory(String id, String name) {
-            this.id =id;
+            this.id = id;
             this.name = name;
         }
 
@@ -768,20 +962,175 @@ public class Models {
             this.disabled = disabled;
         }
 
-        public Date getCreatedAt() {
-            return createdAt;
+        public String getCreated_at() {
+            return created_at;
         }
 
-        public void setCreatedAt(Date createdAt) {
-            this.createdAt = createdAt;
+        public void setCreated_at(String created_at) {
+            this.created_at = created_at;
         }
 
-        public Date getUpdatedAt() {
-            return updatedAt;
+        public String getUpdated_at() {
+            return updated_at;
         }
 
-        public void setUpdatedAt(Date updatedAt) {
-            this.updatedAt = updatedAt;
+        public void setUpdated_at(String updated_at) {
+            this.updated_at = updated_at;
+        }
+    }
+
+    public static class ProductCategoryUpdateForm {
+
+        private String name;
+
+        private Boolean deleted;
+
+        private Boolean disabled;
+
+        public ProductCategoryUpdateForm(String name, Boolean deleted, Boolean disabled) {
+            this.name = name;
+            this.deleted = deleted;
+            this.disabled = disabled;
+        }
+
+        public ProductCategoryUpdateForm(Boolean deleted, Boolean disabled) {
+            this.deleted = deleted;
+            this.disabled = disabled;
+        }
+
+        public ProductCategoryUpdateForm() {
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public Boolean getDeleted() {
+            return deleted;
+        }
+
+        public void setDeleted(Boolean deleted) {
+            this.deleted = deleted;
+        }
+
+        public Boolean getDisabled() {
+            return disabled;
+        }
+
+        public void setDisabled(Boolean disabled) {
+            this.disabled = disabled;
+        }
+    }
+
+    public static class ProductUpdateForm {
+
+        private String id;
+
+        private String product_name;
+
+        private String product_price;
+
+        private String product_category_name;
+
+        private String image;
+
+        private String unit;
+
+        private String product_description;
+
+        private Boolean disabled;
+
+        private Boolean deleted;
+
+        public ProductUpdateForm() {
+        }
+
+        public ProductUpdateForm(String id, String product_name, String product_price, String product_category_name, String image, String unit, String product_description, Boolean disabled, Boolean deleted) {
+            this.id = id;
+            this.product_name = product_name;
+            this.product_price = product_price;
+            this.product_category_name = product_category_name;
+            this.image = image;
+            this.unit = unit;
+            this.product_description = product_description;
+            this.disabled = disabled;
+            this.deleted = deleted;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getProduct_name() {
+            return product_name;
+        }
+
+        public void setProduct_name(String product_name) {
+            this.product_name = product_name;
+        }
+
+        public String getProduct_price() {
+            return product_price;
+        }
+
+        public void setProduct_price(String product_price) {
+            this.product_price = product_price;
+        }
+
+        public String getProduct_category_name() {
+            return product_category_name;
+        }
+
+        public void setProduct_category_name(String product_category_name) {
+            this.product_category_name = product_category_name;
+        }
+
+        public String getImage() {
+            return image;
+        }
+
+        public void setImage(String image) {
+            this.image = image;
+        }
+
+        public String getUnit() {
+            return unit;
+        }
+
+        public void setUnit(String unit) {
+            this.unit = unit;
+        }
+
+        public String getProduct_description() {
+            return product_description;
+        }
+
+        public void setProduct_description(String product_description) {
+            this.product_description = product_description;
+        }
+
+        public Boolean getDisabled() {
+            return disabled;
+        }
+
+        public void setDisabled(Boolean disabled) {
+            this.disabled = disabled;
+        }
+
+        public Boolean getDeleted() {
+            return deleted;
+        }
+
+        public void setDeleted(Boolean deleted) {
+            this.deleted = deleted;
         }
     }
 

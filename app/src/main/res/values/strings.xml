@@ -45,5 +45,19 @@
     <string name="mobile_number">Mobile Number</string>
     <string name="logout">Logout</string>
     <string name="code">Code</string>
+    <string name="to_be_filled" />
+    <string name="dismiss">Dismiss</string>
+    <string name="resend_verification">Resend Email</string>
+    <string name="verify_to_continue">Verify your Account to continue</string>
+    <string name="check_status">Check Verification Status</string>
+    <string name="getting_your_data">Getting your data</string>
+
+    <string name="media_channel_description">This is to notify you about relevant media in app</string>
+    <string name="user_channel_description">This is to notify you about relevant activity related to you</string>
+    <string name="synch_notification_description">To show you when synchronization is occurring</string>
+    <string name="description">Description</string>
+    <string name="title">Title</string>
+    <string name="circle">Circle</string>
+
 
 </resources>

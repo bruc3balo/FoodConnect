@@ -28,47 +28,56 @@ public interface UserApi {
 
     //login
     @POST(API_URL + CONTEXT_URL + "login")
-    Call<LoginResponse> getToken(@Body UsernameAndPasswordAuthenticationRequest request);
+    Call<LoginResponse> getToken(@Body UsernameAndPasswordAuthenticationRequest request, @Header(CONTENT_TYPE_ME) String contentType);
+
+    @POST(baseUser + "/refresh")
+    Call<LoginResponse> refreshAccessToken(@Query(ACCESS_TOKEN) String token, @Header(CONTENT_TYPE_ME) String contentType);
 
     //users
     @GET(baseUser + "/all")
-    Call<JsonResponse> getAllUsers(@Header(AUTHORIZATION) String token);
+    Call<JsonResponse> getAllUsers(@Header(AUTHORIZATION) String token, @Header(CONTENT_TYPE_ME) String contentType);
 
     @GET(baseUser + "/specific")
-    Call<JsonResponse> getUser(@QueryMap HashMap<String,String> parameters, @Header(AUTHORIZATION) String token);
+    Call<JsonResponse> getUser(@QueryMap HashMap<String,String> parameters, @Header(AUTHORIZATION) String token, @Header(CONTENT_TYPE_ME) String contentType);
 
     @GET(baseUser + "/numbers")
-    Call<JsonResponse> getAllPhoneNumbers();
+    Call<JsonResponse> getAllPhoneNumbers(@Header(CONTENT_TYPE_ME) String contentType);
 
     @GET(baseUser + "/usernames")
-    Call<JsonResponse> getAllUsernames();
+    Call<JsonResponse> getAllUsernames(@Header(CONTENT_TYPE_ME) String contentType);
+
+    @GET(baseUser + "/emails")
+    Call<JsonResponse> getAllEmails(@Header(CONTENT_TYPE_ME) String contentType);
 
     @POST(baseAdmin + "/authNewUser")
-    Call<JsonResponse> authenticateUser(@Body NewUserForm newUserForm);
+    Call<JsonResponse> authenticateUser(@Body NewUserForm newUserForm, @Header(CONTENT_TYPE_ME) String contentType);
 
     @PUT(baseUser + "/update")
-    Call<JsonResponse> updateUser(@Query(UID) String uid, @Header(AUTHORIZATION) String token, @Body UserUpdateForm updateForm);
+    Call<JsonResponse> updateUser(@Query(UID) String uid, @Header(AUTHORIZATION) String token, @Body UserUpdateForm updateForm, @Header(CONTENT_TYPE_ME) String contentType);
 
 
     //roles
     @POST(baseAdmin + "saveRole")
-    Call<JsonResponse> saveRole(@Body RoleCreationForm form, @Header(AUTHORIZATION) String token);
+    Call<JsonResponse> saveRole(@Body RoleCreationForm form, @Header(AUTHORIZATION) String token, @Header(CONTENT_TYPE_ME) String contentType);
 
     @PUT(baseAdmin + "/role2user")
-    Call<JsonResponse> addRoleToUser(@Body RoleToUserForm form,@Header(AUTHORIZATION) String token);
+    Call<JsonResponse> addRoleToUser(@Body RoleToUserForm form,@Header(AUTHORIZATION) String token, @Header(CONTENT_TYPE_ME) String contentType);
 
     @DELETE(baseAdmin + "/deleteUser")
-    Call<JsonResponse> deleteUser(@Query(UID) String uid, @Header(AUTHORIZATION) String token);
+    Call<JsonResponse> deleteUser(@Query(UID) String uid, @Header(AUTHORIZATION) String token, @Header(CONTENT_TYPE_ME) String contentType);
 
     @PUT(baseAdmin + "/disableUser")
-    Call<JsonResponse> disableUser(@Query(UID) String uid, @Header(AUTHORIZATION) String token);
+    Call<JsonResponse> disableUser(@Query(UID) String uid, @Header(AUTHORIZATION) String token, @Header(CONTENT_TYPE_ME) String contentType);
 
     @PUT(baseAdmin + "/enableUser")
-    Call<JsonResponse> enableUser(@Query(UID) String uid, @Header(AUTHORIZATION) String token);
+    Call<JsonResponse> enableUser(@Query(UID) String uid, @Header(AUTHORIZATION) String token, @Header(CONTENT_TYPE_ME) String contentType);
 
     @POST(baseAdmin + "/changePassword")
-    Call<JsonResponse> changePassword(@Query(value = EMAIL_ADDRESS) String email, @Header(AUTHORIZATION) String token);
+    Call<JsonResponse> changePassword(@Query(value = EMAIL_ADDRESS) String email, @Header(AUTHORIZATION) String token, @Header(CONTENT_TYPE_ME) String contentType);
 
     @POST(baseAdmin + "/verify")
-    Call<JsonResponse> verifyEmail(@Query(value = EMAIL_ADDRESS) String email, @Header(AUTHORIZATION) String token);
+    Call<JsonResponse> verifyEmail(@Query(value = EMAIL_ADDRESS) String email, @Header(AUTHORIZATION) String token, @Header(CONTENT_TYPE_ME) String contentType);
+
+    @GET(baseAdmin + "/verifyStatus")
+    Call<JsonResponse> verifyEmailStatus(@Query(value = EMAIL_ADDRESS) String email, @Header(AUTHORIZATION) String token, @Header(CONTENT_TYPE_ME) String contentType);
 }

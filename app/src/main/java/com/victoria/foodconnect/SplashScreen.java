@@ -2,9 +2,7 @@ package com.victoria.foodconnect;
 
 import static com.victoria.foodconnect.globals.GlobalRepository.userRepository;
 import static com.victoria.foodconnect.globals.GlobalVariables.UID;
-import static com.victoria.foodconnect.login.LoginActivity.loginPb;
 import static com.victoria.foodconnect.login.LoginActivity.setWindowColors;
-import static com.victoria.foodconnect.pages.welcome.WelcomeActivity.goToNextPage;
 import static com.victoria.foodconnect.utils.DataOpts.getDomainUserFromModelUser;
 import static com.victoria.foodconnect.utils.DataOpts.getObjectMapper;
 import static com.victoria.foodconnect.utils.DataOpts.proceed;
@@ -19,7 +17,6 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -27,20 +24,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.victoria.foodconnect.databinding.ActivitySplashScreenBinding;
-import com.victoria.foodconnect.domain.Domain;
 import com.victoria.foodconnect.globals.GlobalRepository;
 import com.victoria.foodconnect.globals.userDb.UserViewModel;
 import com.victoria.foodconnect.login.LoginActivity;
 import com.victoria.foodconnect.models.Models;
 import com.victoria.foodconnect.utils.JsonResponse;
 
-import org.mindrot.jbcrypt.BCrypt;
-
 import java.util.HashMap;
-import java.util.Optional;
 
 import io.vertx.core.json.JsonObject;
-import retrofit2.Response;
 
 
 @SuppressLint("CustomSplashScreen")
@@ -67,12 +59,8 @@ public class SplashScreen extends AppCompatActivity {
     }
 
 
-    private void goToLoginScreen() {
-        startActivity(new Intent(SplashScreen.this, LoginActivity.class));
-        finish();
-    }
-
     public static void logout(Activity activity) {
+        System.out.println("Logging out user");
         FirebaseAuth.getInstance().signOut();
         userRepository.deleteAppUserDb();
         activity.startActivity(new Intent(activity, LoginActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
@@ -105,15 +93,15 @@ public class SplashScreen extends AppCompatActivity {
         if (user == null) {
             Toast.makeText(this, "Sign in to continue", Toast.LENGTH_SHORT).show();
             FirebaseAuth.getInstance().removeAuthStateListener(authStateListener);
-            goToLoginScreen();
+            logout(SplashScreen.this);
             return;
         }
 
         userRepository.getUserLive().observe(this, appUser -> {
             if (!appUser.isPresent()) { //if user no data -> get user data
 
-                HashMap<String,String> params = new HashMap<>();
-                params.put(UID,user.getUid());
+                HashMap<String, String> params = new HashMap<>();
+                params.put(UID, user.getUid());
 
                 new ViewModelProvider(SplashScreen.this).get(UserViewModel.class).getLiveUser(params).observe(SplashScreen.this, jsonResponseResponse -> {
                     if (!jsonResponseResponse.isPresent()) {
@@ -123,17 +111,7 @@ public class SplashScreen extends AppCompatActivity {
 
                     JsonResponse response = jsonResponseResponse.get().body();
 
-                    if (response == null) {
-                        logout(SplashScreen.this);
-                        return;
-                    }
-
-                    if (response.isHas_error()) {
-                        logout(SplashScreen.this);
-                        return;
-                    }
-
-                    if (response.getData() == null) {
+                    if (response == null || response.isHas_error() || response.getData() == null) {
                         logout(SplashScreen.this);
                         return;
                     }
@@ -165,7 +143,9 @@ public class SplashScreen extends AppCompatActivity {
                 });
                 return;
             }
-              proceed(SplashScreen.this);
+
+            proceed(SplashScreen.this);
+
         });
 
     }

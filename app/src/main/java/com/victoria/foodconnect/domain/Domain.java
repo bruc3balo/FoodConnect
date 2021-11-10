@@ -8,13 +8,14 @@ import androidx.room.PrimaryKey;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class Domain {
 
     @Entity(tableName = USER_COLLECTION)
-    public static class AppUser {
+    public static class AppUser implements Serializable {
 
         @PrimaryKey
         @NotNull
@@ -34,13 +35,14 @@ public class Domain {
         private boolean verified;
         private String last_known_location;
         private String password;
+        private String profile_picture;
 
 
         public AppUser() {
 
         }
 
-        public AppUser(@NotNull String uid, String id_number, String phone_number, String bio, String email_address, String names, String username, String role, String createdAt, String updatedAt, boolean deleted, boolean disabled, boolean tutorial, boolean verified,String last_known_location, String password) {
+        public AppUser(@NotNull String uid, String id_number, String phone_number, String bio, String email_address, String names, String username, String role, String createdAt, String updatedAt, boolean deleted, boolean disabled, boolean tutorial, boolean verified,String last_known_location, String password,String profile_picture) {
             this.uid = uid;
             this.id_number = id_number;
             this.phone_number = phone_number;
@@ -57,6 +59,7 @@ public class Domain {
             this.tutorial = tutorial;
             this.last_known_location = last_known_location;
             this.password = password;
+            this.profile_picture = profile_picture;
         }
 
 
@@ -67,6 +70,14 @@ public class Domain {
 
         public void setUid(@NonNull String uid) {
             this.uid = uid;
+        }
+
+        public String getProfile_picture() {
+            return profile_picture;
+        }
+
+        public void setProfile_picture(String profile_picture) {
+            this.profile_picture = profile_picture;
         }
 
         public String getId_number() {

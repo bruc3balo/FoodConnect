@@ -16,7 +16,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 import com.victoria.foodconnect.domain.Domain;
 
 
-@Database(entities = {Domain.AppUser.class}, version = 1, exportSchema = false)
+@Database(entities = {Domain.AppUser.class}, version = 2, exportSchema = false)
 public abstract class UserDB extends RoomDatabase {
 
     private static UserDB instance;
