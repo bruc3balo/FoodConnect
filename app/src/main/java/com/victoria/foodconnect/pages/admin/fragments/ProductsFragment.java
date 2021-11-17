@@ -1,6 +1,7 @@
 package com.victoria.foodconnect.pages.admin.fragments;
 
 import static com.victoria.foodconnect.globals.GlobalRepository.userRepository;
+import static com.victoria.foodconnect.pages.admin.AdminActivity.lastFragment;
 import static com.victoria.foodconnect.utils.DataOpts.getObjectMapper;
 
 import android.annotation.SuppressLint;
@@ -35,6 +36,7 @@ import java.util.Optional;
 
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
+
 
 
 public class ProductsFragment extends Fragment {
@@ -90,23 +92,26 @@ public class ProductsFragment extends Fragment {
         productRvAdapter = new ProductRvAdapter(requireContext(), productList);
         productsRv.setAdapter(productRvAdapter);
 
-        userRepository.getUserLive().observe(requireActivity(), new Observer<Optional<Domain.AppUser>>() {
-            @Override
-            public void onChanged(Optional<Domain.AppUser> appUser) {
-                if (!appUser.isPresent()) {
-                    Toast.makeText(requireContext(), "Failed to get usre info", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                getProductCategories(appUser.get().getUsername());
+        userRepository.getUserLive().observe(requireActivity(), appUser -> {
+            if (!appUser.isPresent()) {
+                Toast.makeText(requireContext(), "Failed to get user info", Toast.LENGTH_SHORT).show();
+                return;
             }
+
+            getProductCategories();
         });
 
 
         return binding.getRoot();
     }
 
-    private void getProductCategories(String username) {
+    @Override
+    public void onResume() {
+        super.onResume();
+        lastFragment = 0;
+    }
+
+    private void getProductCategories() {
 
         System.out.println("GET PRODUCT CATEGORY DATA");
 
@@ -135,7 +140,7 @@ public class ProductsFragment extends Fragment {
 
                 }
 
-                getProducts(username);
+                getProducts();
 
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
@@ -143,12 +148,12 @@ public class ProductsFragment extends Fragment {
         });
     }
 
-    private void getProducts(String username) {
+    private void getProducts() {
 
         System.out.println("GET MY PRODUCT DATA");
 
 
-        productViewModel.getAllSellerProductsLive(username).observe(requireActivity(), jsonResponse -> {
+        productViewModel.getAllProductsLive().observe(requireActivity(), jsonResponse -> {
             if (!jsonResponse.isPresent()) {
                 Toast.makeText(requireContext(), "No products", Toast.LENGTH_SHORT).show();
                 return;

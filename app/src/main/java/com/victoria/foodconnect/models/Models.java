@@ -214,10 +214,18 @@ public class Models {
         private String bio;
         private Boolean tutorial;
         private String profile_picture;
+        private Boolean verified;
+        private Boolean deleted;
+        private Boolean disabled;
 
 
         public UserUpdateForm() {
 
+        }
+
+        public UserUpdateForm(Boolean deleted, Boolean disabled) {
+            this.deleted = deleted;
+            this.disabled = disabled;
         }
 
         public UserUpdateForm(String profile_picture) {
@@ -244,6 +252,30 @@ public class Models {
             this.id_number = id_number;
             this.bio = bio;
             this.tutorial = tutorial;
+        }
+
+        public Boolean getDeleted() {
+            return deleted;
+        }
+
+        public void setDeleted(Boolean deleted) {
+            this.deleted = deleted;
+        }
+
+        public Boolean getDisabled() {
+            return disabled;
+        }
+
+        public void setDisabled(Boolean disabled) {
+            this.disabled = disabled;
+        }
+
+        public Boolean getVerified() {
+            return verified;
+        }
+
+        public void setVerified(Boolean verified) {
+            this.verified = verified;
         }
 
         public String getProfile_picture() {

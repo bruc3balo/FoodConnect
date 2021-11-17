@@ -30,6 +30,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.victoria.foodconnect.R;
 import com.victoria.foodconnect.globals.productDb.ProductViewModel;
 import com.victoria.foodconnect.models.Models;
+import com.victoria.foodconnect.pages.admin.ProductCategoryManagement;
 import com.victoria.foodconnect.utils.JsonResponse;
 
 import org.jetbrains.annotations.NotNull;
@@ -46,15 +47,15 @@ public class ProductCategoryRvAdapter extends RecyclerView.Adapter<ProductCatego
 
     private ItemClickListener mClickListener;
 
-    private final Activity activity;
+    private final ProductCategoryManagement activity;
     private final LinkedList<Models.ProductCategory> productCategoryArrayList;
     private final ProductViewModel productViewModel;
 
 
-    public ProductCategoryRvAdapter(Activity context, LinkedList<Models.ProductCategory> productCategoryArrayList) {
+    public ProductCategoryRvAdapter(ProductCategoryManagement context, LinkedList<Models.ProductCategory> productCategoryArrayList) {
         this.activity = context;
         this.productCategoryArrayList = productCategoryArrayList;
-        productViewModel = new ViewModelProvider((ViewModelStoreOwner) activity).get(ProductViewModel.class);
+        productViewModel = new ViewModelProvider(activity).get(ProductViewModel.class);
     }
 
     @NotNull
@@ -87,8 +88,8 @@ public class ProductCategoryRvAdapter extends RecyclerView.Adapter<ProductCatego
 
     }
 
-    private void toggleDeleted(String categoryName, Boolean currentState, ImageButton button) {
-        productViewModel.updateProductCategoryLive(categoryName, new Models.ProductCategoryUpdateForm(!currentState, null)).observe((LifecycleOwner) activity, jsonResponse -> {
+    private void toggleDeleted(String categoryName, Boolean currentState, ImageButton button)   {
+        productViewModel.updateProductCategoryLive(categoryName, new Models.ProductCategoryUpdateForm(!currentState, null)).observe(activity, jsonResponse -> {
             if (!jsonResponse.isPresent()) {
                 Toast.makeText(activity, "Failed update " + categoryName, Toast.LENGTH_SHORT).show();
                 return;
@@ -105,7 +106,7 @@ public class ProductCategoryRvAdapter extends RecyclerView.Adapter<ProductCatego
                     setStatus(category.getDeleted(), button);
                     Toast.makeText(activity, category.getDeleted() ? categoryName + "Deleted" : categoryName + " Restored", Toast.LENGTH_SHORT).show();
                     notifyDataSetChanged();
-
+                    refreshList();
                 } catch (JsonProcessingException e) {
                     e.printStackTrace();
                 }
@@ -113,8 +114,12 @@ public class ProductCategoryRvAdapter extends RecyclerView.Adapter<ProductCatego
         });
     }
 
+    private void refreshList() {
+        activity.getProductCategories();
+    }
+
     private void toggleDisabled(String categoryName, Boolean currentState, ImageButton button) {
-        productViewModel.updateProductCategoryLive(categoryName, new Models.ProductCategoryUpdateForm(null, !currentState)).observe((LifecycleOwner) activity, jsonResponse -> {
+        productViewModel.updateProductCategoryLive(categoryName, new Models.ProductCategoryUpdateForm(null, !currentState)).observe(activity, jsonResponse -> {
             if (!jsonResponse.isPresent()) {
                 Toast.makeText(activity, "Failed update " + categoryName, Toast.LENGTH_SHORT).show();
                 return;
@@ -130,13 +135,16 @@ public class ProductCategoryRvAdapter extends RecyclerView.Adapter<ProductCatego
 
                     setStatus(category.getDeleted(), button);
                     notifyDataSetChanged();
-                    Toast.makeText(activity, category.getDeleted() ? categoryName + " Disabled" : categoryName + " Enabled", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(activity, category.getDisabled() ? categoryName + " Disabled" : categoryName + " Enabled", Toast.LENGTH_SHORT).show();
+                    refreshList();
                 } catch (JsonProcessingException e) {
                     e.printStackTrace();
                 }
             }
         });
     }
+
+
 
     private void showConfirmationDialog(String infoS, Function<Boolean, Void> yesFunction, Boolean currentState) {
         Dialog d = new Dialog(activity);
@@ -196,6 +204,5 @@ public class ProductCategoryRvAdapter extends RecyclerView.Adapter<ProductCatego
     public interface ItemClickListener {
         void onItemClick(View view, int position);
     }
-
 
 }

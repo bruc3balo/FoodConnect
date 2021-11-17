@@ -1,6 +1,7 @@
 package com.victoria.foodconnect.pages.admin.fragments;
 
 import static com.victoria.foodconnect.globals.GlobalRepository.userRepository;
+import static com.victoria.foodconnect.pages.admin.AdminActivity.lastFragment;
 import static com.victoria.foodconnect.utils.DataOpts.getObjectMapper;
 
 import android.annotation.SuppressLint;
@@ -59,8 +60,7 @@ public class UsersFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
         binding = FragmentUsersBinding.inflate(inflater);
@@ -84,7 +84,7 @@ public class UsersFragment extends Fragment {
         });
 
 
-        userRvAdapter = new UserRvAdapter(requireContext(), userList);
+        userRvAdapter = new UserRvAdapter(this, userList);
 
         RecyclerView usersRv = binding.usersRv;
         usersRv.setLayoutManager(new LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false));
@@ -100,8 +100,13 @@ public class UsersFragment extends Fragment {
             getRoles();
         });
 
-
         return binding.getRoot();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        lastFragment = 1;
     }
 
     private void getRoles() {
@@ -142,7 +147,7 @@ public class UsersFragment extends Fragment {
         });
     }
 
-    private void getUsers() {
+    public void getUsers() {
 
         System.out.println("GET MY PRODUCT DATA");
 
@@ -191,5 +196,8 @@ public class UsersFragment extends Fragment {
         });
     }
 
+    private void refreshWithDonors () {
+
+    }
 
 }

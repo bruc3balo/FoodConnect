@@ -34,8 +34,17 @@
 
                 <com.makeramen.roundedimageview.RoundedImageView
                     android:layout_width="150dp"
+                    android:maxHeight="150dp"
+                    android:minHeight="150dp"
+                    android:maxWidth="150dp"
+                    android:minWidth="150dp"
+                    android:layout_margin="5dp"
                     android:layout_height="150dp"
                     app:riv_corner_radius="30dp"
+                    app:riv_mutate_background="true"
+                    app:riv_border_width="2dp"
+                    app:riv_border_color="@color/semiGrey"
+                    android:scaleType="centerCrop"
                     android:id="@+id/profilePicItem"
                     android:layout_gravity="center"
                     android:src="@drawable/ic_person_black"/>

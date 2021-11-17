@@ -2,6 +2,7 @@ package com.victoria.foodconnect.pages.seller;
 
 import static com.victoria.foodconnect.globals.GlobalVariables.MEDIA_TYPE;
 import static com.victoria.foodconnect.globals.GlobalVariables.PRODUCT_COLLECTION;
+import static com.victoria.foodconnect.login.LoginActivity.setWindowColors;
 import static com.victoria.foodconnect.utils.DataOpts.doIHavePermission;
 import static com.victoria.foodconnect.utils.DataOpts.getObjectMapper;
 
@@ -146,6 +147,8 @@ public class AddNewProduct extends AppCompatActivity {
             file = null;
             newProduct.setImage(null);
         });
+
+        setWindowColors(this);
 
         populateProductCategories();
 

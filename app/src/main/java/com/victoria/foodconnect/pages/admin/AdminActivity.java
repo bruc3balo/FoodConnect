@@ -20,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 
 import com.google.android.material.navigation.NavigationView;
@@ -37,6 +38,7 @@ public class AdminActivity extends AppCompatActivity {
 
     private ActivityAdminBinding binding;
     private boolean backPressed = false;
+    public static int lastFragment = 0;
 
     @SuppressLint("NonConstantResourceId")
     @Override
@@ -125,8 +127,18 @@ public class AdminActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         backPressed = false;
-        addFragmentToContainer(getSupportFragmentManager(), binding.adminFragment, new MyProductsSeller());
+        addFragmentToContainer(getSupportFragmentManager(), binding.adminFragment, getLastUsedFragment());
 
+    }
+
+    private Fragment getLastUsedFragment() {
+        switch (lastFragment) {
+            default: case 0:
+                return new ProductsFragment();
+
+            case 1:
+                return new UsersFragment();
+        }
     }
 
     @Override

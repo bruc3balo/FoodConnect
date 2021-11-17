@@ -179,7 +179,7 @@ public class CreateFragment extends Fragment {
             if (checkedId == roleDialogBinding.beneficiaryRadio.getId()) {
                 role = AppRolesEnum.valueOf("ROLE_BUYER").name();
             } else if (checkedId == roleDialogBinding.certifiedAuthorityRadio.getId()) {
-                role = AppRolesEnum.valueOf("ROLE_CERTIFIED_AUTHORITY").name();
+                role = AppRolesEnum.valueOf("ROLE_DONOR").name();
             } else if (checkedId == roleDialogBinding.sellerRadio.getId()) {
                 role = AppRolesEnum.valueOf("ROLE_SELLER").name();
             } else if (checkedId == roleDialogBinding.transporterRadio.getId()) {

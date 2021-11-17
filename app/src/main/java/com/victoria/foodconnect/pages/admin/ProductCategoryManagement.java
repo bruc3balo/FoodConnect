@@ -52,11 +52,8 @@ public class ProductCategoryManagement extends AppCompatActivity {
         setWindowColors(this);
     }
 
-    private void getProductCategories() {
-
+    public void getProductCategories() {
         System.out.println("GET PRODUCT CATEGORY DATA");
-
-
         new ViewModelProvider(this).get(ProductViewModel.class).getAllProductCategoriesLive().observe(this, jsonResponse -> {
             if (!jsonResponse.isPresent()) {
                 Toast.makeText(this, "No product categories", Toast.LENGTH_SHORT).show();

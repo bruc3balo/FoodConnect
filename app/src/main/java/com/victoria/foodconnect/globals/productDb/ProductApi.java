@@ -29,7 +29,7 @@ public interface ProductApi {
     @GET(baseProduct + "/all")
     Call<JsonResponse> getAllProducts(@Header(AUTHORIZATION) String token, @Header(CONTENT_TYPE_ME) String contentType);
 
-    @GET(baseProductCategory + "/allSeller")
+    @GET(baseProduct + "/allSeller")
     Call<JsonResponse> getMySellingProducts(@Header(AUTHORIZATION) String token, @Query(USERNAME) String username,@Header(CONTENT_TYPE_ME) String contentType);
 
     @GET(baseProductCategory + "/all")

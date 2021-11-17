@@ -1,5 +1,6 @@
 package com.victoria.foodconnect.pages.seller.fragments;
 
+import static com.victoria.foodconnect.globals.GlobalRepository.userRepository;
 import static com.victoria.foodconnect.utils.DataOpts.getObjectMapper;
 
 import android.annotation.SuppressLint;
@@ -8,6 +9,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,10 +25,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.victoria.foodconnect.R;
 import com.victoria.foodconnect.adapter.ProductRvAdapter;
 import com.victoria.foodconnect.databinding.FragmentMyProductsSellerBinding;
+import com.victoria.foodconnect.domain.Domain;
 import com.victoria.foodconnect.globals.productDb.ProductViewModel;
 import com.victoria.foodconnect.models.Models;
 
 import java.util.LinkedList;
+import java.util.Optional;
 
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
@@ -41,6 +45,8 @@ public class MyProductsSeller extends Fragment {
     private ProductViewModel productViewModel;
     private final LinkedList<Models.Product> productList = new LinkedList<>();
     private final LinkedList<Models.Product> allProductList = new LinkedList<>();
+
+    private Domain.AppUser user;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -78,11 +84,22 @@ public class MyProductsSeller extends Fragment {
         productRvAdapter = new ProductRvAdapter(requireContext(), productList);
         productsRv.setAdapter(productRvAdapter);
 
-        getProductCategories();
+        userRepository.getUserLive().observe(getViewLifecycleOwner(), appUser -> {
+            if (appUser.isPresent()) {
+                user = appUser.get();
+                getProductCategories();
+            } else {
+                Toast.makeText(requireContext(), "Failed to get user", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         return binding.getRoot();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
 
     private void getProductCategories() {
 
@@ -125,13 +142,14 @@ public class MyProductsSeller extends Fragment {
 
         System.out.println("GET PRODUCT DATA");
 
-        productViewModel.getAllProductsLive().observe(requireActivity(), jsonResponse -> {
+        productViewModel.getAllSellerProductsLive(user.getUsername()).observe(requireActivity(), jsonResponse -> {
             if (!jsonResponse.isPresent()) {
                 Toast.makeText(requireContext(), "No products", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             productList.clear();
+
             try {
                 JsonArray serviceArray = new JsonArray(getObjectMapper().writeValueAsString(jsonResponse.get().getData()));
 

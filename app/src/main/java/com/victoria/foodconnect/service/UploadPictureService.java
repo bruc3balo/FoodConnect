@@ -76,22 +76,22 @@ public class UploadPictureService extends LifecycleService implements ViewModelS
 
             user = appUser.get();
 
+            if (intent.getExtras().getString(MEDIA_TYPE).equals(PRODUCT_COLLECTION)) {
+                productCreationFrom = (Models.ProductCreationFrom) intent.getExtras().getSerializable(PRODUCT_COLLECTION);
+                productCreationFrom.setUsername(user.getUsername());
+                System.out.println("data is " + intent.getExtras().getString(MEDIA_TYPE));
+                uploadProductImage(productCreationFrom.getImage());
+                Toast.makeText(getApplication(), "Your product will be uploaded soon", Toast.LENGTH_SHORT).show();
+            } else if (intent.getExtras().getString(MEDIA_TYPE).equals(PROFILE_PICTURE)) {
+                Toast.makeText(getApplication(), "Your picture will be uploaded soon", Toast.LENGTH_SHORT).show();
+                userUpdateForm = (Models.UserUpdateForm) intent.getExtras().getSerializable(PROFILE_PICTURE);
+                uploadProfileImage(userUpdateForm.getProfile_picture());
+            }
         });
 
 
         System.out.println("Image upload started");
 
-        if (intent.getExtras().getString(MEDIA_TYPE).equals(PRODUCT_COLLECTION)) {
-            productCreationFrom = (Models.ProductCreationFrom) intent.getExtras().getSerializable(PRODUCT_COLLECTION);
-            productCreationFrom.setUsername(user.getUsername());
-            System.out.println("data is " + intent.getExtras().getString(MEDIA_TYPE));
-            uploadProductImage(productCreationFrom.getImage());
-            Toast.makeText(getApplication(), "Your product will be uploaded soon", Toast.LENGTH_SHORT).show();
-        } else if (intent.getExtras().getString(MEDIA_TYPE).equals(PROFILE_PICTURE)) {
-            Toast.makeText(getApplication(), "Your picture will be uploaded soon", Toast.LENGTH_SHORT).show();
-            userUpdateForm = (Models.UserUpdateForm) intent.getExtras().getSerializable(PROFILE_PICTURE);
-            uploadProfileImage(userUpdateForm.getProfile_picture());
-        }
 
         return START_NOT_STICKY;
     }
