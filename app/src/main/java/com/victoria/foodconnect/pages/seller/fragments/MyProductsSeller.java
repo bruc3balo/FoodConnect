@@ -1,9 +1,12 @@
 package com.victoria.foodconnect.pages.seller.fragments;
 
 import static com.victoria.foodconnect.globals.GlobalRepository.userRepository;
+import static com.victoria.foodconnect.globals.GlobalVariables.ID;
+import static com.victoria.foodconnect.globals.GlobalVariables.PRODUCT_COLLECTION;
 import static com.victoria.foodconnect.utils.DataOpts.getObjectMapper;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -28,6 +31,7 @@ import com.victoria.foodconnect.databinding.FragmentMyProductsSellerBinding;
 import com.victoria.foodconnect.domain.Domain;
 import com.victoria.foodconnect.globals.productDb.ProductViewModel;
 import com.victoria.foodconnect.models.Models;
+import com.victoria.foodconnect.pages.seller.ManageProduct;
 
 import java.util.LinkedList;
 import java.util.Optional;
@@ -51,12 +55,11 @@ public class MyProductsSeller extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
         binding = FragmentMyProductsSellerBinding.inflate(inflater);
         productViewModel = new ViewModelProvider(this).get(ProductViewModel.class);
@@ -83,6 +86,7 @@ public class MyProductsSeller extends Fragment {
         productsRv.setLayoutManager(new LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false));
         productRvAdapter = new ProductRvAdapter(requireContext(), productList);
         productsRv.setAdapter(productRvAdapter);
+        productRvAdapter.setClickListener((view, position) -> startActivity(new Intent(requireContext(), ManageProduct.class).putExtra(PRODUCT_COLLECTION,productList.get(position))));
 
         userRepository.getUserLive().observe(getViewLifecycleOwner(), appUser -> {
             if (appUser.isPresent()) {

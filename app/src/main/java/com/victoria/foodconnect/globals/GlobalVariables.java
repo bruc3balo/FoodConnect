@@ -8,6 +8,7 @@ public class GlobalVariables {
     public static final String USER_COLLECTION = "users";
     public static final String PRODUCT_CATEGORY_COLLECTION = "product_category";
     public static final String PRODUCT_COLLECTION = "product";
+    public static final String PRODUCT_COLLECTION_UPDATE = "product_update";
     public static final String PERMISSIONS = "permissions";
     public static final String MEDIA_TYPE = "media_type";
 

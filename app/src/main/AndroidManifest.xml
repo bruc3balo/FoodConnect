@@ -26,6 +26,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FoodConnect">
         <activity
+            android:name=".pages.seller.ManageProduct"
+            android:exported="true" />
+        <activity
             android:name=".pages.donor.DonorProfile"
             android:exported="true" />
         <activity

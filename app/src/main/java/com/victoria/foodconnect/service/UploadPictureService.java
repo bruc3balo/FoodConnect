@@ -5,6 +5,7 @@ import static com.victoria.foodconnect.globals.GlobalRepository.application;
 import static com.victoria.foodconnect.globals.GlobalRepository.userRepository;
 import static com.victoria.foodconnect.globals.GlobalVariables.MEDIA_TYPE;
 import static com.victoria.foodconnect.globals.GlobalVariables.PRODUCT_COLLECTION;
+import static com.victoria.foodconnect.globals.GlobalVariables.PRODUCT_COLLECTION_UPDATE;
 import static com.victoria.foodconnect.globals.GlobalVariables.PRODUCT_IMAGE;
 import static com.victoria.foodconnect.globals.GlobalVariables.PROFILE_PICTURE;
 import static com.victoria.foodconnect.utils.DataOpts.getDomainUserFromModelUser;
@@ -48,6 +49,7 @@ public class UploadPictureService extends LifecycleService implements ViewModelS
 
     private static boolean imageUploaded;
     private Models.ProductCreationFrom productCreationFrom;
+    private Models.ProductUpdateForm productUpdateForm;
     private Models.UserUpdateForm userUpdateForm;
     private Domain.AppUser user;
 
@@ -76,16 +78,34 @@ public class UploadPictureService extends LifecycleService implements ViewModelS
 
             user = appUser.get();
 
-            if (intent.getExtras().getString(MEDIA_TYPE).equals(PRODUCT_COLLECTION)) {
-                productCreationFrom = (Models.ProductCreationFrom) intent.getExtras().getSerializable(PRODUCT_COLLECTION);
-                productCreationFrom.setUsername(user.getUsername());
-                System.out.println("data is " + intent.getExtras().getString(MEDIA_TYPE));
-                uploadProductImage(productCreationFrom.getImage());
-                Toast.makeText(getApplication(), "Your product will be uploaded soon", Toast.LENGTH_SHORT).show();
-            } else if (intent.getExtras().getString(MEDIA_TYPE).equals(PROFILE_PICTURE)) {
-                Toast.makeText(getApplication(), "Your picture will be uploaded soon", Toast.LENGTH_SHORT).show();
-                userUpdateForm = (Models.UserUpdateForm) intent.getExtras().getSerializable(PROFILE_PICTURE);
-                uploadProfileImage(userUpdateForm.getProfile_picture());
+            switch (intent.getExtras().getString(MEDIA_TYPE)) {
+                case PRODUCT_COLLECTION:
+                    productCreationFrom = (Models.ProductCreationFrom) intent.getExtras().getSerializable(PRODUCT_COLLECTION);
+                    productCreationFrom.setUsername(user.getUsername());
+                    System.out.println("data is " + intent.getExtras().getString(MEDIA_TYPE));
+                    uploadProductImage(productCreationFrom.getImage());
+                    Toast.makeText(getApplication(), "Your product will be uploaded soon", Toast.LENGTH_SHORT).show();
+                    break;
+                case PRODUCT_COLLECTION_UPDATE:
+                    productUpdateForm = (Models.ProductUpdateForm) intent.getExtras().getSerializable(PRODUCT_COLLECTION_UPDATE);
+                    System.out.println("data is " + intent.getExtras().getString(MEDIA_TYPE));
+                    productUpdateForm.setSellersId(user.getUsername());
+
+
+                    if (productUpdateForm.getImage() == null) {
+                        updateProductDetails();
+                    } else {
+
+                        uploadProductImageUpdate(productUpdateForm.getImage());
+                    }
+
+                    Toast.makeText(getApplication(), "Your product will be updated soon", Toast.LENGTH_SHORT).show();
+                    break;
+                case PROFILE_PICTURE:
+                    Toast.makeText(getApplication(), "Your picture will be uploaded soon", Toast.LENGTH_SHORT).show();
+                    userUpdateForm = (Models.UserUpdateForm) intent.getExtras().getSerializable(PROFILE_PICTURE);
+                    uploadProfileImage(userUpdateForm.getProfile_picture());
+                    break;
             }
         });
 
@@ -105,7 +125,7 @@ public class UploadPictureService extends LifecycleService implements ViewModelS
 
     private void uploadProductImage(String data) {
         StorageReference profileBucket = FirebaseStorage.getInstance().getReference().child(PRODUCT_IMAGE).child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
-        profileBucket.putFile(Uri.parse(data)).addOnProgressListener(snapshot -> showSyncNotification(getPercentageProgress(snapshot.getBytesTransferred(), snapshot.getTotalByteCount()),productCreationFrom.getProduct_name(),productCreationFrom.getProduct_description())).addOnSuccessListener(taskSnapshot -> profileBucket.getDownloadUrl().addOnSuccessListener(uri -> {
+        profileBucket.putFile(Uri.parse(data)).addOnProgressListener(snapshot -> showSyncNotification(getPercentageProgress(snapshot.getBytesTransferred(), snapshot.getTotalByteCount()), productCreationFrom.getProduct_name(), productCreationFrom.getProduct_description())).addOnSuccessListener(taskSnapshot -> profileBucket.getDownloadUrl().addOnSuccessListener(uri -> {
             productCreationFrom.setImage(uri.toString());
             startForeground(1, notification.setProgress(100, 100, true).build());
             imageUploaded = true;
@@ -117,9 +137,25 @@ public class UploadPictureService extends LifecycleService implements ViewModelS
         }));
     }
 
+
+    private void uploadProductImageUpdate(String data) {
+        StorageReference profileBucket = FirebaseStorage.getInstance().getReference().child(PRODUCT_IMAGE).child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
+        profileBucket.putFile(Uri.parse(data)).addOnProgressListener(snapshot -> showSyncNotification(getPercentageProgress(snapshot.getBytesTransferred(), snapshot.getTotalByteCount()), productUpdateForm.getProduct_name(), productUpdateForm.getProduct_description())).addOnSuccessListener(taskSnapshot -> profileBucket.getDownloadUrl().addOnSuccessListener(uri -> {
+            productUpdateForm.setImage(uri.toString());
+
+            startForeground(1, notification.setProgress(100, 100, true).build());
+            imageUploaded = true;
+            updateProductDetails();
+            System.out.println("Stored link uri : " + uri.toString());
+        }).addOnFailureListener(e -> {
+            imageUploaded = false;
+            stopSelf();
+        }));
+    }
+
     private void uploadProfileImage(String data) {
         StorageReference profileBucket = FirebaseStorage.getInstance().getReference().child(PROFILE_PICTURE).child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
-        profileBucket.putFile(Uri.parse(data)).addOnProgressListener(snapshot -> showSyncNotification(getPercentageProgress(snapshot.getBytesTransferred(), snapshot.getTotalByteCount()),"profile picture","uploading profile picture")).addOnSuccessListener(taskSnapshot -> profileBucket.getDownloadUrl().addOnSuccessListener(uri -> {
+        profileBucket.putFile(Uri.parse(data)).addOnProgressListener(snapshot -> showSyncNotification(getPercentageProgress(snapshot.getBytesTransferred(), snapshot.getTotalByteCount()), "profile picture", "uploading profile picture")).addOnSuccessListener(taskSnapshot -> profileBucket.getDownloadUrl().addOnSuccessListener(uri -> {
             imageUploaded = true;
             userUpdateForm.setProfile_picture(uri.toString());
             startForeground(1, notification.setProgress(100, 100, true).build());
@@ -190,7 +226,7 @@ public class UploadPictureService extends LifecycleService implements ViewModelS
         });
     }
 
-    private void showSyncNotification(Integer currentProgress,String title,String description) {
+    private void showSyncNotification(Integer currentProgress, String title, String description) {
         Intent notificationIntent = new Intent(this, UploadPictureService.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
         notification = new NotificationCompat.Builder(this, SYNCH_NOTIFICATION_CHANNEL)
@@ -229,6 +265,26 @@ public class UploadPictureService extends LifecycleService implements ViewModelS
             }
 
             Toast.makeText(getApplication(), "Product successfully uploaded", Toast.LENGTH_SHORT).show();
+            stopSelf();
+        });
+    }
+
+    private void updateProductDetails() {
+
+        try {
+            System.out.println("Product " + getObjectMapper().writeValueAsString(productUpdateForm));
+
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        getDefaultViewModelProviderFactory().create(ProductViewModel.class).updateProductLive(productUpdateForm).observe(this, jsonResponse -> {
+            if (!jsonResponse.isPresent()) {
+                Toast.makeText(getApplication(), "Failed to update product", Toast.LENGTH_SHORT).show();
+                stopSelf();
+                return;
+            }
+
+            Toast.makeText(getApplication(), "Product successfully updated", Toast.LENGTH_SHORT).show();
             stopSelf();
         });
     }

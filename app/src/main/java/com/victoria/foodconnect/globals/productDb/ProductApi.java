@@ -53,6 +53,6 @@ public interface ProductApi {
     @POST(baseProduct +"/specific")
     Call<JsonResponse> getSpecificProduct(@Header(AUTHORIZATION) String token, @Header(CONTENT_TYPE_ME) String contentType, @Query(ID) String id);
 
-    @PUT(baseProduct + " /update")
-    Call<JsonResponse> updateProduct(@Header(AUTHORIZATION) String token, @Header(CONTENT_TYPE_ME) String contentType,@Query(ID) String id ,@Body Models.ProductUpdateForm form);
+    @PUT(baseProduct + "/update")
+    Call<JsonResponse> updateProduct(@Header(AUTHORIZATION) String token, @Header(CONTENT_TYPE_ME) String contentType,@Body Models.ProductUpdateForm form);
 }

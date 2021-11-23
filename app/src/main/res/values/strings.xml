@@ -59,6 +59,7 @@
     <string name="title">Title</string>
     <string name="circle">Circle</string>
     <string name="users">Users</string>
+    <string name="items_remaining">items remaining</string>
 
 
 </resources>

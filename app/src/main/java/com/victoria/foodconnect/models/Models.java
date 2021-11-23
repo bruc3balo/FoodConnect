@@ -19,9 +19,9 @@ import java.util.List;
 import java.util.Set;
 
 
-public class Models {
+public class Models implements Serializable{
 
-    public static class NewUserForm {
+    public static class NewUserForm implements Serializable{
         private String name;
         private String username;
         private String email_address;
@@ -113,7 +113,7 @@ public class Models {
         }
     }
 
-    public static class RoleCreationForm {
+    public static class RoleCreationForm implements Serializable{
 
         private String name;
 
@@ -145,7 +145,7 @@ public class Models {
         }
     }
 
-    public static class RoleToUserForm {
+    public static class RoleToUserForm implements Serializable{
 
         private String username;
         private String role_name;
@@ -176,7 +176,7 @@ public class Models {
         }
     }
 
-    public static class UsernameAndPasswordAuthenticationRequest {
+    public static class UsernameAndPasswordAuthenticationRequest implements Serializable{
         private String username;
         private String password;
 
@@ -550,7 +550,7 @@ public class Models {
         }
     }
 
-    public static class AppRole {
+    public static class AppRole implements Serializable{
 
         private String id;
         private String name;
@@ -594,7 +594,7 @@ public class Models {
         }
     }
 
-    public static class Permissions {
+    public static class Permissions implements Serializable{
 
         private String id;
         private String name;
@@ -754,7 +754,7 @@ public class Models {
         }
     }
 
-    public static class Product {
+    public static class Product implements Serializable{
 
         private String id;
 
@@ -766,9 +766,7 @@ public class Models {
 
         private String image;
 
-        private final List<String> sellersId = new LinkedList<>();
-
-        private final List<String> buyersId = new LinkedList<>();
+        private List<ProductAmount> productAmount = new LinkedList<>();
 
         private String created_at;
 
@@ -782,9 +780,13 @@ public class Models {
 
         private String product_description;
 
+
+
         public Product() {
 
         }
+
+
 
         public Product(String id, String name) {
             this.id = id;
@@ -821,6 +823,15 @@ public class Models {
             this.deleted = deleted;
             this.disabled = disabled;
         }
+
+        public List<ProductAmount> getProductAmount() {
+            return productAmount;
+        }
+
+        public void setProductAmount(List<ProductAmount> productAmount) {
+            this.productAmount = productAmount;
+        }
+
 
         public String getId() {
             return id;
@@ -862,13 +873,6 @@ public class Models {
             this.image = image;
         }
 
-        public List<String> getSellersId() {
-            return sellersId;
-        }
-
-        public List<String> getBuyersId() {
-            return buyersId;
-        }
 
         public String getCreated_at() {
             return created_at;
@@ -919,7 +923,38 @@ public class Models {
         }
     }
 
-    public static class ProductCategory {
+    public static class ProductAmount implements Serializable{
+
+        private String sellersId;
+
+        private int unit;
+
+        public ProductAmount() {
+        }
+
+        public ProductAmount(String sellersId, int unit) {
+            this.sellersId = sellersId;
+            this.unit = unit;
+        }
+
+        public String getSellersId() {
+            return sellersId;
+        }
+
+        public void setSellersId(String sellersId) {
+            this.sellersId = sellersId;
+        }
+
+        public int getUnit() {
+            return unit;
+        }
+
+        public void setUnit(int unit) {
+            this.unit = unit;
+        }
+    }
+
+    public static class ProductCategory implements Serializable{
 
         private String id;
 
@@ -1011,7 +1046,7 @@ public class Models {
         }
     }
 
-    public static class ProductCategoryUpdateForm {
+    public static class ProductCategoryUpdateForm implements Serializable{
 
         private String name;
 
@@ -1058,7 +1093,7 @@ public class Models {
         }
     }
 
-    public static class ProductUpdateForm {
+    public static class ProductUpdateForm implements Serializable {
 
         private String id;
 
@@ -1078,7 +1113,17 @@ public class Models {
 
         private Boolean deleted;
 
+        private String sellersId;
+
+        private Integer unitsLeft;
+
         public ProductUpdateForm() {
+        }
+
+        public ProductUpdateForm(String id, String sellersId, Integer unitsLeft) {
+            this.id = id;
+            this.sellersId = sellersId;
+            this.unitsLeft = unitsLeft;
         }
 
         public ProductUpdateForm(String id, String product_name, String product_price, String product_category_name, String image, String unit, String product_description, Boolean disabled, Boolean deleted) {
@@ -1091,6 +1136,22 @@ public class Models {
             this.product_description = product_description;
             this.disabled = disabled;
             this.deleted = deleted;
+        }
+
+        public String getSellersId() {
+            return sellersId;
+        }
+
+        public void setSellersId(String sellersId) {
+            this.sellersId = sellersId;
+        }
+
+        public Integer getUnitsLeft() {
+            return unitsLeft;
+        }
+
+        public void setUnitsLeft(Integer unitsLeft) {
+            this.unitsLeft = unitsLeft;
         }
 
         public String getId() {

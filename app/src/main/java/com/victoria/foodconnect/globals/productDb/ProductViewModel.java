@@ -285,15 +285,16 @@ public class ProductViewModel extends AndroidViewModel {
         return mutableLiveData;
     }
 
-    private MutableLiveData<Optional<JsonResponse>> updateProduct(String id, Models.ProductUpdateForm form) {
+    private MutableLiveData<Optional<JsonResponse>> updateProduct(Models.ProductUpdateForm form) {
         MutableLiveData<Optional<JsonResponse>> mutableLiveData = new MutableLiveData<>();
 
-        productApi.updateProduct(DataOpts.getAccessToken(application), APPLICATION_JSON, id, form).enqueue(new Callback<JsonResponse>() {
+        productApi.updateProduct(DataOpts.getAccessToken(application), APPLICATION_JSON, form).enqueue(new Callback<JsonResponse>() {
             @Override
             public void onResponse(@NonNull Call<JsonResponse> call, @NonNull Response<JsonResponse> response) {
                 JsonResponse jsonResponse = response.body();
 
                 if (jsonResponse == null || jsonResponse.getData() == null) {
+                    System.out.println("UPDATE NO BODY");
                     mutableLiveData.setValue(Optional.empty());
                     return;
                 }
@@ -305,6 +306,7 @@ public class ProductViewModel extends AndroidViewModel {
             public void onFailure(@NonNull Call<JsonResponse> call, @NonNull Throwable t) {
                 mutableLiveData.setValue(Optional.empty());
                 Toast.makeText(application, t.getMessage(), Toast.LENGTH_SHORT).show();
+                System.out.println("UPDATE "+t.getMessage());
             }
         });
 
@@ -350,7 +352,7 @@ public class ProductViewModel extends AndroidViewModel {
         return getSpecificProduct(productId);
     }
 
-    public LiveData<Optional<JsonResponse>> updateProductLive(String productId, Models.ProductUpdateForm form) {
-        return updateProduct(productId, form);
+    public LiveData<Optional<JsonResponse>> updateProductLive(Models.ProductUpdateForm form) {
+        return updateProduct( form);
     }
 }

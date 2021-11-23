@@ -4,87 +4,54 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".pages.seller.AddNewProduct">
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/addNewProductTb"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top"
-        app:navigationIcon="@drawable/ic_back"
-        android:background="@color/black"
-        app:title="Add New Product"
-        app:titleTextColor="@color/white" />
+    tools:context=".pages.seller.ManageProduct">
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-
-
-            <androidx.appcompat.widget.AppCompatSpinner
-                android:id="@+id/productCategorySpinner"
+            <androidx.appcompat.widget.Toolbar
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="5dp"
-                android:gravity="center"
-                android:minHeight="48dp"
-                tools:ignore="SpeakableTextPresentCheck" />
+                android:background="@color/black"
+                app:navigationIcon="@drawable/ic_back"
+                app:titleTextColor="@color/white"
+                app:subtitleTextColor="@color/semiGrey"
+                android:id="@+id/toolbar"/>
 
-            <RelativeLayout
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="250dp"
+                android:layout_margin="15dp"
                 android:layout_gravity="center"
-                android:layout_margin="10dp"
-                android:background="@color/black">
-
-                <ImageButton
-                    android:id="@+id/getImage"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_margin="10dp"
-                    android:background="@drawable/ic_circle_button_white"
-                    android:elevation="12dp"
-                    android:src="@android:drawable/ic_menu_add"
-                    app:tint="@color/white" />
-
-                <ImageButton
-                    android:id="@+id/removeImage"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_margin="10dp"
-                    android:background="@drawable/ic_circle_button_red"
-                    android:elevation="12dp"
-                    android:src="@android:drawable/ic_menu_close_clear_cancel"
-                    app:tint="@android:color/holo_red_light" />
+                app:cardCornerRadius="10dp">
 
                 <ImageView
-                    android:id="@+id/productImagesView"
+                    android:src="@drawable/ic_image_bg"
+                    android:id="@+id/productImage"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentBottom="true" />
+                    android:layout_gravity="center"
+                    android:scaleType="fitXY" />
 
+            </androidx.cardview.widget.CardView>
 
-            </RelativeLayout>
+            <ImageButton
+                android:id="@+id/getImage"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:layout_margin="10dp"
+                android:background="@drawable/ic_circle_button_white"
+                android:backgroundTint="@color/black"
+                android:elevation="12dp"
+                android:src="@android:drawable/ic_menu_add"
+                app:tint="@color/black" />
 
 
             <TextView
@@ -162,6 +129,7 @@
                 android:inputType="numberDecimal"
                 android:minHeight="48dp" />
 
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -171,62 +139,35 @@
                 android:layout_marginBottom="5dp"
                 android:gravity="center_vertical"
                 android:padding="10dp"
-                android:text="@string/product_unit"
+                android:text="@string/items_remaining"
                 android:textColor="@color/black"
                 android:textStyle="bold" />
 
-            <RadioGroup
-                android:id="@+id/unitGroup"
+            <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:layout_margin="20dp"
+                android:id="@+id/productItemsField"
+                android:background="@drawable/login_bg_button_white"
                 android:gravity="center"
-                android:orientation="horizontal">
-
-                <RadioButton
-                    android:id="@+id/solid"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:text="@string/solid" />
-
-                <RadioButton
-                    android:id="@+id/liquid"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:text="@string/liquid" />
-
-                <RadioButton
-                    android:id="@+id/gas"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:text="@string/gas" />
-
-            </RadioGroup>
+                android:hint="@string/items_remaining"
+                android:inputType="numberDecimal"
+                android:minHeight="48dp" />
 
             <Button
-                android:id="@+id/addProductButton"
+                android:id="@+id/updateProductButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="15dp"
+                android:padding="10dp"
                 android:background="@drawable/login_bg_button"
-                android:text="Add"
+                android:text="Update"
                 android:textColor="@color/white"
                 android:textSize="20sp" />
 
         </LinearLayout>
-
-
     </ScrollView>
 
-    </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

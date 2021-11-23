@@ -50,7 +50,7 @@ import io.vertx.core.json.JsonObject;
 
 public class AddNewProduct extends AppCompatActivity {
 
-    ActivityAddNewProductBinding binding;
+    private ActivityAddNewProductBinding binding;
     private final ArrayList<Models.ProductCategory> allProductCategories = new ArrayList<>();
     private final ProductCreationFrom newProduct = new ProductCreationFrom();
     private ArrayAdapter<String> adapter;
