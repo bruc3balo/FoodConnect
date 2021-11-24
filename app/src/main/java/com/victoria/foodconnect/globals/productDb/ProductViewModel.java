@@ -20,10 +20,16 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.victoria.foodconnect.models.Models;
 import com.victoria.foodconnect.utils.DataOpts;
 import com.victoria.foodconnect.utils.JsonResponse;
+import com.victoria.foodconnect.utils.MyLinkedMap;
 
 import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.Objects;
 import java.util.Optional;
 
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -32,6 +38,80 @@ public class ProductViewModel extends AndroidViewModel {
 
     public ProductViewModel(@NonNull Application application) {
         super(application);
+    }
+
+    private MutableLiveData<MyLinkedMap<String, LinkedList<Models.Product>>> getAllBuyingProducts() {
+        MutableLiveData<MyLinkedMap<String, LinkedList<Models.Product>>> mutableLiveData = new MutableLiveData<>();
+        MyLinkedMap<String, LinkedList<Models.Product>> map = new MyLinkedMap<>();
+
+
+        productApi.getAllProducts(DataOpts.getAccessToken(application), APPLICATION_JSON).enqueue(new Callback<JsonResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<JsonResponse> call, @NonNull Response<JsonResponse> response) {
+                JsonResponse jsonResponse = response.body();
+
+                if (jsonResponse == null || jsonResponse.getData() == null) {
+                    mutableLiveData.setValue(new MyLinkedMap<>());
+                    return;
+                }
+
+                try {
+                    JsonArray serviceArray = new JsonArray(getObjectMapper().writeValueAsString(jsonResponse.getData()));
+                    LinkedHashSet<String> categoryNames = new LinkedHashSet<>();
+
+                    //populate keys
+                    for (int i = 0; i < serviceArray.size(); i++) {
+
+                        try {
+                            System.out.println("count " + i);
+                            Models.Product product = getObjectMapper().readValue(new JsonObject(serviceArray.getJsonObject(i).getMap()).toString(), Models.Product.class);
+
+                            if (!product.getDeleted() && !product.getDisabled()) {
+                                categoryNames.add(product.getProduct_category().getName());
+                            }
+
+                        } catch (JsonProcessingException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                    //populate map keys
+                    categoryNames.forEach(c-> map.put(c,new LinkedList<>()));
+
+                    //populate map values
+                    for (int i = 0; i < serviceArray.size(); i++) {
+
+                        try {
+                            System.out.println("count " + i);
+                            Models.Product product = getObjectMapper().readValue(new JsonObject(serviceArray.getJsonObject(i).getMap()).toString(), Models.Product.class);
+
+                            if (!product.getDeleted() && !product.getDisabled()) {
+                                Objects.requireNonNull(map.get(product.getProduct_category().getName())).add(product);
+                            }
+
+                        } catch (JsonProcessingException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                }
+
+                mutableLiveData.setValue(map);
+
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<JsonResponse> call, @NonNull Throwable t) {
+                mutableLiveData.setValue(new MyLinkedMap<>());
+                Toast.makeText(application, t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        return mutableLiveData;
     }
 
 
@@ -354,5 +434,9 @@ public class ProductViewModel extends AndroidViewModel {
 
     public LiveData<Optional<JsonResponse>> updateProductLive(Models.ProductUpdateForm form) {
         return updateProduct( form);
+    }
+
+    public LiveData<MyLinkedMap<String, LinkedList<Models.Product>>>getAllBuyerProducts(){
+        return getAllBuyingProducts();
     }
 }
