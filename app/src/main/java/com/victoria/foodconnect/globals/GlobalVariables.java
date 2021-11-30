@@ -6,6 +6,7 @@ public class GlobalVariables {
     public static final String ROLE_COLLECTION = "roles";
     public static final String PERMISSION_COLLECTION = "permissions";
     public static final String USER_COLLECTION = "users";
+    public static final String CART = "Cart";
     public static final String PRODUCT_CATEGORY_COLLECTION = "product_category";
     public static final String PRODUCT_COLLECTION = "product";
     public static final String PRODUCT_COLLECTION_UPDATE = "product_update";

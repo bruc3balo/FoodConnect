@@ -1,30 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/categoryName"
-            android:gravity="center"
-            android:layout_gravity="center"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:elevation="12dp"
-            android:text="Category"
-            android:background="#6B0288D1"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            android:fontFamily="sans-serif"/>
+    <TextView
+        android:id="@+id/categoryName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="#6B0288D1"
+        android:elevation="12dp"
+        android:fontFamily="sans-serif"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="Category"
+        android:textColor="@color/black"
+        android:textStyle="bold" />
 
-        <androidx.viewpager2.widget.ViewPager2
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/productsRvList"
-            android:layout_gravity="center"
-            android:padding="7.5dp"
-            android:layout_margin="7.5dp"/>
+    <me.relex.circleindicator.CircleIndicator2
+        android:id="@+id/productIndicator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="5dp"
+        app:ci_drawable="@drawable/blue_dot"
+        app:ci_drawable_unselected="@drawable/purple_dot" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/productsRvList"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="center"
+        android:layout_margin="7.5dp"
+        android:layout_weight="1"
+        android:padding="7.5dp" />
+
 
 
 </LinearLayout>

@@ -12,35 +12,39 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager2.widget.CompositePageTransformer;
-import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.victoria.foodconnect.R;
+import com.victoria.foodconnect.domain.Domain;
 import com.victoria.foodconnect.models.Models;
-import com.victoria.foodconnect.pagerTransformers.DepthPageTransformer;
-import com.victoria.foodconnect.pagerTransformers.ForegroundToBackgroundPageTransformer;
-import com.victoria.foodconnect.pagerTransformers.ZoomInTransformer;
-import com.victoria.foodconnect.pagerTransformers.ZoomOutPageTransformer;
+import com.victoria.foodconnect.pages.beneficiary.BeneficiaryActivity;
 import com.victoria.foodconnect.utils.MyLinkedMap;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+
+import me.relex.circleindicator.CircleIndicator2;
+import me.relex.circleindicator.CircleIndicator3;
 
 
 public class BuyProductRvAdapter extends RecyclerView.Adapter<BuyProductRvAdapter.ViewHolder> {
 
     private ItemClickListener mClickListener;
 
-    private final Context mContext;
+    private final BeneficiaryActivity mContext;
     private final MyLinkedMap<String,LinkedList<Models.Product>> productLinkedList;
+    private final List<Models.Cart> cartList;
 
-    public BuyProductRvAdapter(Context context, MyLinkedMap<String,LinkedList<Models.Product>> productLinkedList) {
+    public BuyProductRvAdapter(BeneficiaryActivity context, MyLinkedMap<String,LinkedList<Models.Product>> productLinkedList,List<Models.Cart> cartList) {
         this.mContext = context;
         this.productLinkedList = productLinkedList;
+        this.cartList = cartList;
     }
 
     @NotNull
@@ -58,10 +62,18 @@ public class BuyProductRvAdapter extends RecyclerView.Adapter<BuyProductRvAdapte
         Map.Entry<String,LinkedList<Models.Product>> entry = productLinkedList.getEntry(position);
         holder.categoryName.setText(entry.getKey().concat(" ( ").concat(String.valueOf(entry.getValue().size())).concat(" )"));
 
-        holder.productListRv.setAdapter(new BuyerRvAdapter(mContext,entry.getValue()));
+        BuyerRvAdapter adapter = new BuyerRvAdapter(mContext,entry.getValue(),cartList);
+        holder.productListRv.setAdapter(adapter);
+        holder.productListRv.setLayoutManager(new LinearLayoutManager(mContext,RecyclerView.HORIZONTAL,false));
+        adapter.notifyDataSetChanged();
+//
+        PagerSnapHelper pagerSnapHelper = new PagerSnapHelper();
+//        pagerSnapHelper.attachToRecyclerView(holder.productListRv);
+        holder.indicator2.attachToRecyclerView(holder.productListRv,pagerSnapHelper);
 
-        holder.productListRv.setUserInputEnabled(true);
-        holder.productListRv.setPageTransformer(new ZoomOutPageTransformer());
+
+        /*holder.productListRv.setUserInputEnabled(true);
+        holder.productListRv.setPageTransformer(new DepthPageTransformer());
         holder.productListRv.setOffscreenPageLimit(3);
         holder.productListRv.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
         holder.productListRv.requestTransform();
@@ -82,9 +94,10 @@ public class BuyProductRvAdapter extends RecyclerView.Adapter<BuyProductRvAdapte
             public void onPageScrollStateChanged(int state) {
                 super.onPageScrollStateChanged(state);
             }
-        });
+        });*/
 
-
+        // optional
+        Objects.requireNonNull(holder.productListRv.getAdapter()).registerAdapterDataObserver(holder.indicator2.getAdapterDataObserver());
 
     }
 
@@ -96,12 +109,13 @@ public class BuyProductRvAdapter extends RecyclerView.Adapter<BuyProductRvAdapte
 
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        ViewPager2 productListRv;
+        RecyclerView productListRv;
         TextView categoryName;
+        CircleIndicator2 indicator2;
 
         ViewHolder(View itemView) {
             super(itemView);
-
+            indicator2 = itemView.findViewById(R.id.productIndicator);
             productListRv = itemView.findViewById(R.id.productsRvList);
             categoryName = itemView.findViewById(R.id.categoryName);
 

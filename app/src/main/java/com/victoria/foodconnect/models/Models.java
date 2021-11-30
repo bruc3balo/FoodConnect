@@ -1,6 +1,7 @@
 package com.victoria.foodconnect.models;
 
 
+import static com.victoria.foodconnect.globals.GlobalVariables.CART;
 import static com.victoria.foodconnect.globals.GlobalVariables.HY;
 import static com.victoria.foodconnect.globals.GlobalVariables.IMAGE;
 import static com.victoria.foodconnect.globals.GlobalVariables.PRODUCT_CATEGORY_NAME;
@@ -9,19 +10,23 @@ import static com.victoria.foodconnect.globals.GlobalVariables.PRODUCT_NAME;
 import static com.victoria.foodconnect.globals.GlobalVariables.PRODUCT_PRICE;
 import static com.victoria.foodconnect.globals.GlobalVariables.UNIT;
 
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
 
 
-public class Models implements Serializable{
+public class Models implements Serializable {
 
-    public static class NewUserForm implements Serializable{
+    public static class NewUserForm implements Serializable {
         private String name;
         private String username;
         private String email_address;
@@ -113,7 +118,7 @@ public class Models implements Serializable{
         }
     }
 
-    public static class RoleCreationForm implements Serializable{
+    public static class RoleCreationForm implements Serializable {
 
         private String name;
 
@@ -145,7 +150,7 @@ public class Models implements Serializable{
         }
     }
 
-    public static class RoleToUserForm implements Serializable{
+    public static class RoleToUserForm implements Serializable {
 
         private String username;
         private String role_name;
@@ -176,7 +181,7 @@ public class Models implements Serializable{
         }
     }
 
-    public static class UsernameAndPasswordAuthenticationRequest implements Serializable{
+    public static class UsernameAndPasswordAuthenticationRequest implements Serializable {
         private String username;
         private String password;
 
@@ -205,7 +210,7 @@ public class Models implements Serializable{
         }
     }
 
-    public static class UserUpdateForm implements Serializable{
+    public static class UserUpdateForm implements Serializable {
 
         private String names;
         private String role;
@@ -354,7 +359,6 @@ public class Models implements Serializable{
         public void setAccess_token(String access_token) {
             this.access_token = access_token;
         }
-
 
 
         public String getAuth_type() {
@@ -550,7 +554,7 @@ public class Models implements Serializable{
         }
     }
 
-    public static class AppRole implements Serializable{
+    public static class AppRole implements Serializable {
 
         private String id;
         private String name;
@@ -594,7 +598,7 @@ public class Models implements Serializable{
         }
     }
 
-    public static class Permissions implements Serializable{
+    public static class Permissions implements Serializable {
 
         private String id;
         private String name;
@@ -664,7 +668,7 @@ public class Models implements Serializable{
         }
     }
 
-    public static class ProductCreationFrom implements Serializable{
+    public static class ProductCreationFrom implements Serializable {
 
         @JsonProperty(PRODUCT_NAME)
         private String product_name;
@@ -754,7 +758,7 @@ public class Models implements Serializable{
         }
     }
 
-    public static class Product implements Serializable{
+    public static class Product implements Serializable {
 
         private String id;
 
@@ -766,7 +770,9 @@ public class Models implements Serializable{
 
         private String image;
 
-        private List<ProductAmount> productAmount = new LinkedList<>();
+        private String sellersId;
+
+        private int unitsLeft;
 
         private String created_at;
 
@@ -781,11 +787,9 @@ public class Models implements Serializable{
         private String product_description;
 
 
-
         public Product() {
 
         }
-
 
 
         public Product(String id, String name) {
@@ -824,14 +828,21 @@ public class Models implements Serializable{
             this.disabled = disabled;
         }
 
-        public List<ProductAmount> getProductAmount() {
-            return productAmount;
+        public String getSellersId() {
+            return sellersId;
         }
 
-        public void setProductAmount(List<ProductAmount> productAmount) {
-            this.productAmount = productAmount;
+        public void setSellersId(String sellersId) {
+            this.sellersId = sellersId;
         }
 
+        public int getUnitsLeft() {
+            return unitsLeft;
+        }
+
+        public void setUnitsLeft(int unitsLeft) {
+            this.unitsLeft = unitsLeft;
+        }
 
         public String getId() {
             return id;
@@ -923,38 +934,7 @@ public class Models implements Serializable{
         }
     }
 
-    public static class ProductAmount implements Serializable{
-
-        private String sellersId;
-
-        private int unit;
-
-        public ProductAmount() {
-        }
-
-        public ProductAmount(String sellersId, int unit) {
-            this.sellersId = sellersId;
-            this.unit = unit;
-        }
-
-        public String getSellersId() {
-            return sellersId;
-        }
-
-        public void setSellersId(String sellersId) {
-            this.sellersId = sellersId;
-        }
-
-        public int getUnit() {
-            return unit;
-        }
-
-        public void setUnit(int unit) {
-            this.unit = unit;
-        }
-    }
-
-    public static class ProductCategory implements Serializable{
+    public static class ProductCategory implements Serializable {
 
         private String id;
 
@@ -1046,7 +1026,7 @@ public class Models implements Serializable{
         }
     }
 
-    public static class ProductCategoryUpdateForm implements Serializable{
+    public static class ProductCategoryUpdateForm implements Serializable {
 
         private String name;
 
@@ -1226,5 +1206,58 @@ public class Models implements Serializable{
             this.deleted = deleted;
         }
     }
+
+    public static class Cart implements Serializable {
+
+        private String id;
+        private String userId;
+        private String productId;
+        private Integer numberOfItems;
+
+        public Cart() {
+        }
+
+        public Cart(String userId, String productId, Integer numberOfItems) {
+            this.userId = userId;
+            this.productId = productId;
+            this.numberOfItems = numberOfItems;
+        }
+
+        @NonNull
+        public String getId() {
+            return id;
+        }
+
+        public void setId(@NonNull String id) {
+            this.id = id;
+        }
+
+        @NonNull
+        public String getUserId() {
+            return userId;
+        }
+
+        public void setUserId(@NonNull String userId) {
+            this.userId = userId;
+        }
+
+        public String getProductId() {
+            return productId;
+        }
+
+        public void setProductId(String productId) {
+            this.productId = productId;
+        }
+
+        public Integer getNumberOfItems() {
+            return numberOfItems;
+        }
+
+        public void setNumberOfItems(Integer numberOfItems) {
+            this.numberOfItems = numberOfItems;
+        }
+    }
+
+
 
 }

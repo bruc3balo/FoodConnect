@@ -1,10 +1,10 @@
 package com.victoria.foodconnect.globals.userDb;
 
 
-
 import static com.victoria.foodconnect.globals.GlobalVariables.*;
 import static com.victoria.foodconnect.models.Models.*;
 
+import com.victoria.foodconnect.models.Models;
 import com.victoria.foodconnect.utils.JsonResponse;
 
 import java.util.HashMap;
@@ -38,7 +38,7 @@ public interface UserApi {
     Call<JsonResponse> getAllUsers(@Header(AUTHORIZATION) String token, @Header(CONTENT_TYPE_ME) String contentType);
 
     @GET(baseUser + "/specific")
-    Call<JsonResponse> getUser(@QueryMap HashMap<String,String> parameters, @Header(AUTHORIZATION) String token, @Header(CONTENT_TYPE_ME) String contentType);
+    Call<JsonResponse> getUser(@QueryMap HashMap<String, String> parameters, @Header(AUTHORIZATION) String token, @Header(CONTENT_TYPE_ME) String contentType);
 
     @GET(baseUser + "/numbers")
     Call<JsonResponse> getAllPhoneNumbers(@Header(CONTENT_TYPE_ME) String contentType);
@@ -58,14 +58,14 @@ public interface UserApi {
 
     //roles
 
-    @GET(baseUser +"/roles")
-    Call<JsonResponse> getRoles (@Header(AUTHORIZATION) String token, @Header(CONTENT_TYPE_ME) String contentType);
+    @GET(baseUser + "/roles")
+    Call<JsonResponse> getRoles(@Header(AUTHORIZATION) String token, @Header(CONTENT_TYPE_ME) String contentType);
 
     @POST(baseAdmin + "/saveRole")
     Call<JsonResponse> saveRole(@Body RoleCreationForm form, @Header(AUTHORIZATION) String token, @Header(CONTENT_TYPE_ME) String contentType);
 
     @PUT(baseAdmin + "/role2user")
-    Call<JsonResponse> addRoleToUser(@Body RoleToUserForm form,@Header(AUTHORIZATION) String token, @Header(CONTENT_TYPE_ME) String contentType);
+    Call<JsonResponse> addRoleToUser(@Body RoleToUserForm form, @Header(AUTHORIZATION) String token, @Header(CONTENT_TYPE_ME) String contentType);
 
     @DELETE(baseAdmin + "/deleteUser")
     Call<JsonResponse> deleteUser(@Query(UID) String uid, @Header(AUTHORIZATION) String token, @Header(CONTENT_TYPE_ME) String contentType);
@@ -84,4 +84,20 @@ public interface UserApi {
 
     @GET(baseAdmin + "/verifyStatus")
     Call<JsonResponse> verifyEmailStatus(@Query(value = EMAIL_ADDRESS) String email, @Header(AUTHORIZATION) String token, @Header(CONTENT_TYPE_ME) String contentType);
+
+
+    //cart
+    @POST(baseUser + "/cart")
+    Call<JsonResponse> saveNewCart(@Header(AUTHORIZATION) String token, @Body Models.Cart cart);
+
+    @PUT(baseUser + "/cart")
+    Call<JsonResponse> updateCart(@Header(AUTHORIZATION) String token, @Body Models.Cart cart);
+
+    @DELETE(baseUser + "/cart")
+    Call<JsonResponse> deleteCart(@Header(AUTHORIZATION) String token, @Query(ID) String id);
+
+    @GET(baseUser + "/cart")
+    Call<JsonResponse> getCart(@Header(AUTHORIZATION) String token, @Query(UID) String uid);
+
+
 }

@@ -68,6 +68,19 @@
                 android:text="@string/product_price"
                 android:textColor="@color/black" />
 
+
+            <TextView
+                android:id="@+id/seller"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="sans-serif"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="@string/seller"
+                android:textColor="@android:color/holo_orange_dark"
+                android:textStyle="bold" />
+
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 

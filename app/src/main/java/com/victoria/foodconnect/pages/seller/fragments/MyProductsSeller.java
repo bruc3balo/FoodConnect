@@ -4,6 +4,7 @@ import static com.victoria.foodconnect.globals.GlobalRepository.userRepository;
 import static com.victoria.foodconnect.globals.GlobalVariables.ID;
 import static com.victoria.foodconnect.globals.GlobalVariables.PRODUCT_COLLECTION;
 import static com.victoria.foodconnect.utils.DataOpts.getObjectMapper;
+import static com.victoria.foodconnect.utils.SimilarityClass.alike;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -11,13 +12,18 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatSpinner;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -31,9 +37,13 @@ import com.victoria.foodconnect.databinding.FragmentMyProductsSellerBinding;
 import com.victoria.foodconnect.domain.Domain;
 import com.victoria.foodconnect.globals.productDb.ProductViewModel;
 import com.victoria.foodconnect.models.Models;
+import com.victoria.foodconnect.pages.beneficiary.BeneficiaryActivity;
 import com.victoria.foodconnect.pages.seller.ManageProduct;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import io.vertx.core.json.JsonArray;
@@ -59,6 +69,8 @@ public class MyProductsSeller extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        setHasOptionsMenu(true);
 
         // Inflate the layout for this fragment
         binding = FragmentMyProductsSellerBinding.inflate(inflater);
@@ -86,7 +98,7 @@ public class MyProductsSeller extends Fragment {
         productsRv.setLayoutManager(new LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false));
         productRvAdapter = new ProductRvAdapter(requireContext(), productList);
         productsRv.setAdapter(productRvAdapter);
-        productRvAdapter.setClickListener((view, position) -> startActivity(new Intent(requireContext(), ManageProduct.class).putExtra(PRODUCT_COLLECTION,productList.get(position))));
+        productRvAdapter.setClickListener((view, position) -> startActivity(new Intent(requireContext(), ManageProduct.class).putExtra(PRODUCT_COLLECTION, productList.get(position))));
 
         userRepository.getUserLive().observe(getViewLifecycleOwner(), appUser -> {
             if (appUser.isPresent()) {
@@ -98,6 +110,62 @@ public class MyProductsSeller extends Fragment {
         });
 
         return binding.getRoot();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.search_menu, menu);
+        MenuItem searchViewItem = menu.findItem(R.id.app_bar_search);
+        final SearchView searchView = (SearchView) searchViewItem.getActionView();
+        searchView.setQueryHint("Search by product name");
+
+        searchView.setOnQueryTextFocusChangeListener((v, hasFocus) -> Toast.makeText(requireContext(), "" + hasFocus, Toast.LENGTH_SHORT).show());
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String query) {
+                new Handler().post(() -> {
+                    try {
+                        searchProducts(query);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+                return false;
+            }
+        });
+
+        searchView.setOnSearchClickListener(v -> searchProducts(""));
+
+        searchView.setOnCloseListener(() -> {
+            searchProducts("");
+            return false;
+        });
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    private void searchProducts(String query) {
+        productList.clear();
+        productRvAdapter.notifyDataSetChanged();
+
+        if (query.isEmpty()) {
+            productList.addAll(allProductList);
+            productRvAdapter.notifyDataSetChanged();
+        } else {
+            productList.clear();
+            productRvAdapter.notifyDataSetChanged();
+            allProductList.forEach(p -> {
+                if (alike(query, p.getName())) {
+                    System.out.println(p.getProduct_category().getName() + " : " + p.getName());
+                    productList.add(p);
+                    productRvAdapter.notifyDataSetChanged();
+                }
+            });
+        }
     }
 
     @Override

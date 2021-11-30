@@ -80,25 +80,13 @@ public class ManageProduct extends AppCompatActivity {
             productPrice.setText(String.valueOf(oldProduct.getPrice()));
             productDescription.setText(oldProduct.getProduct_description());
             Glide.with(this).load(oldProduct.getImage()).into(binding.productImage);
+            productItemsField.setText(String.valueOf(oldProduct.getUnitsLeft()));
+
 
             if (userRepository != null) {
                 userRepository.getUserLive().observe(this, appUser -> {
                     if (appUser.isPresent()) {
-                      Optional<Models.ProductAmount> amount = oldProduct.getProductAmount().stream().filter(i-> i.getSellersId().equals(appUser.get().getUsername())).findFirst();
 
-                        try {
-                            System.out.println("product "+getObjectMapper().writeValueAsString(oldProduct));
-                        } catch (JsonProcessingException e) {
-                            e.printStackTrace();
-                        }
-
-                        if (amount.isPresent()) {
-                          productItemsField.setText(String.valueOf(amount.get().getUnit()));
-                          System.out.println("FOUND");
-                      } else {
-                          productItemsField.setText("0");
-                          System.out.println("NOT FOUND");
-                      }
                     }
                 });
             }

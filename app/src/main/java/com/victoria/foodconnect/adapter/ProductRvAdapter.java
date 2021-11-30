@@ -58,7 +58,7 @@ public class ProductRvAdapter extends RecyclerView.Adapter<ProductRvAdapter.View
         Glide.with(mContext).load(product.getImage()).into(holder.productImage);
         holder.productTitle.setText(product.getName());
         holder.productDescription.setText(product.getProduct_description());
-
+        holder.seller.setText(product.getSellersId() + " ( "+product.getUnitsLeft()+" )");
         switch (product.getUnit()) {
             default: case SOLID:
                 holder.productPrice.setText(product.getPrice().toString().concat(" KSH").concat(" per item"));
@@ -82,7 +82,7 @@ public class ProductRvAdapter extends RecyclerView.Adapter<ProductRvAdapter.View
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView productImage;
-        TextView productTitle, productDescription,productPrice;
+        TextView productTitle, productDescription,productPrice,seller;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -91,6 +91,7 @@ public class ProductRvAdapter extends RecyclerView.Adapter<ProductRvAdapter.View
             productTitle = itemView.findViewById(R.id.productTitle);
             productDescription = itemView.findViewById(R.id.productDescription);
             productPrice = itemView.findViewById(R.id.productPrice);
+            seller = itemView.findViewById(R.id.seller);
 
             itemView.setOnClickListener(this);
         }

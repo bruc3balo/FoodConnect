@@ -26,6 +26,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FoodConnect">
         <activity
+            android:name=".pages.beneficiary.BuyOrders"
+            android:exported="true"
+            android:label="@string/title_activity_buy_orders"
+            android:theme="@style/Theme.FoodConnect.NoActionBar" />
+        <activity
+            android:name=".pages.CartActivity"
+            android:exported="true" />
+        <activity
             android:name=".pages.seller.ManageProduct"
             android:exported="true" />
         <activity

@@ -13,9 +13,9 @@
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
-            android:background="@color/black"
+            android:background="@color/white"
             android:layout_gravity="top"
-            app:titleTextColor="@color/white"
+            app:titleTextColor="@color/black"
             app:title="@string/transporter"
             app:subtitleTextColor="@android:color/darker_gray"
             android:layout_width="match_parent"

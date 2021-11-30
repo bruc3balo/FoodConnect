@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".pages.CartActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:background="@color/black"
+            app:titleTextColor="@color/white"
+            app:subtitleTextColor="@color/semiGrey"
+            app:navigationIcon="@drawable/ic_back"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:id="@+id/cartRv"
+            android:padding="10dp"
+            android:layout_gravity="center"/>
+
+        <Button
+            android:id="@+id/checkoutButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/checkout"
+            android:padding="15dp"
+            android:drawableEnd="@drawable/ic_cart"
+            android:drawablePadding="10dp"
+            android:drawableTint="@color/white"
+            android:elevation="12dp"
+            android:textStyle="bold"
+            android:backgroundTint="@android:color/holo_orange_light"
+            android:textColor="@color/white"
+            android:background="@drawable/login_bg_button_white"
+            android:layout_margin="20dp"/>
+
+
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

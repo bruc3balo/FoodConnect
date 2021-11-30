@@ -8,12 +8,13 @@ import androidx.room.Transaction;
 import com.victoria.foodconnect.domain.Domain;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 
 public class UserRepository {
     private final UserDao userDao;
-
+    public static Domain.AppUser appUser;
 
     //methods are to store just one AppUsers data, not many
     //to be used to cache
@@ -95,6 +96,7 @@ public class UserRepository {
         if (user == null || user.isEmpty()) {
             return Optional.empty();
         } else {
+            appUser = user.get(0);
             return Optional.of(user.get(0));
         }
     }

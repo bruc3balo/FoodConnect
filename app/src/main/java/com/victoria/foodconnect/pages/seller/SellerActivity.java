@@ -4,25 +4,17 @@ import static com.victoria.foodconnect.SplashScreen.logout;
 import static com.victoria.foodconnect.globals.GlobalRepository.userRepository;
 import static com.victoria.foodconnect.globals.GlobalVariables.HY;
 import static com.victoria.foodconnect.login.LoginActivity.setWindowColors;
-import static com.victoria.foodconnect.utils.DataOpts.doIHavePermission;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -39,10 +31,8 @@ import com.makeramen.roundedimageview.RoundedImageView;
 import com.victoria.foodconnect.R;
 import com.victoria.foodconnect.databinding.ActivitySellerBinding;
 import com.victoria.foodconnect.domain.Domain;
-import com.victoria.foodconnect.login.VerifyAccount;
 import com.victoria.foodconnect.pages.seller.fragments.MyOrdersSeller;
 import com.victoria.foodconnect.pages.seller.fragments.MyProductsSeller;
-import com.victoria.foodconnect.utils.DataOpts;
 
 public class SellerActivity extends AppCompatActivity {
 
@@ -85,7 +75,6 @@ public class SellerActivity extends AppCompatActivity {
         toolbar.setNavigationIcon(R.drawable.ic_hamburger);
         toolbar.setNavigationOnClickListener(view -> drawerLayout.openDrawer(GravityCompat.START));
 
-
         NavigationView sellerDrawer = binding.sellerNavigation;
 
         //addFragmentToContainer(getSupportFragmentManager(), binding.sellerDrawerFragment, new MyProductsSeller());
@@ -126,7 +115,7 @@ public class SellerActivity extends AppCompatActivity {
         menu.add("Logout").setIcon(R.drawable.logout).setOnMenuItemClickListener(menuItem -> {
             logout(SellerActivity.this);
             return false;
-        }).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        }).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
         return super.onCreateOptionsMenu(menu);
     }
 

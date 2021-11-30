@@ -11,26 +11,79 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:background="@color/black"
-            android:layout_gravity="top"
-            app:titleTextColor="@color/white"
-            app:title="@string/beneficiary"
-            app:subtitleTextColor="@android:color/darker_gray"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-
-        <androidx.viewpager2.widget.ViewPager2
+        <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:elevation="12dp"
+            app:elevation="12dp"
+            android:background="@color/white"
+            android:layout_marginBottom="20dp"
+            android:orientation="vertical">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                app:navigationIcon="@drawable/ic_person_black"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top"
+                android:background="@color/white"
+                android:gravity="end"
+                app:subtitleTextColor="@android:color/darker_gray"
+                app:title="@string/beneficiary"
+                app:titleTextColor="@color/black" >
+                <include
+                    android:id="@+id/cardContainerForSettingsData"
+                    layout="@layout/badge"
+                    android:layout_gravity="end"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/user_info_section" />
+            </androidx.appcompat.widget.Toolbar>
+
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/searchView"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="2dp"
+                android:background="@drawable/edit_text_field_white"
+                android:layout_gravity="center"/>
+
+        </com.google.android.material.appbar.AppBarLayout>
+        
+        <me.relex.circleindicator.CircleIndicator3
+            android:layout_margin="5dp"
+            android:id="@+id/productCategoryIndicator"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:ci_drawable_unselected="@drawable/purple_dot"
+            app:ci_drawable="@drawable/black_dot"
+            android:layout_gravity="center" />
+        
+        <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/productsRv"
-            android:layout_gravity="center"
-           />
-
-
+            android:layout_weight="1"
+            android:scrollbars="vertical"
+            android:scrollbarSize="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_gravity="center" />
+        
     </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/buyerPb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:indeterminateTint="@color/black" />
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

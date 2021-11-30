@@ -16,10 +16,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="top"
-            android:background="@color/black"
+            android:background="@color/white"
             app:navigationIcon="@drawable/ic_back"
             app:subtitleTextColor="@android:color/darker_gray"
-            app:titleTextColor="@color/white" />
+            app:titleTextColor="@color/black" />
 
 
         <RelativeLayout

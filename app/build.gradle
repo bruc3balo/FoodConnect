@@ -79,10 +79,14 @@ dependencies {
     implementation 'androidx.browser:browser:1.4.0'
 
     implementation 'com.google.firebase:firebase-firestore:24.0.0'
+    implementation 'com.google.firebase:firebase-database'
+
     implementation 'org.jetbrains:annotations:22.0.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.google.android.gms:play-services-maps:18.0.0'
     implementation 'androidx.lifecycle:lifecycle-service:2.4.0'
+    implementation 'androidx.navigation:navigation-fragment:2.3.5'
+    implementation 'androidx.navigation:navigation-ui:2.3.5'
 
     //Room
     dependencies {

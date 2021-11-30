@@ -52,6 +52,7 @@ public class AdminActivity extends AppCompatActivity {
         Toolbar toolbar = binding.toolbar;
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_hamburger);
+
         toolbar.setNavigationOnClickListener(view -> drawerLayout.openDrawer(GravityCompat.START));
 
         userRepository.getUserLive().observe(this, appUser -> {

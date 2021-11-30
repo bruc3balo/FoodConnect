@@ -9,8 +9,6 @@ import androidx.room.PrimaryKey;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 public class Domain {
 
@@ -200,6 +198,7 @@ public class Domain {
             this.verified = verified;
         }
     }
+
 
 
 }

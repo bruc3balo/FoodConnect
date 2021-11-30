@@ -32,9 +32,11 @@ import androidx.lifecycle.ViewModelStoreOwner;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.gson.Gson;
 import com.victoria.foodconnect.SplashScreen;
 import com.victoria.foodconnect.domain.Domain;
 import com.victoria.foodconnect.models.Models;
@@ -476,6 +478,96 @@ public class UserViewModel extends AndroidViewModel {
         return mutableLiveData;
     }
 
+    private MutableLiveData<Optional<JsonResponse>> getUserCart() {
+        MutableLiveData<Optional<JsonResponse>> mutableLiveData = new MutableLiveData<>();
+        userApi.getCart(getAccessToken(application), FirebaseAuth.getInstance().getUid()).enqueue(new Callback<JsonResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<JsonResponse> call, @NonNull Response<JsonResponse> response) {
+                if (response.body() == null || response.body().isHas_error() || !response.body().isSuccess() || response.body().getData() == null) {
+                    mutableLiveData.setValue(Optional.empty());
+                    return;
+                }
+
+                mutableLiveData.setValue(Optional.of(response.body()));
+
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<JsonResponse> call, @NonNull Throwable t) {
+                mutableLiveData.setValue(Optional.empty());
+            }
+        });
+        return mutableLiveData;
+    }
+
+    private MutableLiveData<Optional<JsonResponse>> saveCart(Models.Cart cart) {
+        MutableLiveData<Optional<JsonResponse>> mutableLiveData = new MutableLiveData<>();
+
+        System.out.println(new Gson().toJson(cart));
+        userApi.saveNewCart(getAccessToken(application), cart).enqueue(new Callback<JsonResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<JsonResponse> call, @NonNull Response<JsonResponse> response) {
+                if (response.body() == null || response.body().isHas_error() || !response.body().isSuccess() || response.body().getData() == null) {
+                    mutableLiveData.setValue(Optional.empty());
+                    return;
+                }
+
+                mutableLiveData.setValue(Optional.of(response.body()));
+
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<JsonResponse> call, @NonNull Throwable t) {
+                mutableLiveData.setValue(Optional.empty());
+            }
+        });
+        return mutableLiveData;
+    }
+
+    private MutableLiveData<Optional<JsonResponse>> updateCart(Models.Cart cart) {
+        MutableLiveData<Optional<JsonResponse>> mutableLiveData = new MutableLiveData<>();
+        userApi.updateCart(getAccessToken(application), cart).enqueue(new Callback<JsonResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<JsonResponse> call, @NonNull Response<JsonResponse> response) {
+                if (response.body() == null || response.body().isHas_error() || !response.body().isSuccess() || response.body().getData() == null) {
+                    mutableLiveData.setValue(Optional.empty());
+                    return;
+                }
+
+                mutableLiveData.setValue(Optional.of(response.body()));
+
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<JsonResponse> call, @NonNull Throwable t) {
+                mutableLiveData.setValue(Optional.empty());
+            }
+        });
+        return mutableLiveData;
+    }
+
+    private MutableLiveData<Optional<JsonResponse>> deleteCart(String cartId) {
+        MutableLiveData<Optional<JsonResponse>> mutableLiveData = new MutableLiveData<>();
+        userApi.deleteCart(getAccessToken(application), cartId).enqueue(new Callback<JsonResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<JsonResponse> call, @NonNull Response<JsonResponse> response) {
+                if (response.body() == null || response.body().isHas_error() || !response.body().isSuccess() || response.body().getData() == null) {
+                    mutableLiveData.setValue(Optional.empty());
+                    return;
+                }
+
+                mutableLiveData.setValue(Optional.of(response.body()));
+
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<JsonResponse> call, @NonNull Throwable t) {
+                mutableLiveData.setValue(Optional.empty());
+            }
+        });
+        return mutableLiveData;
+    }
+
     //expose
     public LiveData<Optional<List<String>>> getEmailList() {
         return getAllEmailList();
@@ -521,4 +613,22 @@ public class UserViewModel extends AndroidViewModel {
         return getAllRoles();
     }
 
+    /*public LiveData<Optional<JsonResponse>> saveNewCart(Models.Cart cart) {
+        return saveCart(cart);
+    }
+
+
+    public LiveData<Optional<JsonResponse>> updateACart(Models.Cart cart) {
+        return updateCart(cart);
+    }
+
+    public LiveData<Optional<JsonResponse>> deleteACart(String cartId) {
+        return deleteCart(cartId);
+    }
+
+
+    public LiveData<Optional<JsonResponse>> getMyCart() {
+        return getUserCart();
+    }
+*/
 }
