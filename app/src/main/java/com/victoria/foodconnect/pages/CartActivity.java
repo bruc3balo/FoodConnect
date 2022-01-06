@@ -1,35 +1,32 @@
 package com.victoria.foodconnect.pages;
 
+import static com.victoria.foodconnect.globals.GlobalRepository.userRepository;
+import static com.victoria.foodconnect.globals.GlobalVariables.USERNAME;
 import static com.victoria.foodconnect.login.LoginActivity.setWindowColors;
+import static com.victoria.foodconnect.pages.LocationOrder.CARTLIST;
+import static com.victoria.foodconnect.pages.LocationOrder.PRODUCTLIST;
+import static com.victoria.foodconnect.pages.LocationOrder.successOrder;
 
 import android.annotation.SuppressLint;
-import android.app.Dialog;
-import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.victoria.foodconnect.R;
 import com.victoria.foodconnect.adapter.CartRvAdapter;
 import com.victoria.foodconnect.databinding.ActivityCartBinding;
+import com.victoria.foodconnect.domain.Domain;
 import com.victoria.foodconnect.globals.cartDb.CartViewMode;
 import com.victoria.foodconnect.globals.productDb.ProductViewModel;
-import com.victoria.foodconnect.globals.userDb.UserViewModel;
 import com.victoria.foodconnect.models.Models;
 
-import java.math.BigDecimal;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
 
 public class CartActivity extends AppCompatActivity {
 
@@ -37,6 +34,7 @@ public class CartActivity extends AppCompatActivity {
     private final LinkedList<Models.Product> allProducts = new LinkedList<>();
     private final LinkedList<Models.Cart> cartList = new LinkedList<>();
     private CartRvAdapter cartRvAdapter;
+    private Domain.AppUser user;
 
 
     @Override
@@ -46,9 +44,9 @@ public class CartActivity extends AppCompatActivity {
         cartBinding = ActivityCartBinding.inflate(getLayoutInflater());
         setContentView(cartBinding.getRoot());
 
+
         setSupportActionBar(cartBinding.toolbar);
         cartBinding.toolbar.setNavigationOnClickListener(v -> finish());
-
 
         RecyclerView cartRv = cartBinding.cartRv;
         cartRv.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
@@ -67,52 +65,52 @@ public class CartActivity extends AppCompatActivity {
                 return;
             }
 
-            showDialog();
+            if (allProducts.isEmpty()) {
+                Toast.makeText(CartActivity.this, "Waiting", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (cartList.stream().anyMatch(i -> i.getNumberOfItems() == 0)) {
+                Toast.makeText(CartActivity.this, "You cannot order 0 items", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            showLocationDialog();
         });
 
+        userRepository.getUserLive().observe(this, appUser -> appUser.ifPresent(u -> user = u));
 
         setWindowColors(this);
     }
 
-    private void showDialog() {
-        Dialog d = new Dialog(this);
-        d.setContentView(R.layout.checkout_layout);
-        d.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-
-        TextView total = d.findViewById(R.id.total);
-        Button order = d.findViewById(R.id.orderButton);
-        order.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-
-        ImageButton cancel_button = d.findViewById(R.id.cancel_button);
-        cancel_button.setOnClickListener(v -> d.dismiss());
-
-        d.setOnShowListener(dialog -> total.setText(calculateTotal() + " KSH"));
-
-
-        d.show();
+    private void showLocationDialog() {
+        startActivity(new Intent(this, LocationOrder.class).putExtra(CARTLIST,cartList).putExtra(PRODUCTLIST,allProducts).putExtra(USERNAME,user.getUsername()));
     }
 
-    private BigDecimal calculateTotal() {
-        final BigDecimal[] total = {new BigDecimal(0)};
-        cartList.forEach(c -> allProducts.stream().filter(i -> i.getId().equals(c.getProductId())).findFirst().ifPresent(value -> total[0] = total[0].add(new BigDecimal(c.getNumberOfItems()).multiply(value.getPrice()))));
-        return total[0];
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (successOrder) {
+            finish();
+        }
     }
+
+
 
     private void getAllProducts() {
         new ViewModelProvider(this).get(ProductViewModel.class).getAllGoodBuyerProducts().observe(this, products -> {
+            cartBinding.pb.setVisibility(View.GONE);
             if (products.isEmpty()) {
                 Toast.makeText(CartActivity.this, "Failed to get products", Toast.LENGTH_SHORT).show();
                 return;
             }
 
+
             allProducts.clear();
             allProducts.addAll(products);
             cartRvAdapter.notifyDataSetChanged();
+
+            cartBinding.checkoutButton.setEnabled(!allProducts.isEmpty());
         });
     }
 
@@ -123,10 +121,10 @@ public class CartActivity extends AppCompatActivity {
             cartList.addAll(carts);
             cartRvAdapter.notifyDataSetChanged();
 
-            if (carts.isEmpty()) {
-                cartBinding.checkoutButton.setVisibility(View.VISIBLE);
-            } else {
+            if (cartList.isEmpty()) {
                 cartBinding.checkoutButton.setVisibility(View.GONE);
+            } else {
+                cartBinding.checkoutButton.setVisibility(View.VISIBLE);
             }
         });
     }

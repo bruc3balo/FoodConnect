@@ -87,6 +87,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-service:2.4.0'
     implementation 'androidx.navigation:navigation-fragment:2.3.5'
     implementation 'androidx.navigation:navigation-ui:2.3.5'
+    implementation 'androidx.drawerlayout:drawerlayout:1.1.1'
 
     //Room
     dependencies {

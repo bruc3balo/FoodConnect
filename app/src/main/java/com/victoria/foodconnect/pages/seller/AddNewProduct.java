@@ -1,26 +1,35 @@
 package com.victoria.foodconnect.pages.seller;
 
+import static com.victoria.foodconnect.globals.GlobalVariables.LATITUDE;
+import static com.victoria.foodconnect.globals.GlobalVariables.LONGITUDE;
 import static com.victoria.foodconnect.globals.GlobalVariables.MEDIA_TYPE;
 import static com.victoria.foodconnect.globals.GlobalVariables.PRODUCT_COLLECTION;
 import static com.victoria.foodconnect.login.LoginActivity.setWindowColors;
 import static com.victoria.foodconnect.utils.DataOpts.doIHavePermission;
 import static com.victoria.foodconnect.utils.DataOpts.getObjectMapper;
+import static com.victoria.foodconnect.utils.DataOpts.getStringFromMap;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.PopupMenu;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
@@ -30,10 +39,19 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.snackbar.Snackbar;
 import com.victoria.foodconnect.R;
 import com.victoria.foodconnect.databinding.ActivityAddNewProductBinding;
 import com.victoria.foodconnect.globals.productDb.ProductViewModel;
@@ -42,14 +60,22 @@ import com.victoria.foodconnect.models.Models.ProductCreationFrom;
 import com.victoria.foodconnect.service.UploadPictureService;
 import com.victoria.foodconnect.utils.DataOpts;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.function.Function;
 
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 
-public class AddNewProduct extends AppCompatActivity {
+public class AddNewProduct extends AppCompatActivity implements OnMapReadyCallback {
 
+    private static final int LOCATION_PERMISSION_CODE = 1;
     private ActivityAddNewProductBinding binding;
     private final ArrayList<Models.ProductCategory> allProductCategories = new ArrayList<>();
     private final ProductCreationFrom newProduct = new ProductCreationFrom();
@@ -62,6 +88,9 @@ public class AddNewProduct extends AppCompatActivity {
 
     private ActivityResultLauncher<String> launcher;
     private Uri file;
+    private GoogleMap map;
+
+    private MapView mapView;
 
 
     @SuppressLint("NonConstantResourceId")
@@ -74,7 +103,7 @@ public class AddNewProduct extends AppCompatActivity {
 
         Toolbar toolbar = binding.addNewProductTb;
         setSupportActionBar(toolbar);
-        toolbar.setNavigationOnClickListener(v->finish());
+        toolbar.setNavigationOnClickListener(v -> finish());
 
         //category
         AppCompatSpinner productCategorySpinner = binding.productCategorySpinner;
@@ -148,14 +177,37 @@ public class AddNewProduct extends AppCompatActivity {
             newProduct.setImage(null);
         });
 
+        mapView = binding.mapView;
+        mapView.onCreate(savedInstanceState);
+        mapView.getMapAsync(this);
+
+
         setWindowColors(this);
 
         populateProductCategories();
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mapView.onResume();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mapView.onDestroy();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mapView.onPause();
+    }
+
     private void saveNewProduct() {
-        startService(new Intent(AddNewProduct.this, UploadPictureService.class).putExtra(PRODUCT_COLLECTION,newProduct).putExtra(MEDIA_TYPE, PRODUCT_COLLECTION));
+        startService(new Intent(AddNewProduct.this, UploadPictureService.class).putExtra(PRODUCT_COLLECTION, newProduct).putExtra(MEDIA_TYPE, PRODUCT_COLLECTION));
         finish();
     }
 
@@ -225,8 +277,6 @@ public class AddNewProduct extends AppCompatActivity {
         });
     }
 
-
-
     private void getProductImage() {
         if (doIHavePermission(storagePermissions[0], AddNewProduct.this) && doIHavePermission(storagePermissions[1], AddNewProduct.this)) {
             getProductPictureFromGallery();
@@ -249,6 +299,13 @@ public class AddNewProduct extends AppCompatActivity {
             } else {
                 Toast.makeText(AddNewProduct.this, "Storage Permission Denied. If you denied this you need to allow from settings", Toast.LENGTH_SHORT).show();
             }
+        } else if (requestCode == LOCATION_PERMISSION_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Location works", Toast.LENGTH_SHORT).show();
+                init();
+            } else {
+                Toast.makeText(this, "Location needed to show product info", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -268,4 +325,146 @@ public class AddNewProduct extends AppCompatActivity {
             Toast.makeText(this, "Product Image request empty", Toast.LENGTH_SHORT).show();
         }
     }
+
+    @Override
+    public void onMapReady(@NonNull GoogleMap googleMap) {
+        this.map = googleMap;
+        getLocationPermission(this, integer -> {
+            init();
+            return null;
+        });
+    }
+
+    public void init() {
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+
+        map.setMyLocationEnabled(true);
+        map.setOnMyLocationButtonClickListener(() -> false);
+        map.setOnMyLocationClickListener(location -> Toast.makeText(AddNewProduct.this, "I am here !!! ", Toast.LENGTH_SHORT).show());
+        map.setOnMapClickListener(latLng -> addMarkerToMap(map, latLng));
+        map.setOnMapLongClickListener(latLng -> addMarkerToMap(map, latLng));
+        map.setOnMarkerClickListener(marker -> false);
+        map.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
+            @Override
+            public void onMarkerDragStart(@NotNull Marker marker) {
+
+            }
+
+            @Override
+            public void onMarkerDrag(@NotNull Marker marker) {
+
+            }
+
+            @Override
+            public void onMarkerDragEnd(@NotNull Marker marker) {
+                getFromMarker(marker);
+            }
+        });
+        map.setOnInfoWindowClickListener(this::getFromMarker);
+        map.getUiSettings().setZoomControlsEnabled(true);
+        map.getUiSettings().setZoomGesturesEnabled(true);
+    }
+
+    private void addMarkerToMap(GoogleMap googleMap, LatLng latLng) {
+        @SuppressLint("UseCompatLoadingForDrawables") MarkerOptions markerOptions = new MarkerOptions().position(latLng).draggable(true).title(getFromLocation(latLng)).snippet("Click to confirm location").icon(BitmapDescriptorFactory.fromBitmap(drawableToBitmap(getDrawable(R.drawable.ic_give_food))));
+        googleMap.clear();
+        googleMap.addMarker(markerOptions);
+    }
+
+    private String getFromMarker(Marker marker) {
+        Geocoder geocoder = new Geocoder(AddNewProduct.this, Locale.getDefault());
+        try {
+            List<Address> addresses = geocoder.getFromLocation(marker.getPosition().latitude, marker.getPosition().longitude, 1);
+            Address address = addresses.get(0);
+            Snackbar.make(binding.getRoot(), address.getAddressLine(0), Snackbar.LENGTH_LONG).show();
+            binding.locationTv.setText("Supply location : " + address.getAddressLine(0));
+            LatLng latLng = new LatLng(marker.getPosition().latitude, marker.getPosition().longitude);
+            LinkedHashMap<String, String> locationMap = new LinkedHashMap<>();
+            locationMap.put(LATITUDE, String.valueOf(latLng.latitude));
+            locationMap.put(LONGITUDE, String.valueOf(latLng.latitude));
+            String location = getStringFromMap(locationMap);
+            newProduct.setLocation(location);
+            return address.getAddressLine(0);
+        } catch (IOException | IllegalArgumentException e) {
+            Toast.makeText(AddNewProduct.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            return null;
+        }
+    }
+
+    private String getFromLocation(LatLng latLng) {
+        Geocoder geocoder = new Geocoder(AddNewProduct.this, Locale.getDefault());
+        try {
+            List<Address> addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
+            Address address = addresses.get(0);
+            Snackbar.make(binding.getRoot(), address.getAddressLine(0), Snackbar.LENGTH_LONG).show();
+            binding.locationTv.setText("Supply location : " + address.getAddressLine(0));
+            LinkedHashMap<String, String> locationMap = new LinkedHashMap<>();
+            locationMap.put(LATITUDE, String.valueOf(latLng.latitude));
+            locationMap.put(LONGITUDE, String.valueOf(latLng.latitude));
+            String location = getStringFromMap(locationMap);
+            newProduct.setLocation(location);
+
+            return address.getAddressLine(0);
+        } catch (IOException | IllegalArgumentException e) {
+            Toast.makeText(AddNewProduct.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            return null;
+        }
+    }
+
+    public static Address getAddressFromLocation(Context context, LatLng latLng) {
+        Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+        try {
+            List<Address> addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
+            if (!addresses.isEmpty()) {
+                return addresses.get(0);
+            } else {
+                return null;
+            }
+        } catch (IOException | IllegalArgumentException e) {
+            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+            return null;
+        }
+    }
+
+    public static Bitmap drawableToBitmap(Drawable drawable) {
+        Bitmap bitmap = null;
+
+        if (drawable instanceof BitmapDrawable) {
+            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
+            if (bitmapDrawable.getBitmap() != null) {
+                return bitmapDrawable.getBitmap();
+            }
+        }
+
+        if (drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
+            bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888); // Single color bitmap will be created of 1x1 pixel
+        } else {
+            bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        }
+
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+        return bitmap;
+    }
+
+
+    public static void getLocationPermission(Activity activity, Function<Integer, Void> function) {
+        if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) { //check if location is allowed
+            ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, LOCATION_PERMISSION_CODE);
+        } else {
+            function.apply(0);
+        }
+    }
+
 }

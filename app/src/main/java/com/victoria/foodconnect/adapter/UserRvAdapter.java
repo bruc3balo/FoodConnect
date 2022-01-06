@@ -130,7 +130,6 @@ public class UserRvAdapter extends RecyclerView.Adapter<UserRvAdapter.ViewHolder
 
     }
 
-
     private void showConfirmationDialog(String infoS, Function<Boolean, Void> yesFunction, Boolean currentState) {
         Dialog d = new Dialog(mContext.requireContext());
         d.setContentView(R.layout.yes_no_layout);
@@ -158,7 +157,7 @@ public class UserRvAdapter extends RecyclerView.Adapter<UserRvAdapter.ViewHolder
             d.show();
 
             TextView info = d.findViewById(R.id.infoTv);
-            info.setText("Ar6e you sure you want to verify " + user.getNames() + " as a donor");
+            info.setText("Are you sure you want to verify " + user.getNames() + " as a donor");
             Button no = d.findViewById(R.id.noButton);
             no.setOnClickListener(v -> d.dismiss());
             Button yes = d.findViewById(R.id.yesButton);

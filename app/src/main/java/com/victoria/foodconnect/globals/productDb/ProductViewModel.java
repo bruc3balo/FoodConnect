@@ -87,11 +87,18 @@ public class ProductViewModel extends AndroidViewModel {
                     for (int i = 0; i < serviceArray.size(); i++) {
 
                         try {
-                            System.out.println("count " + i);
+                            System.out.println("count for products" + i);
                             Models.Product product = getObjectMapper().readValue(new JsonObject(serviceArray.getJsonObject(i).getMap()).toString(), Models.Product.class);
 
-                            if (!product.getDeleted() && !product.getDisabled() && product.getUnitsLeft() > 0) {
+                            if (!product.getDeleted() && !product.getDisabled() && product.getUnitsLeft() >     0) {
                                 Objects.requireNonNull(map.get(product.getProduct_category().getName())).add(product);
+
+                                try {
+                                    System.out.println(product.getName()+" map is "+getObjectMapper().writeValueAsString(map));
+                                } catch (JsonProcessingException e) {
+                                    e.printStackTrace();
+                                }
+
                             }
 
                         } catch (JsonProcessingException e) {
@@ -103,6 +110,8 @@ public class ProductViewModel extends AndroidViewModel {
                 } catch (JsonProcessingException e) {
                     e.printStackTrace();
                 }
+
+
 
                 mutableLiveData.setValue(map);
 
@@ -495,7 +504,7 @@ public class ProductViewModel extends AndroidViewModel {
         return updateProduct( form);
     }
 
-    public LiveData<MyLinkedMap<String, LinkedList<Models.Product>>>getAllBuyerProducts(){
+    public LiveData<MyLinkedMap<String, LinkedList<Models.Product>>>getAllBuyerProducts () {
         return getAllBuyingProducts();
     }
 

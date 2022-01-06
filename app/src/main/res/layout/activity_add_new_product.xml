@@ -12,221 +12,240 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/addNewProductTb"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top"
-        app:navigationIcon="@drawable/ic_back"
-        android:background="@color/black"
-        app:title="Add New Product"
-        app:titleTextColor="@color/white" />
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <LinearLayout
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/addNewProductTb"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_gravity="top"
+            android:background="@color/black"
+            app:navigationIcon="@drawable/ic_back"
+            app:title="Add New Product"
+            app:titleTextColor="@color/white" />
 
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-
-            <androidx.appcompat.widget.AppCompatSpinner
-                android:id="@+id/productCategorySpinner"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="5dp"
-                android:gravity="center"
-                android:minHeight="48dp"
-                tools:ignore="SpeakableTextPresentCheck" />
+                android:orientation="vertical">
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:layout_gravity="center"
-                android:layout_margin="10dp"
-                android:background="@color/black">
 
-                <ImageButton
-                    android:id="@+id/getImage"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_margin="10dp"
-                    android:background="@drawable/ic_circle_button_white"
-                    android:elevation="12dp"
-                    android:src="@android:drawable/ic_menu_add"
-                    app:tint="@color/white" />
-
-                <ImageButton
-                    android:id="@+id/removeImage"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_margin="10dp"
-                    android:background="@drawable/ic_circle_button_red"
-                    android:elevation="12dp"
-                    android:src="@android:drawable/ic_menu_close_clear_cancel"
-                    app:tint="@android:color/holo_red_light" />
-
-                <ImageView
-                    android:id="@+id/productImagesView"
+                <androidx.appcompat.widget.AppCompatSpinner
+                    android:id="@+id/productCategorySpinner"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentBottom="true" />
-
-
-            </RelativeLayout>
-
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginBottom="5dp"
-                android:gravity="center_vertical"
-                android:padding="10dp"
-                android:text="@string/product_name"
-                android:textColor="@color/black"
-                android:textStyle="bold" />
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="20dp"
-                android:id="@+id/productNameField"
-                android:background="@drawable/login_bg_button_white"
-                android:gravity="center"
-                android:hint="@string/product_name"
-                android:minHeight="48dp" />
-
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginBottom="5dp"
-                android:gravity="center_vertical"
-                android:padding="10dp"
-                android:text="@string/product_description"
-                android:textColor="@color/black"
-                android:textStyle="bold" />
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="20dp"
-                android:id="@+id/productDescriptionField"
-                android:background="@drawable/login_bg_button_white"
-                android:gravity="center"
-                android:hint="@string/product_description"
-                android:minHeight="48dp" />
-
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginBottom="5dp"
-                android:gravity="center_vertical"
-                android:padding="10dp"
-                android:text="@string/product_price"
-                android:textColor="@color/black"
-                android:textStyle="bold" />
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="20dp"
-                android:id="@+id/productPriceField"
-                android:background="@drawable/login_bg_button_white"
-                android:gravity="center"
-                android:hint="@string/product_price"
-                android:inputType="numberDecimal"
-                android:minHeight="48dp" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginBottom="5dp"
-                android:gravity="center_vertical"
-                android:padding="10dp"
-                android:text="@string/product_unit"
-                android:textColor="@color/black"
-                android:textStyle="bold" />
-
-            <RadioGroup
-                android:id="@+id/unitGroup"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <RadioButton
-                    android:id="@+id/solid"
-                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:text="@string/solid" />
+                    android:layout_gravity="center"
+                    android:layout_margin="5dp"
+                    android:gravity="center"
+                    android:minHeight="48dp"
+                    tools:ignore="SpeakableTextPresentCheck" />
 
-                <RadioButton
-                    android:id="@+id/liquid"
-                    android:layout_width="wrap_content"
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_gravity="center"
+                    android:layout_margin="10dp"
+                    android:background="@color/black">
+
+                    <ImageButton
+                        android:id="@+id/getImage"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_margin="10dp"
+                        android:background="@drawable/ic_circle_button_white"
+                        android:elevation="12dp"
+                        android:src="@android:drawable/ic_menu_add"
+                        app:tint="@color/white" />
+
+                    <ImageButton
+                        android:id="@+id/removeImage"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_margin="10dp"
+                        android:background="@drawable/ic_circle_button_red"
+                        android:elevation="12dp"
+                        android:src="@android:drawable/ic_menu_close_clear_cancel"
+                        app:tint="@android:color/holo_red_light" />
+
+                    <ImageView
+                        android:id="@+id/productImagesView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentBottom="true" />
+
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/locationTv"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="5dp"
                     android:gravity="center_vertical"
-                    android:text="@string/liquid" />
+                    android:padding="10dp"
+                    android:text="@string/choose_location_of_supply"
+                    android:textColor="@color/black"
+                    android:textStyle="bold" />
 
-                <RadioButton
-                    android:id="@+id/gas"
-                    android:layout_width="wrap_content"
+                <com.google.android.gms.maps.MapView
+                    android:id="@+id/mapView"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    android:apiKey="@string/google_maps_key"
+                    android:layout_gravity="center"
+                    android:layout_margin="10dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="5dp"
                     android:gravity="center_vertical"
-                    android:text="@string/gas" />
+                    android:padding="10dp"
+                    android:text="@string/product_name"
+                    android:textColor="@color/black"
+                    android:textStyle="bold" />
 
-            </RadioGroup>
-
-            <Button
-                android:id="@+id/addProductButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="15dp"
-                android:background="@drawable/login_bg_button"
-                android:text="Add"
-                android:textColor="@color/white"
-                android:textSize="20sp" />
-
-        </LinearLayout>
+                <EditText
+                    android:id="@+id/productNameField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="20dp"
+                    android:background="@drawable/login_bg_button_white"
+                    android:gravity="center"
+                    android:hint="@string/product_name"
+                    android:minHeight="48dp" />
 
 
-    </ScrollView>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:gravity="center_vertical"
+                    android:padding="10dp"
+                    android:text="@string/product_description"
+                    android:textColor="@color/black"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/productDescriptionField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="20dp"
+                    android:background="@drawable/login_bg_button_white"
+                    android:gravity="center"
+                    android:hint="@string/product_description"
+                    android:minHeight="48dp" />
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:gravity="center_vertical"
+                    android:padding="10dp"
+                    android:text="@string/product_price"
+                    android:textColor="@color/black"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/productPriceField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="20dp"
+                    android:background="@drawable/login_bg_button_white"
+                    android:gravity="center"
+                    android:hint="@string/product_price"
+                    android:inputType="numberDecimal"
+                    android:minHeight="48dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:gravity="center_vertical"
+                    android:padding="10dp"
+                    android:text="@string/product_unit"
+                    android:textColor="@color/black"
+                    android:textStyle="bold" />
+
+                <RadioGroup
+                    android:id="@+id/unitGroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/solid"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:text="@string/solid" />
+
+                    <RadioButton
+                        android:id="@+id/liquid"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:text="@string/liquid" />
+
+                    <RadioButton
+                        android:id="@+id/gas"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:text="@string/gas" />
+
+                </RadioGroup>
+
+                <Button
+                    android:id="@+id/addProductButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="15dp"
+                    android:background="@drawable/login_bg_button"
+                    android:text="Add"
+                    android:textColor="@color/white"
+                    android:textSize="20sp" />
+
+            </LinearLayout>
+
+
+        </ScrollView>
 
     </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

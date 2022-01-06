@@ -128,8 +128,11 @@ public class AdminActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         backPressed = false;
-        addFragmentToContainer(getSupportFragmentManager(), binding.adminFragment, getLastUsedFragment());
+        if (getSupportFragmentManager().getFragments().isEmpty()) {
 
+            addFragmentToContainer(getSupportFragmentManager(), binding.adminFragment, getLastUsedFragment());
+
+        }
     }
 
     private Fragment getLastUsedFragment() {

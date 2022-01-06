@@ -36,7 +36,7 @@ import com.victoria.foodconnect.pages.seller.fragments.MyProductsSeller;
 
 public class SellerActivity extends AppCompatActivity {
 
-    ActivitySellerBinding binding;
+    private ActivitySellerBinding binding;
     private boolean backPressed = false;
 
 
@@ -100,7 +100,7 @@ public class SellerActivity extends AppCompatActivity {
             if (appUser.isPresent()) {
                 toolbar.setTitle(appUser.get().getUsername());
                 toolbar.setSubtitle(appUser.get().getRole());
-                setNavDetails(appUser.get(), header,SellerActivity.this);
+                setNavDetails(appUser.get(), header, SellerActivity.this);
             }
         });
 
@@ -123,8 +123,9 @@ public class SellerActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         backPressed = false;
-        addFragmentToContainer(getSupportFragmentManager(), binding.sellerDrawerFragment, new MyProductsSeller());
-
+        if (getSupportFragmentManager().getFragments().isEmpty()) {
+            addFragmentToContainer(getSupportFragmentManager(), binding.sellerDrawerFragment, new MyProductsSeller());
+        }
     }
 
     @Override

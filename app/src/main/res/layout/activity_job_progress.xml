@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".pages.transporter.jobProgress.JobActivityProgress">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:background="@android:color/holo_green_light"
+            app:navigationIcon="@drawable/ic_back"
+            app:subtitleTextColor="@color/semiGrey"
+            app:titleTextColor="@color/white" />
+
+        <com.google.android.gms.maps.MapView
+            android:id="@+id/mapView"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:layout_gravity="center"
+            android:apiKey="@string/google_maps_key"
+            android:background="@color/semiGrey"
+            android:minWidth="350dp"
+            android:minHeight="350dp"
+            android:nestedScrollingEnabled="true" />
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:layout_weight="1"
+            android:id="@+id/progressPages"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_gravity="center"
+            android:isScrollContainer="true"
+            android:padding="10dp" />
+
+        <Button
+            android:id="@+id/proceed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="15dp"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:backgroundTint="@android:color/holo_green_light"
+            android:background="@drawable/login_bg_button"
+            android:text="@string/proceed" />
+
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

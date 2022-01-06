@@ -1,7 +1,6 @@
 package com.victoria.foodconnect.models;
 
 
-import static com.victoria.foodconnect.globals.GlobalVariables.CART;
 import static com.victoria.foodconnect.globals.GlobalVariables.HY;
 import static com.victoria.foodconnect.globals.GlobalVariables.IMAGE;
 import static com.victoria.foodconnect.globals.GlobalVariables.PRODUCT_CATEGORY_NAME;
@@ -11,16 +10,15 @@ import static com.victoria.foodconnect.globals.GlobalVariables.PRODUCT_PRICE;
 import static com.victoria.foodconnect.globals.GlobalVariables.UNIT;
 
 import androidx.annotation.NonNull;
-import androidx.room.Entity;
-import androidx.room.PrimaryKey;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.Set;
 
 
@@ -690,6 +688,8 @@ public class Models implements Serializable {
 
         private String username;
 
+        private String location;
+
         public ProductCreationFrom() {
 
         }
@@ -756,6 +756,14 @@ public class Models implements Serializable {
         public void setProduct_description(String product_description) {
             this.product_description = product_description;
         }
+
+        public String getLocation() {
+            return location;
+        }
+
+        public void setLocation(String location) {
+            this.location = location;
+        }
     }
 
     public static class Product implements Serializable {
@@ -786,6 +794,7 @@ public class Models implements Serializable {
 
         private String product_description;
 
+        private String location;
 
         public Product() {
 
@@ -797,7 +806,7 @@ public class Models implements Serializable {
             this.name = name;
         }
 
-        public Product(String name, BigDecimal price, String image, String created_at, String updated_at, Boolean deleted, Boolean disabled) {
+        public Product(String name, BigDecimal price, String image, String created_at, String updated_at, Boolean deleted, Boolean disabled,String location) {
             this.name = name;
             this.price = price;
             this.image = image;
@@ -805,6 +814,7 @@ public class Models implements Serializable {
             this.updated_at = updated_at;
             this.deleted = deleted;
             this.disabled = disabled;
+            this.location = location;
         }
 
         public Product(String id, String name, ProductCategory product_category, BigDecimal price, String image, String created_at, String updated_at, Boolean deleted, Boolean disabled, String unit, String product_description) {
@@ -826,6 +836,14 @@ public class Models implements Serializable {
             this.name = name;
             this.deleted = deleted;
             this.disabled = disabled;
+        }
+
+        public String getLocation() {
+            return location;
+        }
+
+        public void setLocation(String location) {
+            this.location = location;
         }
 
         public String getSellersId() {
@@ -1258,6 +1276,480 @@ public class Models implements Serializable {
         }
     }
 
+    public static class Purchase implements Serializable {
 
+        private Long id;
+
+        private String buyersId;
+
+        private Date created_at;
+
+        private String location;
+
+        private String address;
+
+        private final LinkedList<ProductCountModel> Product = new LinkedList<>();
+
+        private Boolean deleted;
+
+        private String assigned;
+
+        private boolean complete;
+
+        public Purchase() {
+
+        }
+
+        public String getAddress() {
+            return address;
+        }
+
+        public void setAddress(String address) {
+            this.address = address;
+        }
+
+        public String getLocation() {
+            return location;
+        }
+
+        public void setLocation(String location) {
+            this.location = location;
+        }
+
+        public Long getId() {
+            return id;
+        }
+
+        public void setId(Long id) {
+            this.id = id;
+        }
+
+        public String getBuyersId() {
+            return buyersId;
+        }
+
+        public void setBuyersId(String buyersId) {
+            this.buyersId = buyersId;
+        }
+
+        public Date getCreated_at() {
+            return created_at;
+        }
+
+        public void setCreated_at(Date created_at) {
+            this.created_at = created_at;
+        }
+
+        public LinkedList<ProductCountModel> getProduct() {
+            return Product;
+        }
+
+        public Boolean getDeleted() {
+            return deleted;
+        }
+
+        public void setDeleted(Boolean deleted) {
+            this.deleted = deleted;
+        }
+
+        public String getAssigned() {
+            return assigned;
+        }
+
+        public void setAssigned(String assigned) {
+            this.assigned = assigned;
+        }
+
+        public boolean isComplete() {
+            return complete;
+        }
+
+        public void setComplete(boolean complete) {
+            this.complete = complete;
+        }
+    }
+
+    public static class ProductCountModel implements Serializable{
+
+        private Models.Product Product;
+        private Integer count;
+
+        public ProductCountModel() {
+        }
+
+        public ProductCountModel(Models.Product product, Integer count) {
+            this.Product = product;
+            this.count = count;
+        }
+
+        public Product getProduct() {
+            return Product;
+        }
+
+        public void setProduct(Product product) {
+            this.Product = product;
+        }
+
+        public Integer getCount() {
+            return count;
+        }
+
+        public void setCount(Integer count) {
+            this.count = count;
+        }
+    }
+
+    public static class PurchaseCreationForm {
+
+        private String buyersId;
+
+        private String location;
+
+        private String address;
+
+        private LinkedHashMap<String, Integer> products = new LinkedHashMap<>();
+
+        public PurchaseCreationForm() {
+
+        }
+
+        public PurchaseCreationForm(String buyersId,LinkedHashMap<String, Integer> products) {
+            this.buyersId = buyersId;
+            this.products = products;
+        }
+
+        public String getAddress() {
+            return address;
+        }
+
+        public void setAddress(String address) {
+            this.address = address;
+        }
+
+        public String getLocation() {
+            return location;
+        }
+
+        public void setLocation(String location) {
+            this.location = location;
+        }
+
+        public void setProducts(LinkedHashMap<String, Integer> products) {
+            this.products = products;
+        }
+
+        public String getBuyersId() {
+            return buyersId;
+        }
+
+        public void setBuyersId(String buyersId) {
+            this.buyersId = buyersId;
+        }
+
+        public LinkedHashMap<String, Integer> getProducts() {
+            return products;
+        }
+    }
+
+    public static class DistributionModel implements Serializable{
+
+        private String documentId;
+
+        private Long id;
+
+        private AppUser donor;
+
+        private AppUser transporter;
+
+        private AppUser beneficiary;
+
+        private Integer status;
+
+        private Date created_at;
+
+        private Date updated_at;
+
+        private Date completed_at;
+
+        private Purchase purchases;
+
+        private String last_known_location;
+
+        private Boolean deleted;
+
+        private Boolean paid;
+
+        private Boolean reported;
+
+        private Remarks remarks;
+
+
+        public DistributionModel() {
+
+        }
+
+        public String getDocumentId() {
+            return documentId;
+        }
+
+        public void setDocumentId(String documentId) {
+            this.documentId = documentId;
+        }
+
+        public Long getId() {
+            return id;
+        }
+
+        public void setId(Long id) {
+            this.id = id;
+        }
+
+        public AppUser getDonor() {
+            return donor;
+        }
+
+        public void setDonor(AppUser donor) {
+            this.donor = donor;
+        }
+
+        public AppUser getTransporter() {
+            return transporter;
+        }
+
+        public void setTransporter(AppUser transporter) {
+            this.transporter = transporter;
+        }
+
+        public AppUser getBeneficiary() {
+            return beneficiary;
+        }
+
+        public void setBeneficiary(AppUser beneficiary) {
+            this.beneficiary = beneficiary;
+        }
+
+        public Integer getStatus() {
+            return status;
+        }
+
+        public void setStatus(Integer status) {
+            this.status = status;
+        }
+
+        public Date getCreated_at() {
+            return created_at;
+        }
+
+        public void setCreated_at(Date created_at) {
+            this.created_at = created_at;
+        }
+
+        public Date getUpdated_at() {
+            return updated_at;
+        }
+
+        public void setUpdated_at(Date updated_at) {
+            this.updated_at = updated_at;
+        }
+
+        public Date getCompleted_at() {
+            return completed_at;
+        }
+
+        public void setCompleted_at(Date completed_at) {
+            this.completed_at = completed_at;
+        }
+
+        public Purchase getPurchases() {
+            return purchases;
+        }
+
+        public void setPurchases(Purchase purchases) {
+            this.purchases = purchases;
+        }
+
+        public String getLast_known_location() {
+            return last_known_location;
+        }
+
+        public void setLast_known_location(String last_known_location) {
+            this.last_known_location = last_known_location;
+        }
+
+        public Boolean getDeleted() {
+            return deleted;
+        }
+
+        public void setDeleted(Boolean deleted) {
+            this.deleted = deleted;
+        }
+
+        public Boolean getPaid() {
+            return paid;
+        }
+
+        public void setPaid(Boolean paid) {
+            this.paid = paid;
+        }
+
+        public Boolean getReported() {
+            return reported;
+        }
+
+        public void setReported(Boolean reported) {
+            this.reported = reported;
+        }
+
+        public Remarks getRemarks() {
+            return remarks;
+        }
+
+        public void setRemarks(Remarks remarks) {
+            this.remarks = remarks;
+        }
+    }
+
+    public static class Remarks implements Serializable{
+
+        private String documentId;
+
+        private Long id;
+
+        private String donor;
+
+        private String transporter;
+
+        private String beneficiary;
+
+        private Long distribution_id;
+
+        public Remarks() {
+
+        }
+
+        public Remarks(Long id) {
+            this.id = id;
+        }
+
+        public String getDocumentId() {
+            return documentId;
+        }
+
+        public void setDocumentId(String documentId) {
+            this.documentId = documentId;
+        }
+
+        public Long getId() {
+            return id;
+        }
+
+        public void setId(Long id) {
+            this.id = id;
+        }
+
+        public String getDonor() {
+            return donor;
+        }
+
+        public void setDonor(String donor) {
+            this.donor = donor;
+        }
+
+        public String getTransporter() {
+            return transporter;
+        }
+
+        public void setTransporter(String transporter) {
+            this.transporter = transporter;
+        }
+
+        public String getBeneficiary() {
+            return beneficiary;
+        }
+
+        public void setBeneficiary(String beneficiary) {
+            this.beneficiary = beneficiary;
+        }
+
+        public Long getDistribution_id() {
+            return distribution_id;
+        }
+
+        public void setDistribution_id(Long distribution_id) {
+            this.distribution_id = distribution_id;
+        }
+    }
+
+    public static class DistributionUpdateForm implements Serializable{
+
+        private Long id;
+
+        private Boolean deleted;
+
+        private Boolean paid;
+
+        private String lastKnownLocation;
+
+        private Integer status;
+
+        private Long remarks;
+
+        public DistributionUpdateForm() {
+
+        }
+
+        public DistributionUpdateForm(Long id, String lastKnownLocation) {
+            this.id = id;
+            this.lastKnownLocation = lastKnownLocation;
+        }
+
+        public Long getId() {
+            return id;
+        }
+
+        public void setId(Long id) {
+            this.id = id;
+        }
+
+        public Boolean getDeleted() {
+            return deleted;
+        }
+
+        public void setDeleted(Boolean deleted) {
+            this.deleted = deleted;
+        }
+
+        public Boolean getPaid() {
+            return paid;
+        }
+
+        public void setPaid(Boolean paid) {
+            this.paid = paid;
+        }
+
+        public String getLastKnownLocation() {
+            return lastKnownLocation;
+        }
+
+        public void setLastKnownLocation(String lastKnownLocation) {
+            this.lastKnownLocation = lastKnownLocation;
+        }
+
+        public Integer getStatus() {
+            return status;
+        }
+
+        public void setStatus(Integer status) {
+            this.status = status;
+        }
+
+        public Long getRemarks() {
+            return remarks;
+        }
+
+        public void setRemarks(Long remarks) {
+            this.remarks = remarks;
+        }
+    }
 
 }

@@ -7,9 +7,8 @@
          Google Maps Android API v2, but you must specify either coarse or fine
          location permissions for the "MyLocation" functionality.
     -->
-    <uses-permission
-        android:name="android.permission.ACCESS_FINE_LOCATION"
-        tools:ignore="CoarseFineLocation" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission
@@ -25,6 +24,15 @@
         android:roundIcon="@drawable/ic_give_food"
         android:supportsRtl="true"
         android:theme="@style/Theme.FoodConnect">
+        <activity
+            android:name=".pages.transporter.jobProgress.JobActivityProgress"
+            android:exported="false" />
+        <activity
+            android:name=".pages.LocationOrder"
+            android:exported="false" />
+        <activity
+            android:name=".pages.transporter.MoreActivity"
+            android:exported="false" />
         <activity
             android:name=".pages.beneficiary.BuyOrders"
             android:exported="true"

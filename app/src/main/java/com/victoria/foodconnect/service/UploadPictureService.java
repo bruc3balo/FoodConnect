@@ -86,6 +86,7 @@ public class UploadPictureService extends LifecycleService implements ViewModelS
                     uploadProductImage(productCreationFrom.getImage());
                     Toast.makeText(getApplication(), "Your product will be uploaded soon", Toast.LENGTH_SHORT).show();
                     break;
+                    
                 case PRODUCT_COLLECTION_UPDATE:
                     productUpdateForm = (Models.ProductUpdateForm) intent.getExtras().getSerializable(PRODUCT_COLLECTION_UPDATE);
                     System.out.println("data is " + intent.getExtras().getString(MEDIA_TYPE));
@@ -95,7 +96,6 @@ public class UploadPictureService extends LifecycleService implements ViewModelS
                     if (productUpdateForm.getImage() == null) {
                         updateProductDetails();
                     } else {
-
                         uploadProductImageUpdate(productUpdateForm.getImage());
                     }
 

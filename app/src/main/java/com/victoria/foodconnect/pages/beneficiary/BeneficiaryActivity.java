@@ -124,6 +124,8 @@ public class BeneficiaryActivity extends AppCompatActivity {
 
         badge = findViewById(R.id.cartNo);
         cartButton = findViewById(R.id.btnOpenCart);
+        cartButton.setOnClickListener(v -> startActivity(new Intent(BeneficiaryActivity.this, CartActivity.class)));
+
 
         getCarts();
 
@@ -144,6 +146,8 @@ public class BeneficiaryActivity extends AppCompatActivity {
 
             if (carts.isEmpty()) {
                 Toast.makeText(BeneficiaryActivity.this, "No items in cart", Toast.LENGTH_SHORT).show();
+                cartLinkedList.clear();
+                buyProductRvAdapter.notifyDataSetChanged();
                 visibleBadge();
                 return;
             }
@@ -160,22 +164,22 @@ public class BeneficiaryActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-//        if (!searching) {
-//            menu.add("Logout").setIcon(R.drawable.logout).setOnMenuItemClickListener(menuItem -> {
-//                logout(BeneficiaryActivity.this);
-//                return false;
-//            }).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-//
-//            menu.add("Search").setIcon(R.drawable.ic_search_black_24dp).setOnMenuItemClickListener(menuItem -> {
-//                showSearch();
-//                return false;
-//            }).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-//
-//        } else {
-//            menu.add("Close").setIcon(R.drawable.x).setOnMenuItemClickListener(menuItem -> {
-//                hideSearch();
-//                return false;
-//            }).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        //        if (!searching) {
+        //            menu.add("Logout").setIcon(R.drawable.logout).setOnMenuItemClickListener(menuItem -> {
+        //                logout(BeneficiaryActivity.this);
+        //                return false;
+        //            }).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+        //
+        //            menu.add("Search").setIcon(R.drawable.ic_search_black_24dp).setOnMenuItemClickListener(menuItem -> {
+        //                showSearch();
+        //                return false;
+        //            }).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        //
+        //        } else {
+        //            menu.add("Close").setIcon(R.drawable.x).setOnMenuItemClickListener(menuItem -> {
+        //                hideSearch();
+        //                return false;
+        //            }).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.buyer_menu, menu);
@@ -260,6 +264,7 @@ public class BeneficiaryActivity extends AppCompatActivity {
 
     @SuppressLint("NotifyDataSetChanged")
     private void populateProducts() {
+        System.out.println("products populated "+allProductLinkedList.size());
         binding.buyerPb.setVisibility(View.VISIBLE);
         productViewModel.getAllBuyerProducts().observe(this, products -> {
             binding.buyerPb.setVisibility(View.GONE);
@@ -268,6 +273,7 @@ public class BeneficiaryActivity extends AppCompatActivity {
                 allProductLinkedList.putAll(products);
                 productLinkedList.putAll(products);
                 buyProductRvAdapter.notifyDataSetChanged();
+                System.out.println("products populated "+allProductLinkedList.size());
             }
         });
     }
@@ -278,21 +284,21 @@ public class BeneficiaryActivity extends AppCompatActivity {
         backPressed = false;
         visibleBadge();
         populateProducts();
+        //getCarts();
     }
 
     private void visibleBadge() {
         if (cartLinkedList.isEmpty()) {
             cartButton.setVisibility(View.GONE);
             badge.setVisibility(View.GONE);
-            cartButton.setOnClickListener(null);
+            cartButton.setEnabled(false);
             badge.setBackgroundTintList(ColorStateList.valueOf(TRANSPARENT));
         } else {
             cartButton.setVisibility(View.VISIBLE);
             badge.setVisibility(View.VISIBLE);
             badge.setBackgroundTintList(null);
             badge.setText(String.valueOf(cartLinkedList.size()));
-            cartButton.setOnClickListener(v -> startActivity(new Intent(BeneficiaryActivity.this, CartActivity.class)));
-
+            cartButton.setEnabled(true);
         }
     }
 

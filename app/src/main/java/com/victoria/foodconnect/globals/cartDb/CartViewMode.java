@@ -47,8 +47,6 @@ public class CartViewMode extends AndroidViewModel {
 
         List<Models.Cart> cartList = new ArrayList<>();
 
-
-
         myRef.child(Objects.requireNonNull(FirebaseAuth.getInstance().getUid())).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot userSnapshot) {
@@ -143,6 +141,8 @@ public class CartViewMode extends AndroidViewModel {
                 mutableLiveData.setValue(Optional.of(cart));
             } else {
                 mutableLiveData.setValue(Optional.empty());
+                System.out.println("Database failed "+ Objects.requireNonNull(task.getException()).getMessage());
+                task.getException().printStackTrace();
             }
         });
 
