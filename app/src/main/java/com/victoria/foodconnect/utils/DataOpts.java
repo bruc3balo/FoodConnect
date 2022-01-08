@@ -33,6 +33,7 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.Observer;
 
 import com.auth0.android.jwt.JWT;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
@@ -69,7 +70,7 @@ import retrofit2.Response;
 
 public class DataOpts {
 
-    public static JWT decodeToken(String token) {
+    public static JWT decodeToken (String token) {
         try {
             return new JWT(token);
         } catch (Exception e) {
@@ -78,7 +79,7 @@ public class DataOpts {
         }
     }
 
-    public static ObjectMapper getObjectMapper() {
+    public static ObjectMapper getObjectMapper () {
         ObjectMapper mapper = new ObjectMapper();
         mapper.enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);
         mapper = mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
@@ -141,7 +142,6 @@ public class DataOpts {
         return new Domain.AppUser(user.getUid(), user.getId_number(), user.getPhone_number(), user.getBio(), user.getEmail_address(), user.getNames(), user.getUsername(), user.getRole().getName(), user.getCreated_at(), user.getUpdated_at(), user.getDeleted(), user.getDisabled(), user.getTutorial(), user.getVerified(), user.getLast_known_location(), user.getPassword(),user.getProfile_picture());
     }
 
-
     public static void proceed(Activity activity) {
         userRepository.getUserLive().observe((LifecycleOwner) activity, appUser -> {
             if (!appUser.isPresent()) {
@@ -153,8 +153,14 @@ public class DataOpts {
             switch (appUser.get().getRole()) {
                 case "ROLE_ADMIN":
                 case "ROLE_ADMIN_TRAINEE":
-                    refreshStaticToken();
-                    goToAdminPage(activity);
+                    refreshStaticToken().observe((LifecycleOwner) activity, success -> {
+                        if (success) {
+                            goToAdminPage(activity);
+                        } else {
+                            logout(activity);
+                        }
+                    });
+
                     break;
 
                 case "ROLE_TRANSPORTER":
@@ -164,8 +170,14 @@ public class DataOpts {
                         return;
                     }
 
-                    refreshStaticToken();
-                    goToTransporterProviderPage(activity);
+                    refreshStaticToken().observe((LifecycleOwner) activity, success -> {
+                        if (success) {
+                            goToTransporterProviderPage(activity);
+                        } else {
+                            logout(activity);
+                        }
+                    });
+
 
                     break;
 
@@ -175,8 +187,14 @@ public class DataOpts {
                         return;
                     }*/
 
-                    refreshStaticToken();
-                    goToDonorPage(activity);
+                    refreshStaticToken().observe((LifecycleOwner) activity, success -> {
+                        if (success) {
+                            goToDonorPage(activity);
+                        } else {
+                            logout(activity);
+                        }
+                    });
+
                     break;
 
                 default:
@@ -186,8 +204,14 @@ public class DataOpts {
                         return;
                     }
 
-                    refreshStaticToken();
-                    goToBuyerPage(activity);
+                    refreshStaticToken().observe((LifecycleOwner) activity, success -> {
+                        if (success) {
+                            goToBuyerPage(activity);
+                        } else {
+                            logout(activity);
+                        }
+                    });
+
                     break;
 
                 case "ROLE_SELLER":
@@ -196,8 +220,14 @@ public class DataOpts {
                         return;
                     }
 
-                    refreshStaticToken();
-                    goToSellerPage(activity);
+                    refreshStaticToken().observe((LifecycleOwner) activity, success -> {
+                        if (success) {
+                            goToSellerPage(activity);
+                        } else {
+                            logout(activity);
+                        }
+                    });
+
                     break;
 
 
@@ -209,13 +239,10 @@ public class DataOpts {
         });
     }
 
-
-
     private static void goToVerifyPage(Activity activity) {
         activity.startActivity(new Intent(activity, VerifyAccount.class));
         activity.finish();
     }
-
 
     public static SpannableStringBuilder clickableLink(String link) {
         SpannableStringBuilder underlined = new SpannableStringBuilder(link);
@@ -223,12 +250,10 @@ public class DataOpts {
         return underlined;
     }
 
-
     public static void goToAdminPage(Activity activity) {
         activity.startActivity(new Intent(activity, AdminActivity.class));
         activity.finish();
     }
-
 
     public static void goToBuyerPage(Activity activity) {
         activity.startActivity(new Intent(activity, BeneficiaryActivity.class));
@@ -292,12 +317,11 @@ public class DataOpts {
         return content;
     }
 
-
-    public static String getStringFromMap(LinkedHashMap<String,String> workingHoursMap) {
-        if (!workingHoursMap.isEmpty()) {
+    public static String getStringFromMap(LinkedHashMap<String,String> map) {
+        if (!map.isEmpty()) {
             StringBuilder rs = new StringBuilder();
 
-            workingHoursMap.forEach((day,time)-> {
+            map.forEach((day,time)-> {
                 String spec = day.concat(KEY).concat(time);
                 rs.append(',').append(spec);
             });
@@ -308,12 +332,12 @@ public class DataOpts {
         }
     }
 
-    public static LinkedHashMap<String,String> getMapFromString(String workingString) {
-        if (workingString == null || workingString.isEmpty()) {
+    public static LinkedHashMap<String,String> getMapFromString(String s) {
+        if (s == null || s.isEmpty()) {
             return new LinkedHashMap<>();
         } else {
             LinkedHashMap<String,String> workingHoursMap = new LinkedHashMap<>();
-            String[] a = workingString.split(",");
+            String[] a = s.split(",");
 
             for (String item : a) {
                 String key = item.split("\\^")[0];

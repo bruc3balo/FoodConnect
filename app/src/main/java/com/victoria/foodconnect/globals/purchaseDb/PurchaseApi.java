@@ -36,7 +36,7 @@ public interface PurchaseApi {
     Call<JsonResponse> addDistribution(@Query(ID) Long purchaseId, @Query(USERNAME) String transporterUsername);
 
     @GET(distribution)
-    Call<JsonResponse> getDistribution(@QueryMap HashMap params);
+    Call<JsonResponse> getDistribution(@QueryMap HashMap<String,String> params);
 
     @PUT(distribution)
     Call<JsonResponse>  updateDistribution(@Body Models.DistributionUpdateForm form);

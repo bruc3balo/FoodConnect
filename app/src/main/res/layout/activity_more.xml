@@ -47,17 +47,16 @@
             android:textColor="@color/black"
             android:textStyle="normal" />
 
-
-        <com.google.android.gms.maps.MapView
+        <fragment
             android:id="@+id/mapView"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:layout_gravity="center"
-            android:apiKey="@string/google_maps_key"
-            android:background="@color/semiGrey"
             android:minWidth="350dp"
             android:minHeight="350dp"
-            android:nestedScrollingEnabled="true" />
+            android:layout_gravity="center"
+            tools:context=".pages.transporter.MapsFragment" />
+
 
         <me.relex.circleindicator.CircleIndicator3
             android:layout_margin="5dp"

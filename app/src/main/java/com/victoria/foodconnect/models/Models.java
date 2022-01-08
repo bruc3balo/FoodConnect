@@ -12,6 +12,7 @@ import static com.victoria.foodconnect.globals.GlobalVariables.UNIT;
 import androidx.annotation.NonNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.victoria.foodconnect.utils.MyLinkedMap;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -19,6 +20,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Set;
 
 
@@ -1483,6 +1485,8 @@ public class Models implements Serializable {
 
         private Remarks remarks;
 
+        private MyLinkedMap<String, Integer> product_status;
+
 
         public DistributionModel() {
 
@@ -1607,6 +1611,14 @@ public class Models implements Serializable {
         public void setRemarks(Remarks remarks) {
             this.remarks = remarks;
         }
+
+        public MyLinkedMap<String, Integer> getProduct_status() {
+            return product_status;
+        }
+
+        public void setProduct_status(MyLinkedMap<String, Integer> product_status) {
+            this.product_status = product_status;
+        }
     }
 
     public static class Remarks implements Serializable{
@@ -1694,8 +1706,27 @@ public class Models implements Serializable {
 
         private Long remarks;
 
+        private Map<String, Integer> product_status;
+
         public DistributionUpdateForm() {
 
+        }
+
+        public DistributionUpdateForm(Long id,Integer status) {
+            this.id = id;
+            this.status = status;
+        }
+
+        public DistributionUpdateForm(Long id,Integer status,Boolean paid) {
+            this.id = id;
+            this.status = status;
+            this.paid = paid;
+        }
+
+
+        public DistributionUpdateForm(Long id,Map<String, Integer> product_status) {
+            this.id = id;
+            this.product_status = product_status;
         }
 
         public DistributionUpdateForm(Long id, String lastKnownLocation) {
@@ -1749,6 +1780,14 @@ public class Models implements Serializable {
 
         public void setRemarks(Long remarks) {
             this.remarks = remarks;
+        }
+
+        public Map<String, Integer> getProduct_status() {
+            return product_status;
+        }
+
+        public void setProduct_status(Map<String, Integer> product_status) {
+            this.product_status = product_status;
         }
     }
 

@@ -175,7 +175,7 @@ public class LocationOrder extends AppCompatActivity {
             LatLng latLng = new LatLng(marker.getPosition().latitude, marker.getPosition().longitude);
             LinkedHashMap<String, String> locationMap = new LinkedHashMap<>();
             locationMap.put(LATITUDE, String.valueOf(latLng.latitude));
-            locationMap.put(LONGITUDE, String.valueOf(latLng.latitude));
+            locationMap.put(LONGITUDE, String.valueOf(latLng.longitude));
             location = getStringFromMap(locationMap);
             binding.locationTv.setText("Delivery location : " + add.getAddressLine(0));
             address = add.getAddressLine(0);
@@ -196,8 +196,9 @@ public class LocationOrder extends AppCompatActivity {
             Address add = addresses.get(0);
             LinkedHashMap<String, String> locationMap = new LinkedHashMap<>();
             locationMap.put(LATITUDE, String.valueOf(latLng.latitude));
-            locationMap.put(LONGITUDE, String.valueOf(latLng.latitude));
-            location = getStringFromMap(locationMap);address = add.getAddressLine(0);
+            locationMap.put(LONGITUDE, String.valueOf(latLng.longitude));
+            location = getStringFromMap(locationMap);
+            address = add.getAddressLine(0);
             binding.locationTv.setText("Location is "+address);
             return add.getAddressLine(0);
         } catch (IOException | IllegalArgumentException e) {
@@ -341,7 +342,7 @@ public class LocationOrder extends AppCompatActivity {
                 addMarkerToMap(googleMap, lat, add.get().getAddressLine(0));
                 LinkedHashMap<String, String> locationMap = new LinkedHashMap<>();
                 locationMap.put(LATITUDE, String.valueOf(lat.latitude));
-                locationMap.put(LONGITUDE, String.valueOf(lat.latitude));
+                locationMap.put(LONGITUDE, String.valueOf(lat.longitude));
                 location = getStringFromMap(locationMap);
                 address = getFromLocation(lat);
             }
@@ -355,7 +356,6 @@ public class LocationOrder extends AppCompatActivity {
         @SuppressLint("UseCompatLoadingForDrawables") MarkerOptions markerOptions = new MarkerOptions().position(latLng).draggable(true).title(address != null ? address : getFromLocation(latLng))/*.snippet("Click to confirm location")*/.icon(BitmapDescriptorFactory.fromBitmap(drawableToBitmap(getDrawable(R.drawable.ic_served_food))));
         googleMap.clear();
         googleMap.addMarker(markerOptions);
-
     }
 
     private void getSuggestions(String query, View anchor) {

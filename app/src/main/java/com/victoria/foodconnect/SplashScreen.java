@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -97,13 +98,18 @@ public class SplashScreen extends AppCompatActivity {
             return;
         }
 
+
+
+
         userRepository.getUserLive().observe(this, appUser -> {
             if (!appUser.isPresent()) { //if user no data -> get user data
 
                 HashMap<String, String> params = new HashMap<>();
                 params.put(UID, user.getUid());
 
-                new ViewModelProvider(SplashScreen.this).get(UserViewModel.class).getLiveUser(params).observe(SplashScreen.this, jsonResponseResponse -> {
+
+                final UserViewModel userViewModel = new ViewModelProvider(SplashScreen.this).get(UserViewModel.class);
+                userViewModel.getLiveUser(params).observe(SplashScreen.this, jsonResponseResponse -> {
                     if (!jsonResponseResponse.isPresent()) {
                         logout(SplashScreen.this);
                         return;
@@ -141,6 +147,8 @@ public class SplashScreen extends AppCompatActivity {
 
                     }
                 });
+
+
                 return;
             }
 

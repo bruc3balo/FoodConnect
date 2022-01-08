@@ -85,6 +85,12 @@
     <string name="more">More</string>
     <string name="items">Items</string>
     <string name="proceed">Proceed</string>
+    <string name="action">Action</string>
+    <string name="go_to_beneficiary">Go to Beneficiary</string>
+    <string name="arrived">Arrived</string>
+    <string name="complete">Complete</string>
+    <string name="donor">Donor</string>
+    <string name="write_your_review_here">Write your review here</string>
 
 
 </resources>

@@ -31,10 +31,11 @@ public class GlobalVariables {
     public static final String DISABLED = "disabled";
     public static final String DELETED = "deleted";
     public static final String TUTORIAL = "tutorial";
+    public static final String REVIEW = "review";
 
 
-    //public static final String API_URL = "https://food-dstribution-api-vic.herokuapp.com";
-    public static final String API_URL = "https://fe28-197-232-244-229.ngrok.io";
+    public static final String API_URL = "https://food-dstribution-api-vic.herokuapp.com";
+    //public static final String API_URL = "https://ca47-197-232-244-229.ngrok.io";
     public static final String CONTEXT_URL = "/api/v1/";
     public static final String HY = "-";
     public static final String KEY = "^";

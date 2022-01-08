@@ -11,6 +11,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.victoria.foodconnect.globals.productDb.ProductApi;
 import com.victoria.foodconnect.globals.purchaseDb.PurchaseApi;
+import com.victoria.foodconnect.globals.purchaseDb.ReviewApi;
 import com.victoria.foodconnect.globals.userDb.UserApi;
 import com.victoria.foodconnect.globals.userDb.UserRepository;
 
@@ -27,6 +28,7 @@ public class GlobalRepository extends Application {
     public static UserApi userApi;
     public static ProductApi productApi;
     public static PurchaseApi purchaseApi;
+    public static ReviewApi reviewApi;
     public static boolean initialized = false;
 
     public GlobalRepository() {
@@ -53,6 +55,7 @@ public class GlobalRepository extends Application {
             userApi = retrofit.create(UserApi.class);
             productApi = retrofit.create(ProductApi.class);
             purchaseApi = retrofit.create(PurchaseApi.class);
+            reviewApi = retrofit.create(ReviewApi.class);
 
             initialized = true;
 

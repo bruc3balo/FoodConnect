@@ -22,6 +22,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.Observer;
@@ -32,6 +33,8 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -60,7 +63,7 @@ public class MoreActivity extends AppCompatActivity {
     private Models.Purchase purchase;
     private Domain.AppUser user;
     public static final String PURCHASE = "purchase";
-    private GoogleMap googleMap;
+    private GoogleMap gMap;
     private JobProductListAdapter jobProductListAdapter;
 
 
@@ -79,17 +82,17 @@ public class MoreActivity extends AppCompatActivity {
         purchase = (Models.Purchase) getIntent().getExtras().get(PURCHASE);
         userRepository.getUserLive().observe(this, appUser -> appUser.ifPresent(u -> user = u));
 
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapView);
+        if (mapFragment != null) {
+            mapFragment.getMapAsync(googleMap -> {
+                gMap = googleMap;
 
-        binding.mapView.onCreate(savedInstanceState);
-        binding.mapView.getMapAsync(googleMap -> {
-            this.googleMap = googleMap;
-
-            getLocationPermission(this, integer -> {
-                init();
-                return null;
+                getLocationPermission(MoreActivity.this, integer -> {
+                    init();
+                    return null;
+                });
             });
-
-        });
+        }
 
         Button accept = binding.accept;
         accept.setOnClickListener(v -> confirmDialog(this, "Do you want to accept this job", purchase -> {
@@ -99,7 +102,7 @@ public class MoreActivity extends AppCompatActivity {
 
         binding.buyer.setText(getBoldSpannable("The beneficiary is ", purchase.getBuyersId()));
         binding.locationTv.setText(getBoldSpannable("The delivery location is ", purchase.getAddress()));
-        binding.locationTv.setOnClickListener(v -> addMarkerToMap(googleMap, getPositionFromString(purchase.getLocation()), purchase.getAddress(),this));
+        binding.locationTv.setOnClickListener(v -> addMarkerToMap(gMap, getPositionFromString(purchase.getLocation()), purchase.getAddress(),this));
 
         ViewPager2 productsRv = binding.productsRv;
         jobProductListAdapter = new JobProductListAdapter(MoreActivity.this, purchase.getProduct());
@@ -124,7 +127,7 @@ public class MoreActivity extends AppCompatActivity {
                 Toast.makeText(MoreActivity.this, "Location not found", Toast.LENGTH_SHORT).show();
                 return;
             } else {
-                addMarkerToMap(googleMap, getPositionFromString(product.getLocation()), null,this);
+                addMarkerToMap(gMap, getPositionFromString(product.getLocation()), null,this);
             }
         });
         productsRv.setPadding(20,0,20,0);
@@ -179,7 +182,6 @@ public class MoreActivity extends AppCompatActivity {
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
     }
 
-
     public static String getFromMarker(Context context,Marker marker) {
         Geocoder geocoder = new Geocoder(context, Locale.getDefault());
         try {
@@ -215,15 +217,15 @@ public class MoreActivity extends AppCompatActivity {
             return;
         }
 
-        googleMap.setMyLocationEnabled(true);
-        googleMap.setOnMyLocationButtonClickListener(() -> false);
-        googleMap.setOnMyLocationClickListener(location -> Toast.makeText(this, "I am here !!! ", Toast.LENGTH_SHORT).show());
-        googleMap.getUiSettings().setZoomControlsEnabled(true);
-        googleMap.getUiSettings().setZoomGesturesEnabled(true);
+        gMap.setMyLocationEnabled(true);
+        gMap.setOnMyLocationButtonClickListener(() -> false);
+        gMap.setOnMyLocationClickListener(location -> Toast.makeText(this, "I am here !!! ", Toast.LENGTH_SHORT).show());
+        gMap.getUiSettings().setZoomControlsEnabled(true);
+        gMap.getUiSettings().setZoomGesturesEnabled(true);
 
 
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Objects.requireNonNull(getPositionFromString(purchase.getLocation())), 17));
-        addMarkerToMap(googleMap, getPositionFromString(purchase.getLocation()), purchase.getAddress(),this);
+        gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Objects.requireNonNull(getPositionFromString(purchase.getLocation())), 17));
+        addMarkerToMap(gMap, getPositionFromString(purchase.getLocation()), purchase.getAddress(),this);
         // googleMap.clear();
         // googleMap.addMarker(new MarkerOptions().position(temp));
 
@@ -241,21 +243,4 @@ public class MoreActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        binding.mapView.onPause();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        binding.mapView.onDestroy();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        binding.mapView.onResume();
-    }
 }

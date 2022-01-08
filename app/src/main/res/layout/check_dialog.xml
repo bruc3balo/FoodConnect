@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    app:cardElevation="12dp"
+    android:layout_margin="20dp"
+    app:cardCornerRadius="10dp">
+
+    <LinearLayout
+        android:minWidth="350dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:id="@+id/infoTv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="15dp"
+            android:gravity="center"
+            android:padding="10dp"
+            android:minWidth="350dp"
+            android:text="@string/hy"
+            android:textColor="@color/black"
+            android:textStyle="bold" />
+
+
+        <CheckBox
+            android:id="@+id/paidCheck"
+            android:textStyle="bold"
+            android:layout_margin="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center_vertical"
+            android:text="Paid"/>
+
+        <Button
+            android:textColor="@color/white"
+            android:id="@+id/yesButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/login_bg_button_white"
+            android:text="Continue"
+            android:layout_gravity="center"
+            android:layout_margin="15dp"
+            android:backgroundTint="@android:color/holo_green_light"
+            android:textStyle="bold" />
+
+
+            <ImageButton
+                android:id="@+id/noButton"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/x"
+                android:layout_gravity="center"
+                android:layout_margin="15dp"
+                app:tint="@android:color/holo_red_dark" />
+
+
+
+
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

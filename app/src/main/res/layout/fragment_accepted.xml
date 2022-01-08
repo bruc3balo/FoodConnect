@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".pages.transporter.jobProgress.AcceptedFragment">
+
+    <Button
+        android:padding="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_margin="15dp"
+        android:backgroundTint="@android:color/holo_green_light"
+        android:id="@+id/start"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:background="@drawable/login_bg_button_white"
+        android:text="Start Collecting Items"/>
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

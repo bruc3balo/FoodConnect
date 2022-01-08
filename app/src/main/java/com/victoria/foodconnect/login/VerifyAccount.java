@@ -90,7 +90,7 @@ public class VerifyAccount extends AppCompatActivity {
                     binding.newInfoTv.setTextColor(Color.CYAN);
                     binding.newInfoTv.setOnClickListener(tv -> Toast.makeText(VerifyAccount.this, info, Toast.LENGTH_SHORT).show());
                 } else {
-                    String info = "Failed to send verification email to user.getEmail()";
+                    String info = "Failed to send verification email to"+ user.getEmail();
                     binding.newInfoTv.setText(clickableLink(info), TextView.BufferType.SPANNABLE);
                     Toast.makeText(VerifyAccount.this, info, Toast.LENGTH_SHORT).show();
                 }
