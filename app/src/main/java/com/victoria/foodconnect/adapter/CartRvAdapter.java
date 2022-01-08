@@ -181,20 +181,8 @@ public class CartRvAdapter extends RecyclerView.Adapter<CartRvAdapter.ViewHolder
                 return id;
             }));
 
-            switch (product.getUnit()) {
-                default:
-                case SOLID:
-                    holder.productPrice.setText(product.getPrice().toString().concat(" KSH").concat(" per item"));
-                    break;
+            holder.productPrice.setText(product.getPrice().toString().concat(" KSH").concat(" per "+product.getUnit()));
 
-                case GAS:
-                    holder.productPrice.setText(product.getPrice().toString().concat(" KSH").concat(" per item"));
-                    break;
-
-                case LIQUID:
-                    holder.productPrice.setText(product.getPrice().toString().concat(" KSH").concat(" per item"));
-                    break;
-            }
         }
 
 

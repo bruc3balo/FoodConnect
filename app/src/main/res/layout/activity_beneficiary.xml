@@ -22,29 +22,93 @@
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
-                app:navigationIcon="@drawable/ic_person_black"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="70dp"
                 android:layout_gravity="top"
                 android:background="@color/white"
                 android:gravity="end"
                 app:subtitleTextColor="@android:color/darker_gray"
-                app:title="@string/beneficiary"
+                app:title=""
                 app:titleTextColor="@color/black" >
-                <include
-                    android:id="@+id/cardContainerForSettingsData"
-                    layout="@layout/badge"
-                    android:layout_gravity="end"
-                    android:layout_width="wrap_content"
-                    android:layout_height="50dp"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/user_info_section" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    android:layout_gravity="center"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                     <ImageView
+                        android:layout_width="70dp"
+                        android:layout_gravity="center"
+                        android:scaleType="fitXY"
+                        android:layout_height="match_parent"
+                        android:src="@mipmap/food_connect_logo"/>
+
+                    <TextView
+                        android:id="@+id/text"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_marginStart="20sp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center_vertical"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                        android:text="Welcome buyer"/>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/layoutforprofileimage"
+                        android:layout_gravity="center"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <ImageButton
+                            android:id="@+id/btnOpenCart"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_marginBottom="8dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginTop="8dp"
+                            android:background="?android:attr/selectableItemBackground"
+                            android:gravity="end"
+                            app:srcCompat="@drawable/ic_cart"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/cartNo"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentTop="true"
+                            android:layout_gravity="center"
+                            android:layout_marginBottom="16dp"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="8dp"
+                            android:gravity="center"
+                            android:minHeight="17sp"
+                            android:minWidth="17sp"
+                            android:padding="3dp"
+                            android:text="0"
+                            android:textColor="#FFFFFF"
+                            android:textSize="12sp"
+                            android:visibility="visible"
+                            android:background="@drawable/ic_circle"
+                            app:layout_constraintBottom_toBottomOf="@+id/btnOpenCart"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="@+id/btnOpenCart"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </LinearLayout>
+
+
+
             </androidx.appcompat.widget.Toolbar>
 
             <androidx.appcompat.widget.SearchView

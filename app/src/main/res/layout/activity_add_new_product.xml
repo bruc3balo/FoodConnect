@@ -98,13 +98,13 @@
                     android:textColor="@color/black"
                     android:textStyle="bold" />
 
-                <com.google.android.gms.maps.MapView
+                <fragment
                     android:id="@+id/mapView"
+                    android:name="com.google.android.gms.maps.SupportMapFragment"
                     android:layout_width="match_parent"
-                    android:layout_height="250dp"
-                    android:apiKey="@string/google_maps_key"
+                    android:layout_height="300dp"
                     android:layout_gravity="center"
-                    android:layout_margin="10dp" />
+                    tools:context=".pages.transporter.MapsFragment" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -203,31 +203,31 @@
                     android:orientation="horizontal">
 
                     <RadioButton
-                        android:id="@+id/solid"
+                        android:id="@+id/tonne"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
                         android:gravity="center_vertical"
-                        android:text="@string/solid" />
+                        android:text="@string/tonne" />
 
                     <RadioButton
-                        android:id="@+id/liquid"
+                        android:id="@+id/kg"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
                         android:gravity="center_vertical"
-                        android:text="@string/liquid" />
+                        android:text="@string/kg" />
 
                     <RadioButton
-                        android:id="@+id/gas"
+                        android:id="@+id/g"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
                         android:gravity="center_vertical"
-                        android:text="@string/gas" />
+                        android:text="@string/g" />
 
                 </RadioGroup>
 

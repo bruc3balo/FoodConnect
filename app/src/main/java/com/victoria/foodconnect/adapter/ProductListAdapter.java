@@ -60,7 +60,7 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
 
 
         holder.name.setText(product.getName());
-        holder.price.setText(product.getPrice().toString().concat(" Ksh"));
+        holder.price.setText(product.getPrice().toString().concat(" Ksh per "+product.getUnit()));
         holder.items.setText(String.valueOf(item));
 
     }

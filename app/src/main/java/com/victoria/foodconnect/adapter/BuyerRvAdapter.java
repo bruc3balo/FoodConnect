@@ -96,19 +96,9 @@ public class BuyerRvAdapter extends RecyclerView.Adapter<BuyerRvAdapter.ViewHold
             holder.addToCart.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(orange)));
         }
 
-        switch (product.getUnit()) {
-            default: case SOLID:
-                holder.productPrice.setText(product.getPrice().toString().concat(" KSH").concat(" per item"));
-                break;
+        holder.productPrice.setText(product.getPrice().toString().concat(" KSH").concat(" per "+product.getUnit()));
 
-            case GAS:
-                holder.productPrice.setText(product.getPrice().toString().concat(" KSH").concat(" per item"));
-                break;
 
-            case LIQUID:
-                holder.productPrice.setText(product.getPrice().toString().concat(" KSH").concat(" per item"));
-                break;
-        }
 
         holder.addToCart.setOnClickListener(v -> {
 

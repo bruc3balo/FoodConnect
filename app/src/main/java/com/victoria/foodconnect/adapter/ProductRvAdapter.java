@@ -59,19 +59,7 @@ public class ProductRvAdapter extends RecyclerView.Adapter<ProductRvAdapter.View
         holder.productTitle.setText(product.getName());
         holder.productDescription.setText(product.getProduct_description());
         holder.seller.setText(product.getSellersId() + " ( "+product.getUnitsLeft()+" )");
-        switch (product.getUnit()) {
-            default: case SOLID:
-                holder.productPrice.setText(product.getPrice().toString().concat(" KSH").concat(" per item"));
-                break;
-
-            case GAS:
-                holder.productPrice.setText(product.getPrice().toString().concat(" KSH").concat(" per item"));
-                break;
-
-            case LIQUID:
-                holder.productPrice.setText(product.getPrice().toString().concat(" KSH").concat(" per item"));
-                break;
-        }
+        holder.productPrice.setText(product.getPrice().toString().concat(" KSH").concat(" per "+product.getUnit()));
 
     }
 

@@ -81,7 +81,7 @@ public class ProductViewModel extends AndroidViewModel {
                     }
 
                     //populate map keys
-                    categoryNames.forEach(c-> map.put(c,new LinkedList<>()));
+                    categoryNames.forEach(c -> map.put(c, new LinkedList<>()));
 
                     //populate map values
                     for (int i = 0; i < serviceArray.size(); i++) {
@@ -90,11 +90,15 @@ public class ProductViewModel extends AndroidViewModel {
                             System.out.println("count for products" + i);
                             Models.Product product = getObjectMapper().readValue(new JsonObject(serviceArray.getJsonObject(i).getMap()).toString(), Models.Product.class);
 
-                            if (!product.getDeleted() && !product.getDisabled() && product.getUnitsLeft() >     0) {
-                                Objects.requireNonNull(map.get(product.getProduct_category().getName())).add(product);
+                            if (!product.getDeleted() && !product.getDisabled() && product.getUnitsLeft() > 0) {
+
+                                if (map.containsKey(product.getProduct_category().getName())) {
+                                    Objects.requireNonNull(map.get(product.getProduct_category().getName())).add(product);
+                                }
+
 
                                 try {
-                                    System.out.println(product.getName()+" map is "+getObjectMapper().writeValueAsString(map));
+                                    System.out.println(product.getName() + " map is " + getObjectMapper().writeValueAsString(map));
                                 } catch (JsonProcessingException e) {
                                     e.printStackTrace();
                                 }
@@ -110,7 +114,6 @@ public class ProductViewModel extends AndroidViewModel {
                 } catch (JsonProcessingException e) {
                     e.printStackTrace();
                 }
-
 
 
                 mutableLiveData.setValue(map);
@@ -161,7 +164,6 @@ public class ProductViewModel extends AndroidViewModel {
                         }
 
                     }
-
 
 
                 } catch (JsonProcessingException e) {
@@ -454,7 +456,7 @@ public class ProductViewModel extends AndroidViewModel {
             public void onFailure(@NonNull Call<JsonResponse> call, @NonNull Throwable t) {
                 mutableLiveData.setValue(Optional.empty());
                 Toast.makeText(application, t.getMessage(), Toast.LENGTH_SHORT).show();
-                System.out.println("UPDATE "+t.getMessage());
+                System.out.println("UPDATE " + t.getMessage());
             }
         });
 
@@ -501,14 +503,14 @@ public class ProductViewModel extends AndroidViewModel {
     }
 
     public LiveData<Optional<JsonResponse>> updateProductLive(Models.ProductUpdateForm form) {
-        return updateProduct( form);
+        return updateProduct(form);
     }
 
-    public LiveData<MyLinkedMap<String, LinkedList<Models.Product>>>getAllBuyerProducts () {
+    public LiveData<MyLinkedMap<String, LinkedList<Models.Product>>> getAllBuyerProducts() {
         return getAllBuyingProducts();
     }
 
-    public LiveData<LinkedList<Models.Product>> getAllGoodBuyerProducts(){
+    public LiveData<LinkedList<Models.Product>> getAllGoodBuyerProducts() {
         return getAllUserBuyingProducts();
     }
 }

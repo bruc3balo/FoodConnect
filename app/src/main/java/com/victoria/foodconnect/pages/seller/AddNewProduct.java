@@ -47,6 +47,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -90,7 +91,6 @@ public class AddNewProduct extends AppCompatActivity implements OnMapReadyCallba
     private Uri file;
     private GoogleMap map;
 
-    private MapView mapView;
 
 
     @SuppressLint("NonConstantResourceId")
@@ -130,23 +130,23 @@ public class AddNewProduct extends AppCompatActivity implements OnMapReadyCallba
         unitGroup.setOnCheckedChangeListener((radioGroup, id) -> {
             switch (id) {
                 default:
-                case R.id.solid:
-                    String solid = getString(R.string.solid);
-                    newProduct.setUnit(solid);
-                    Toast.makeText(AddNewProduct.this, solid, Toast.LENGTH_SHORT).show();
+                case R.id.tonne:
+                    String tonne = getString(R.string.tonne);
+                    newProduct.setUnit(tonne);
+                    Toast.makeText(AddNewProduct.this, tonne, Toast.LENGTH_SHORT).show();
                     break;
 
-                case R.id.liquid:
-                    String liquid = getString(R.string.liquid);
-                    newProduct.setUnit(liquid);
-                    Toast.makeText(AddNewProduct.this, liquid, Toast.LENGTH_SHORT).show();
+                case R.id.kg:
+                    String kg = getString(R.string.kg);
+                    newProduct.setUnit(kg);
+                    Toast.makeText(AddNewProduct.this, kg, Toast.LENGTH_SHORT).show();
 
                     break;
 
-                case R.id.gas:
-                    String gas = getString(R.string.gas);
-                    newProduct.setUnit(gas);
-                    Toast.makeText(AddNewProduct.this, gas, Toast.LENGTH_SHORT).show();
+                case R.id.g:
+                    String g = getString(R.string.g);
+                    newProduct.setUnit(g);
+                    Toast.makeText(AddNewProduct.this, g, Toast.LENGTH_SHORT).show();
 
                     break;
             }
@@ -177,10 +177,10 @@ public class AddNewProduct extends AppCompatActivity implements OnMapReadyCallba
             newProduct.setImage(null);
         });
 
-        mapView = binding.mapView;
-        mapView.onCreate(savedInstanceState);
-        mapView.getMapAsync(this);
-
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapView);
+        if (mapFragment != null) {
+            mapFragment.getMapAsync(this);
+        }
 
         setWindowColors(this);
 
@@ -188,23 +188,6 @@ public class AddNewProduct extends AppCompatActivity implements OnMapReadyCallba
 
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mapView.onResume();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mapView.onDestroy();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        mapView.onPause();
-    }
 
     private void saveNewProduct() {
         startService(new Intent(AddNewProduct.this, UploadPictureService.class).putExtra(PRODUCT_COLLECTION, newProduct).putExtra(MEDIA_TYPE, PRODUCT_COLLECTION));

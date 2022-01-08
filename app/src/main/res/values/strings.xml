@@ -91,6 +91,9 @@
     <string name="complete">Complete</string>
     <string name="donor">Donor</string>
     <string name="write_your_review_here">Write your review here</string>
+    <string name="tonne">Tonne</string>
+    <string name="kg">Kilogram</string>
+    <string name="g">Gram</string>
 
 
 </resources>
