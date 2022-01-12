@@ -1,6 +1,7 @@
 package com.victoria.foodconnect.pages.admin.fragments;
 
 import static com.victoria.foodconnect.globals.GlobalRepository.userRepository;
+import static com.victoria.foodconnect.pages.ProgressActivity.outSpinnerProgress;
 import static com.victoria.foodconnect.pages.admin.AdminActivity.lastFragment;
 import static com.victoria.foodconnect.utils.DataOpts.getObjectMapper;
 
@@ -116,6 +117,7 @@ public class UsersFragment extends Fragment {
 
         userViewModel.getRoles().observe(requireActivity(), jsonResponse -> {
             if (!jsonResponse.isPresent()) {
+                outSpinnerProgress(binding.pb,null);
                 Toast.makeText(requireContext(), "No product categories", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -153,6 +155,7 @@ public class UsersFragment extends Fragment {
 
         userViewModel.getLiveAllUsers().observe(requireActivity(), jsonResponse -> {
             if (!jsonResponse.isPresent()) {
+                outSpinnerProgress(binding.pb,null);
                 Toast.makeText(requireContext(), "No users", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -172,6 +175,8 @@ public class UsersFragment extends Fragment {
                     }
 
                 }
+
+                outSpinnerProgress(binding.pb,null);
 
                 filterProducts(binding.roleSpinner.getSelectedItem().toString());
 

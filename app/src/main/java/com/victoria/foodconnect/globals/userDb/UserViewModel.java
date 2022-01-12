@@ -300,6 +300,7 @@ public class UserViewModel extends AndroidViewModel {
             @Override
             public void onFailure(@NonNull Call<LoginResponse> call, @NonNull Throwable t) {
                 mutableLiveData.setValue(Optional.empty());
+                t.printStackTrace();
             }
         });
 

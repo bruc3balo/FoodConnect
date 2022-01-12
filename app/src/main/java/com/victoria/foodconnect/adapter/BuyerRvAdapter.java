@@ -76,13 +76,7 @@ public class BuyerRvAdapter extends RecyclerView.Adapter<BuyerRvAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        Models.Product product = productLinkedList.get(position);
-
-        try {
-            System.out.println("product is "+getObjectMapper().writeValueAsString(product));
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
+        Models.Product product = productLinkedList.get(holder.getAdapterPosition());
 
         String orange = "#ffffbb33";
 

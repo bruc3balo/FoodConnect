@@ -9,6 +9,8 @@ import static com.victoria.foodconnect.globals.GlobalVariables.UID;
 import static com.victoria.foodconnect.globals.GlobalVariables.USERNAME;
 import static com.victoria.foodconnect.globals.GlobalVariables.USER_COLLECTION;
 import static com.victoria.foodconnect.login.LoginActivity.loginPb;
+import static com.victoria.foodconnect.pages.ProgressActivity.inSpinnerProgress;
+import static com.victoria.foodconnect.pages.ProgressActivity.outSpinnerProgress;
 import static com.victoria.foodconnect.utils.DataOpts.editSp;
 import static com.victoria.foodconnect.utils.DataOpts.getDomainUserFromModelUser;
 import static com.victoria.foodconnect.utils.DataOpts.getObjectMapper;
@@ -84,16 +86,16 @@ public class SignInFragment extends Fragment {
         });
 
 
-        outProgress();
+        outSpinnerProgress(loginPb,signInB);
         return v;
     }
 
     private void loginUserToAPi() {
-        inProgress();
+        inSpinnerProgress(loginPb,signInB);
         userViewModel.getToken(new UsernameAndPasswordAuthenticationRequest(request.getUsername(), request.getPassword())).observe(requireActivity(), loginResponseResponse -> {
             if (!loginResponseResponse.isPresent()) {
                 Toast.makeText(requireContext(), "User doesn't exists or try again", Toast.LENGTH_SHORT).show();
-                outProgress();
+                outSpinnerProgress(loginPb,signInB);
                 return;
             }
 
@@ -102,17 +104,17 @@ public class SignInFragment extends Fragment {
 
             if (loginResponseResponse.get().code() == 403) {
                 Toast.makeText(requireContext(), "User doesn't exist", Toast.LENGTH_SHORT).show();
-                outProgress();
+                outSpinnerProgress(loginPb,signInB);
                 return;
             } else if (loginResponseResponse.get().code() == 401) {
                 Toast.makeText(requireContext(), "Forbidden", Toast.LENGTH_SHORT).show();
-                outProgress();
+                outSpinnerProgress(loginPb,signInB);
                 return;
             }
 
             if (response == null) {
                 Toast.makeText(requireContext(), "Failed to get access", Toast.LENGTH_SHORT).show();
-                outProgress();
+                outSpinnerProgress(loginPb,signInB);
                 return;
             }
 
@@ -140,17 +142,17 @@ public class SignInFragment extends Fragment {
         userViewModel.getLiveUser(params).observe(getViewLifecycleOwner(), jsonResponseResponse -> {
 
             if (!jsonResponseResponse.isPresent()) {
-                outProgress();
+                outSpinnerProgress(loginPb,signInB);
                 return;
             }
 
             if (jsonResponseResponse.get().code() == 403) {
                 Toast.makeText(requireContext(), "Not allowed", Toast.LENGTH_SHORT).show();
-                outProgress();
+                outSpinnerProgress(loginPb,signInB);
                 return;
             } else if (jsonResponseResponse.get().code() == 401) {
                 Toast.makeText(requireContext(), "Forbidden", Toast.LENGTH_SHORT).show();
-                outProgress();
+                outSpinnerProgress(loginPb,signInB);
                 return;
             }
 
@@ -160,19 +162,19 @@ public class SignInFragment extends Fragment {
 
 
                 Toast.makeText(requireContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
-                outProgress();
+                outSpinnerProgress(loginPb,signInB);
                 return;
             }
 
             if (response.isHas_error()) {
                 Toast.makeText(requireContext(), response.getApi_code_description(), Toast.LENGTH_SHORT).show();
-                outProgress();
+                outSpinnerProgress(loginPb,signInB);
                 return;
             }
 
             if (response.getData() == null) {
                 Toast.makeText(requireContext(), "No user data", Toast.LENGTH_SHORT).show();
-                outProgress();
+                outSpinnerProgress(loginPb,signInB);
                 return;
             }
 
@@ -187,7 +189,7 @@ public class SignInFragment extends Fragment {
                 signInUser(firebaseDbUser.getEmail_address(), Objects.requireNonNull(getSp(USER_COLLECTION, application).get(PASSWORD)).toString());
 
             } catch (JsonProcessingException e) {
-                outProgress();
+                outSpinnerProgress(loginPb,signInB);
                 Toast.makeText(requireContext(), "Problem mapping user data", Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             }
@@ -212,24 +214,16 @@ public class SignInFragment extends Fragment {
         return valid;
     }
 
-    private void inProgress() {
-        loginPb.setVisibility(View.VISIBLE);
-        signInB.setEnabled(false);
-    }
-
-    private void outProgress() {
-        loginPb.setVisibility(View.GONE);
-        signInB.setEnabled(true);
-    }
+   
 
     private void signInUser(String username, String password) {
-        inProgress();
+        inSpinnerProgress(loginPb,signInB);
         FirebaseAuth.getInstance().signInWithEmailAndPassword(username, password).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 Toast.makeText(requireContext(), "User signed in", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(requireContext(), Objects.requireNonNull(task.getException()).toString(), Toast.LENGTH_SHORT).show();
-                outProgress();
+                outSpinnerProgress(loginPb,signInB);
             }
         });
     }
@@ -249,7 +243,7 @@ public class SignInFragment extends Fragment {
             userViewModel.getLiveUser(params).observe(getViewLifecycleOwner(), jsonResponseResponse -> {
 
                 if (!jsonResponseResponse.isPresent()) {
-                    outProgress();
+                    outSpinnerProgress(loginPb,signInB);
                     return;
                 }
 
@@ -257,19 +251,19 @@ public class SignInFragment extends Fragment {
 
                 if (response == null) {
                     Toast.makeText(requireContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
-                    outProgress();
+                    outSpinnerProgress(loginPb,signInB);
                     return;
                 }
 
                 if (response.isHas_error()) {
                     Toast.makeText(requireContext(), response.getApi_code_description(), Toast.LENGTH_SHORT).show();
-                    outProgress();
+                    outSpinnerProgress(loginPb,signInB);
                     return;
                 }
 
                 if (response.getData() == null) {
                     Toast.makeText(requireContext(), "No user data", Toast.LENGTH_SHORT).show();
-                    outProgress();
+                    outSpinnerProgress(loginPb,signInB);
                     return;
                 }
 
@@ -288,7 +282,7 @@ public class SignInFragment extends Fragment {
                     proceed(requireActivity());
 
                 } catch (JsonProcessingException | InterruptedException e) {
-                    outProgress();
+                    outSpinnerProgress(loginPb,signInB);
                     if (e instanceof JsonProcessingException) {
                         Toast.makeText(requireContext(), "Problem mapping user data", Toast.LENGTH_SHORT).show();
                     } else {
@@ -300,7 +294,7 @@ public class SignInFragment extends Fragment {
             });
 
         } else {
-            outProgress();
+            outSpinnerProgress(loginPb,signInB);
             Toast.makeText(requireContext(), "Sign in to continue", Toast.LENGTH_SHORT).show();
         }
     }

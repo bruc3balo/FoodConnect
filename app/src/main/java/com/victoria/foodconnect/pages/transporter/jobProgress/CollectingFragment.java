@@ -9,6 +9,7 @@ import static com.victoria.foodconnect.pages.transporter.jobProgress.JobActivity
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -59,13 +60,15 @@ public class CollectingFragment extends Fragment {
     private final Models.Purchase purchase;
     private final Models.DistributionModel distribution;
     private final JobActivityProgress activity;
+    private final boolean readOnly;
 
 
-    public CollectingFragment(JobActivityProgress activity, Models.Purchase purchase, Models.DistributionModel distribution) {
+    public CollectingFragment(JobActivityProgress activity, Models.Purchase purchase, Models.DistributionModel distribution,boolean readOnly) {
         // Required empty public constructor
         this.purchase = purchase;
         this.distribution = distribution;
         this.activity = activity;
+        this.readOnly = readOnly;
     }
 
 
@@ -128,7 +131,7 @@ public class CollectingFragment extends Fragment {
                             }
                         } else {
                             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Objects.requireNonNull(getPositionFromString(p.getLocation())), 17));
-                            addMarkerToMap(googleMap, getPositionFromString(p.getLocation()), null);
+                            addMarkerToMap(activity,googleMap, getPositionFromString(p.getLocation()), null);
                         }
 
                     });
@@ -151,7 +154,7 @@ public class CollectingFragment extends Fragment {
 
     private void goToBeneficiary() {
         binding.goToBeneficiary.setEnabled(false);
-        update((JobActivityProgress) activity, new Models.DistributionUpdateForm(distribution.getId(), DistributionStatus.ON_THE_WAY.getCode()));
+        update(activity, new Models.DistributionUpdateForm(distribution.getId(), DistributionStatus.ON_THE_WAY.getCode()));
     }
 
     private void confirmDialog(Context context, String info, Function<Models.Purchase, Void> function) {
@@ -180,18 +183,18 @@ public class CollectingFragment extends Fragment {
 
         googleMap.setMyLocationEnabled(true);
         googleMap.setOnMyLocationButtonClickListener(() -> false);
-        googleMap.setOnMyLocationClickListener(location -> Toast.makeText(requireContext(), "I am here !!! ", Toast.LENGTH_SHORT).show());
+        googleMap.setOnMyLocationClickListener(location -> getFromLocation(new LatLng(location.getLatitude(),location.getLongitude()),activity));
         googleMap.getUiSettings().setZoomControlsEnabled(true);
         googleMap.getUiSettings().setZoomGesturesEnabled(true);
 
 
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Objects.requireNonNull(getPositionFromString(purchase.getLocation())), 17));
-        addMarkerToMap(googleMap, getPositionFromString(purchase.getLocation()), purchase.getAddress());
+        addMarkerToMap(activity,googleMap, getPositionFromString(purchase.getLocation()), purchase.getAddress());
 
     }
 
-    private void addMarkerToMap(GoogleMap googleMap, LatLng latLng, String address) {
-        @SuppressLint("UseCompatLoadingForDrawables") MarkerOptions markerOptions = new MarkerOptions().position(latLng).draggable(true).title(address != null ? address : getFromLocation(latLng, requireContext()))/*.snippet("Click to confirm location")*/.icon(BitmapDescriptorFactory.fromBitmap(drawableToBitmap(activity.getDrawable(R.drawable.ic_served_food))));
+    public static void addMarkerToMap(Activity activity, GoogleMap googleMap, LatLng latLng, String address) {
+        @SuppressLint("UseCompatLoadingForDrawables") MarkerOptions markerOptions = new MarkerOptions().position(latLng).draggable(true).title(address != null ? address : getFromLocation(latLng, activity))/*.snippet("Click to confirm location")*/.icon(BitmapDescriptorFactory.fromBitmap(drawableToBitmap(activity.getDrawable(R.drawable.ic_served_food))));
         googleMap.clear();
         googleMap.addMarker(markerOptions);
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));

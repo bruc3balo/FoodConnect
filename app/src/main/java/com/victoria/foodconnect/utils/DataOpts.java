@@ -1,23 +1,18 @@
 package com.victoria.foodconnect.utils;
 
 import static android.content.Context.MODE_PRIVATE;
-
 import static com.victoria.foodconnect.SplashScreen.logout;
-import static com.victoria.foodconnect.globals.GlobalRepository.application;
-import static com.victoria.foodconnect.globals.GlobalRepository.userApi;
 import static com.victoria.foodconnect.globals.GlobalRepository.userRepository;
 import static com.victoria.foodconnect.globals.GlobalVariables.ACCESS_TOKEN;
 import static com.victoria.foodconnect.globals.GlobalVariables.APPLICATION_JSON;
 import static com.victoria.foodconnect.globals.GlobalVariables.CONTENT_TYPE_ME;
-import static com.victoria.foodconnect.globals.GlobalVariables.HY;
 import static com.victoria.foodconnect.globals.GlobalVariables.KEY;
 import static com.victoria.foodconnect.globals.GlobalVariables.USER_COLLECTION;
 import static com.victoria.foodconnect.globals.userDb.UserViewModel.refreshStaticToken;
-
+import static com.victoria.foodconnect.service.LocationService.locationServiceRunning;
 
 import android.app.Activity;
 import android.app.Application;
-import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -27,26 +22,17 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.Observer;
 
 import com.auth0.android.jwt.JWT;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.introspect.VisibilityChecker;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.victoria.foodconnect.databinding.VerificationLayoutBinding;
 import com.victoria.foodconnect.domain.Domain;
 import com.victoria.foodconnect.login.VerifyAccount;
 import com.victoria.foodconnect.models.Models;
@@ -55,6 +41,7 @@ import com.victoria.foodconnect.pages.beneficiary.BeneficiaryActivity;
 import com.victoria.foodconnect.pages.donor.DonorActivity;
 import com.victoria.foodconnect.pages.seller.SellerActivity;
 import com.victoria.foodconnect.pages.transporter.TransporterActivity;
+import com.victoria.foodconnect.service.LocationService;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -62,11 +49,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Objects;
-
-import io.vertx.core.json.JsonObject;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class DataOpts {
 
@@ -166,12 +148,17 @@ public class DataOpts {
                 case "ROLE_TRANSPORTER":
 
                     if (!appUser.get().isVerified()) {
+
                         goToVerifyPage(activity);
+
                         return;
                     }
 
                     refreshStaticToken().observe((LifecycleOwner) activity, success -> {
                         if (success) {
+                            if (!locationServiceRunning) {
+                                activity.startService(new Intent(activity, LocationService.class));
+                            }
                             goToTransporterProviderPage(activity);
                         } else {
                             logout(activity);
@@ -189,6 +176,9 @@ public class DataOpts {
 
                     refreshStaticToken().observe((LifecycleOwner) activity, success -> {
                         if (success) {
+                            if (!locationServiceRunning) {
+                                activity.startService(new Intent(activity, LocationService.class));
+                            }
                             goToDonorPage(activity);
                         } else {
                             logout(activity);
@@ -206,6 +196,9 @@ public class DataOpts {
 
                     refreshStaticToken().observe((LifecycleOwner) activity, success -> {
                         if (success) {
+                            if (!locationServiceRunning) {
+                                activity.startService(new Intent(activity, LocationService.class));
+                            }
                             goToBuyerPage(activity);
                         } else {
                             logout(activity);

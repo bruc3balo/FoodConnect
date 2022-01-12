@@ -57,6 +57,8 @@ public class AdminActivity extends AppCompatActivity {
 
         userRepository.getUserLive().observe(this, appUser -> {
             if (appUser.isPresent()) {
+                binding.text.setVisibility(View.VISIBLE);
+                binding.text.setText("Welcome "+appUser.get().getUsername());
                 toolbar.setTitle(appUser.get().getUsername());
                 toolbar.setSubtitle(appUser.get().getRole());
             }
@@ -91,11 +93,15 @@ public class AdminActivity extends AppCompatActivity {
             switch (item.getItemId()) {
                 default:
                 case R.id.products:
+                    binding.subText.setVisibility(View.VISIBLE);
+                    binding.subText.setText("Products");
                     addFragmentToContainer(getSupportFragmentManager(), binding.adminFragment, new ProductsFragment());
                     closeDrawer(drawerLayout);
                     break;
 
                 case R.id.users:
+                    binding.subText.setVisibility(View.VISIBLE);
+                    binding.subText.setText("Users");
                     addFragmentToContainer(getSupportFragmentManager(), binding.adminFragment, new UsersFragment());
                     closeDrawer(drawerLayout);
                     break;
@@ -138,9 +144,13 @@ public class AdminActivity extends AppCompatActivity {
     private Fragment getLastUsedFragment() {
         switch (lastFragment) {
             default: case 0:
+                binding.subText.setVisibility(View.VISIBLE);
+                binding.subText.setText("Products");
                 return new ProductsFragment();
 
             case 1:
+                binding.subText.setVisibility(View.VISIBLE);
+                binding.subText.setText("Users");
                 return new UsersFragment();
         }
     }

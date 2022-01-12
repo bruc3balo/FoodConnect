@@ -3,6 +3,8 @@ package com.victoria.foodconnect.pages.seller.fragments;
 import static com.victoria.foodconnect.globals.GlobalRepository.userRepository;
 import static com.victoria.foodconnect.globals.GlobalVariables.ID;
 import static com.victoria.foodconnect.globals.GlobalVariables.PRODUCT_COLLECTION;
+import static com.victoria.foodconnect.pages.ProgressActivity.inSpinnerProgress;
+import static com.victoria.foodconnect.pages.ProgressActivity.outSpinnerProgress;
 import static com.victoria.foodconnect.utils.DataOpts.getObjectMapper;
 import static com.victoria.foodconnect.utils.SimilarityClass.alike;
 
@@ -61,6 +63,7 @@ public class MyProductsSeller extends Fragment {
     private final LinkedList<Models.Product> allProductList = new LinkedList<>();
 
     private Domain.AppUser user;
+    private boolean requested = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -103,7 +106,10 @@ public class MyProductsSeller extends Fragment {
         userRepository.getUserLive().observe(getViewLifecycleOwner(), appUser -> {
             if (appUser.isPresent()) {
                 user = appUser.get();
-                getProductCategories();
+                if (!requested) {
+                    getProductCategories();
+                }
+
             } else {
                 Toast.makeText(requireContext(), "Failed to get user", Toast.LENGTH_SHORT).show();
             }
@@ -171,15 +177,19 @@ public class MyProductsSeller extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        if (user != null) {
+            getProductCategories();
+        }
     }
 
     private void getProductCategories() {
-
+        requested = true;
+        inSpinnerProgress(binding.pb,null);
         System.out.println("GET PRODUCT CATEGORY DATA");
-
-
         productViewModel.getAllProductCategoriesLive().observe(requireActivity(), jsonResponse -> {
+
             if (!jsonResponse.isPresent()) {
+                outSpinnerProgress(binding.pb,null);
                 Toast.makeText(requireContext(), "No product categories", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -216,6 +226,7 @@ public class MyProductsSeller extends Fragment {
 
         productViewModel.getAllSellerProductsLive(user.getUsername()).observe(requireActivity(), jsonResponse -> {
             if (!jsonResponse.isPresent()) {
+                outSpinnerProgress(binding.pb,null);
                 Toast.makeText(requireContext(), "No products", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -236,6 +247,10 @@ public class MyProductsSeller extends Fragment {
                     }
 
                 }
+
+
+                outSpinnerProgress(binding.pb,null);
+
 
                 filterProducts(binding.productCategorySpinner.getSelectedItem().toString());
 

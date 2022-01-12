@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".pages.transporter.MoreDonationActivity">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:background="@color/black"
+            app:navigationIcon="@drawable/ic_back"
+            app:subtitleTextColor="@color/semiGrey"
+            app:titleTextColor="@color/white" />
+
+        <TextView
+            android:id="@+id/donorName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@color/black"
+            android:text="@string/donor"
+            android:padding="10dp"
+            android:textStyle="bold"
+            android:gravity="center_vertical"/>
+
+        <TextView
+            android:id="@+id/collectionLocation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@color/black"
+            android:text="@string/to_be_filled"
+            android:padding="10dp"
+            android:textStyle="bold"
+            android:gravity="center_vertical"/>
+
+        <TextView
+            android:id="@+id/deliveryLocation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@color/black"
+            android:text="@string/to_be_filled"
+            android:padding="10dp"
+            android:textStyle="bold"
+            android:gravity="center_vertical"/>
+
+
+        <fragment
+            android:id="@+id/mapView"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:minWidth="350dp"
+            android:minHeight="350dp"
+            android:layout_gravity="center"
+            tools:context=".pages.transporter.MapsFragment" />
+
+
+        <me.relex.circleindicator.CircleIndicator3
+            android:layout_margin="5dp"
+            android:id="@+id/indicator"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:ci_drawable_unselected="@drawable/purple_dot"
+            app:ci_drawable="@drawable/black_dot"
+            android:layout_gravity="center" />
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:layout_weight="1"
+            android:id="@+id/productsRv"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_gravity="center"
+            android:isScrollContainer="true"
+            android:padding="10dp" />
+
+
+        <Button
+            android:id="@+id/accept"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="15dp"
+            android:background="@drawable/login_bg_button_white"
+            android:text="@string/accept" />
+
+
+    </LinearLayout>
+
+    <com.github.ybq.android.spinkit.SpinKitView
+        android:id="@+id/pb"
+        style="@style/SpinKitView.Large.WanderingCubes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        app:SpinKit_Color="@android:color/holo_red_dark" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

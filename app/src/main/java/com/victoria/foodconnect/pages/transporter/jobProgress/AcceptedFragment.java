@@ -27,13 +27,14 @@ public class AcceptedFragment extends Fragment {
     private final Models.Purchase purchase;
     private final Models.DistributionModel distribution;
     private final JobActivityProgress activity;
+    private final boolean readOnly;
 
 
-    public AcceptedFragment(JobActivityProgress activity,Models.Purchase purchase, Models.DistributionModel distribution) {
-        // Required empty public constructor
+    public AcceptedFragment(JobActivityProgress activity, Models.Purchase purchase, Models.DistributionModel distribution, boolean readOnly) {
         this.purchase = purchase;
         this.distribution = distribution;
         this.activity = activity;
+        this.readOnly = readOnly;
     }
 
 
@@ -58,7 +59,7 @@ public class AcceptedFragment extends Fragment {
 
     private void startJob() {
         binding.start.setEnabled(false);
-        update((JobActivityProgress) requireActivity(), new Models.DistributionUpdateForm(distribution.getId(),DistributionStatus.COLLECTING_ITEMS.getCode()));
+        update((JobActivityProgress) requireActivity(), new Models.DistributionUpdateForm(distribution.getId(), DistributionStatus.COLLECTING_ITEMS.getCode()));
     }
 
     private void confirmDialog(Context context, String info, Function<Models.Purchase, Void> function) {

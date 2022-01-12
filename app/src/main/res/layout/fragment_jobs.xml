@@ -29,11 +29,12 @@
             android:id="@+id/jobs"/>
     </LinearLayout>
 
-    <ProgressBar
+    <com.github.ybq.android.spinkit.SpinKitView
+        android:id="@+id/pb"
+        style="@style/SpinKitView.Large.WanderingCubes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:id="@+id/pb"
-        android:indeterminateTint="@color/black"/>
+        app:SpinKit_Color="@android:color/holo_red_dark" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

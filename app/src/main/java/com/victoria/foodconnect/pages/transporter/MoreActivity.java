@@ -5,6 +5,8 @@ import static com.victoria.foodconnect.globals.GlobalVariables.HY;
 import static com.victoria.foodconnect.globals.GlobalVariables.LATITUDE;
 import static com.victoria.foodconnect.globals.GlobalVariables.LONGITUDE;
 import static com.victoria.foodconnect.login.LoginActivity.setWindowColors;
+import static com.victoria.foodconnect.pages.ProgressActivity.inSpinnerProgress;
+import static com.victoria.foodconnect.pages.ProgressActivity.outSpinnerProgress;
 import static com.victoria.foodconnect.pages.seller.AddNewProduct.drawableToBitmap;
 import static com.victoria.foodconnect.pages.seller.AddNewProduct.getLocationPermission;
 import static com.victoria.foodconnect.utils.DataOpts.getBoldSpannable;
@@ -76,7 +78,8 @@ public class MoreActivity extends AppCompatActivity {
 
         setSupportActionBar(binding.toolbar);
         binding.toolbar.setNavigationOnClickListener(v -> finish());
-        binding.pb.setVisibility(View.GONE);
+        outSpinnerProgress(binding.pb,null);
+
 
 
         purchase = (Models.Purchase) getIntent().getExtras().get(PURCHASE);
@@ -105,7 +108,7 @@ public class MoreActivity extends AppCompatActivity {
         binding.locationTv.setOnClickListener(v -> addMarkerToMap(gMap, getPositionFromString(purchase.getLocation()), purchase.getAddress(),this));
 
         ViewPager2 productsRv = binding.productsRv;
-        jobProductListAdapter = new JobProductListAdapter(MoreActivity.this, purchase.getProduct());
+        jobProductListAdapter = new JobProductListAdapter(MoreActivity.this, purchase.getProduct(),false);
         productsRv.setAdapter(jobProductListAdapter);
         productsRv.setOffscreenPageLimit(3);
         productsRv.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
@@ -138,9 +141,10 @@ public class MoreActivity extends AppCompatActivity {
     }
 
     private void confirmJob() {
-        binding.pb.setVisibility(View.VISIBLE);
+        inSpinnerProgress(binding.pb,null);
         new ViewModelProvider(this).get(PurchaseViewModel.class).acceptTransportJob(purchase.getId(), user.getUsername()).observe(this, success -> {
-            binding.pb.setVisibility(View.GONE);
+            outSpinnerProgress(binding.pb,null);
+
             if (!success.isPresent()) {
                 Toast.makeText(getApplicationContext(), "Failed to accept job. Try again later", Toast.LENGTH_SHORT).show();
                 return;
@@ -219,7 +223,7 @@ public class MoreActivity extends AppCompatActivity {
 
         gMap.setMyLocationEnabled(true);
         gMap.setOnMyLocationButtonClickListener(() -> false);
-        gMap.setOnMyLocationClickListener(location -> Toast.makeText(this, "I am here !!! ", Toast.LENGTH_SHORT).show());
+        gMap.setOnMyLocationClickListener(location -> getFromLocation(this,new LatLng(location.getLatitude(),location.getLongitude())));
         gMap.getUiSettings().setZoomControlsEnabled(true);
         gMap.getUiSettings().setZoomGesturesEnabled(true);
 

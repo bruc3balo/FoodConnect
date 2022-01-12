@@ -2,8 +2,7 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".pages.transporter.jobProgress.ReviewFragment">
+    android:layout_height="match_parent">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -14,6 +13,7 @@
             android:orientation="vertical">
 
             <LinearLayout
+                android:id="@+id/donorReviewLayout"
                 android:layout_gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -91,7 +91,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="20dp"
-                    android:isIndicator="true"
                     style="@style/Widget.AppCompat.RatingBar.Indicator" />
 
             </LinearLayout>
@@ -247,7 +246,6 @@
 
                 <RatingBar
                     android:id="@+id/beneRating"
-                    android:isIndicator="true"
                     android:layout_gravity="center"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -259,5 +257,13 @@
 
         </LinearLayout>
     </ScrollView>
+
+    <ProgressBar
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:indeterminateTint="@color/black"
+        android:id="@+id/pb"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

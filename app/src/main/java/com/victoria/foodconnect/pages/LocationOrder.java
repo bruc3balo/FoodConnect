@@ -38,6 +38,7 @@ import android.widget.Toast;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -55,25 +56,23 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
 public class LocationOrder extends AppCompatActivity {
-    
+
     private ActivityLocationOrderBinding binding;
     private GoogleMap googleMap;
-    private String location,address;
+    private String location, address;
     public static boolean successOrder = false;
-    private  ArrayList<Models.Product> allProducts = new ArrayList<>();
+    private ArrayList<Models.Product> allProducts = new ArrayList<>();
     private ArrayList<Models.Cart> cartList = new ArrayList<>();
     public static final String CARTLIST = "c";
     public static final String PRODUCTLIST = "p";
     private final ArrayList<Address> placesList = new ArrayList<>();
     private Geocoder geocoder;
     private String username;
-
 
 
     @Override
@@ -92,16 +91,19 @@ public class LocationOrder extends AppCompatActivity {
 
         successOrder = false;
 
-        binding.mapView.onCreate(savedInstanceState);
-        binding.mapView.getMapAsync(googleMap -> {
-            this.googleMap = googleMap;
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapView);
+        if (mapFragment != null) {
+            mapFragment.getMapAsync(googleMap -> {
+                this.googleMap = googleMap;
 
-            getLocationPermission(this, integer -> {
-                init();
-                return null;
+                getLocationPermission(this, integer -> {
+                    init();
+                    return null;
+                });
+
             });
+        }
 
-        });
 
 
         SearchView locationSearch = binding.locationSearch;
@@ -122,7 +124,7 @@ public class LocationOrder extends AppCompatActivity {
                 new Handler().post(() -> {
                     System.out.println("CHANGE {" + query + "}");
                     if (!query.isEmpty()) {
-                        getSuggestions(query, locationSearch);
+                        getQuerySuggestions(query, locationSearch);
                     }
                 });
                 return false;
@@ -199,7 +201,7 @@ public class LocationOrder extends AppCompatActivity {
             locationMap.put(LONGITUDE, String.valueOf(latLng.longitude));
             location = getStringFromMap(locationMap);
             address = add.getAddressLine(0);
-            binding.locationTv.setText("Location is "+address);
+            binding.locationTv.setText("Location is " + address);
             return add.getAddressLine(0);
         } catch (IOException | IllegalArgumentException e) {
             Toast.makeText(LocationOrder.this, e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -222,7 +224,7 @@ public class LocationOrder extends AppCompatActivity {
 
         googleMap.setMyLocationEnabled(true);
         googleMap.setOnMyLocationButtonClickListener(() -> false);
-        googleMap.setOnMyLocationClickListener(location -> Toast.makeText(this, "I am here !!! ", Toast.LENGTH_SHORT).show());
+        googleMap.setOnMyLocationClickListener(location -> getFromLocation(new LatLng(location.getLatitude(),location.getLongitude())));
         googleMap.setOnMapClickListener(latLng -> addMarkerToMap(googleMap, latLng, null));
         googleMap.setOnMapLongClickListener(latLng -> addMarkerToMap(googleMap, latLng, null));
         googleMap.setOnMarkerClickListener(marker -> false);
@@ -244,13 +246,6 @@ public class LocationOrder extends AppCompatActivity {
         });
         googleMap.getUiSettings().setZoomControlsEnabled(true);
         googleMap.getUiSettings().setZoomGesturesEnabled(true);
-
-        LatLng temp = new LatLng(37.4,-1.4);
-
-        //googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(temp,17));
-       // googleMap.clear();
-       // googleMap.addMarker(new MarkerOptions().position(temp));
-
     }
 
     @SuppressLint("SetTextI18n")
@@ -268,15 +263,15 @@ public class LocationOrder extends AppCompatActivity {
             pb.setVisibility(View.VISIBLE);
 
             LinkedHashMap<String, Integer> productIdList = new LinkedHashMap<>();
-            cartList.forEach(c -> productIdList.put(c.getProductId(),c.getNumberOfItems()));
+            cartList.forEach(c -> productIdList.put(c.getProductId(), c.getNumberOfItems()));
 
             Models.PurchaseCreationForm form = new Models.PurchaseCreationForm(username, productIdList);
             form.setLocation(location);
             form.setAddress(address);
 
             try {
-                System.out.println("Products are form "+getObjectMapper().writeValueAsString(form));
-                System.out.println("Products are cart "+getObjectMapper().writeValueAsString(cartList));
+                System.out.println("Products are form " + getObjectMapper().writeValueAsString(form));
+                System.out.println("Products are cart " + getObjectMapper().writeValueAsString(cartList));
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }
@@ -306,11 +301,11 @@ public class LocationOrder extends AppCompatActivity {
         d.show();
     }
 
-    private MutableLiveData<List<Address>> getSuggestions(String query) {
+    public static MutableLiveData<List<Address>> getQuerySuggestions(Context context, String query) {
         MutableLiveData<List<Address>> suggestions = new MutableLiveData<>();
 
         try {
-            suggestions.setValue(geocoder.getFromLocationName(query, 10));
+            suggestions.setValue(new Geocoder(context).getFromLocationName(query, 10));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -318,8 +313,8 @@ public class LocationOrder extends AppCompatActivity {
         return suggestions;
     }
 
-    public LiveData<List<Address>> getSuggestedAddresses(String query) {
-        return getSuggestions(query);
+    public static LiveData<List<Address>> getSuggestedAddresses(Context context, String query) {
+        return getQuerySuggestions(context, query);
     }
 
     private void showSuggestions(View anchor) {
@@ -358,14 +353,14 @@ public class LocationOrder extends AppCompatActivity {
         googleMap.addMarker(markerOptions);
     }
 
-    private void getSuggestions(String query, View anchor) {
+    private void getQuerySuggestions(String query, View anchor) {
         if (query == null || query.isEmpty()) {
             placesList.clear();
             return;
         }
 
         //placesList.addAll(geocoder.getFromLocationName(query, 10));
-        getSuggestedAddresses(query).observe(this, addresses -> {
+        getSuggestedAddresses(LocationOrder.this, query).observe(this, addresses -> {
             placesList.clear();
             placesList.addAll(addresses);
             System.out.println(Arrays.toString(addresses.stream().map(p -> p.getAddressLine(0)).toArray()));
@@ -376,22 +371,4 @@ public class LocationOrder extends AppCompatActivity {
 
 
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        binding.mapView.onResume();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        binding.mapView.onDestroy();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        binding.mapView.onPause();
-
-    }
 }

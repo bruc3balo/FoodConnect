@@ -29,4 +29,13 @@
            android:id="@+id/categoriesRv"/>
    </LinearLayout>
 
+
+    <com.github.ybq.android.spinkit.SpinKitView
+        android:id="@+id/pb"
+        style="@style/SpinKitView.Large.WanderingCubes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        app:SpinKit_Color="@android:color/holo_red_dark" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -27,6 +27,8 @@ public class GlobalVariables {
     public static final String USERNAME = "username";
     public static final String PASSWORD = "password";
     public static final String PROFILE_PICTURE = "profile_picture";
+    public static final String DONATION = "donation";
+    public static final String READ_ONLY = "read_only";
 
     public static final String DISABLED = "disabled";
     public static final String DELETED = "deleted";
@@ -34,8 +36,10 @@ public class GlobalVariables {
     public static final String REVIEW = "review";
 
 
-    public static final String API_URL = "https://food-dstribution-api-vic.herokuapp.com";
-    //public static final String API_URL = "https://ca47-197-232-244-229.ngrok.io";
+    //public static final String API_URL = "https://food-dstribution-api-vic.herokuapp.com";
+    public static final String API_URL = "https://b89d-197-232-244-229.ngrok.io";
+    //public static final String API_URL = "http://localhost:5000";
+    //public static final String API_URL = "http://192.168.0.8:5000";
     public static final String CONTEXT_URL = "/api/v1/";
     public static final String HY = "-";
     public static final String KEY = "^";
@@ -74,5 +78,9 @@ public class GlobalVariables {
     public static final String AUTHORIZATION = "Authorization";
     public static final String CONTENT_TYPE_ME = "Content-Type";
     public static final String APPLICATION_JSON = "application/json";
+    public static final String KEEP_ALIVE = "Keep-Alive";
+    public static final String KEEP_ALIVE_VAL = "timeout=60";
+    public static final String CONNECTION_VAL = "keep-alive";
+
 
 }

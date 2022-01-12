@@ -3,6 +3,7 @@ package com.victoria.foodconnect.adapter;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.Context;
 import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,11 +35,11 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
 
     private ItemClickListener mClickListener;
 
-    private final MyOrdersSeller mContext;
+    private final Context mContext;
     private final LinkedList<Models.ProductCountModel> list;
 
 
-    public ProductListAdapter(MyOrdersSeller context, LinkedList<Models.ProductCountModel> list) {
+    public ProductListAdapter(Context context, LinkedList<Models.ProductCountModel> list) {
         this.mContext = context;
         this.list = list;
     }
@@ -54,7 +55,7 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
     @SuppressLint({"SetTextI18n", "UseCompatLoadingForDrawables"})
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Models.ProductCountModel entry = list.get(position);
+        Models.ProductCountModel entry = list.get(holder.getAdapterPosition());
         int item = entry.getCount();
         Models.Product product = entry.getProduct();
 
@@ -66,7 +67,7 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
     }
 
     private void showConfirmationDialog(String infoS, Function<Boolean, Void> yesFunction, Boolean currentState) {
-        Dialog d = new Dialog(mContext.requireContext());
+        Dialog d = new Dialog(mContext);
         d.setContentView(R.layout.yes_no_layout);
         d.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         d.show();

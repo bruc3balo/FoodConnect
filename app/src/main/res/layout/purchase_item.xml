@@ -4,6 +4,7 @@
     android:layout_height="wrap_content"
     android:layout_margin="10dp"
     app:cardCornerRadius="20dp"
+    android:id="@+id/completionCard"
     app:cardBackgroundColor="@color/black"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
@@ -56,6 +57,32 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:gravity="center_vertical"
+                    android:text="Delivery Location : "
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/deliveryLocation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center_vertical"
+                    android:text="@string/to_be_filled"
+                    android:layout_marginStart="10dp"
+                    android:textStyle="normal"
+                    android:textColor="@color/black"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center_vertical"
                     android:text="Ordered at : "
                     android:textStyle="bold" />
 
@@ -72,12 +99,50 @@
 
             </LinearLayout>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/productRv"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center_vertical"
+                    android:text="Assigned : "
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/transported"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center_vertical"
+                    android:text="@string/to_be_filled"
+                    android:layout_marginStart="10dp"
+                    android:textStyle="normal"
+                    android:textColor="@color/black"/>
+
+            </LinearLayout>
+
+            <androidx.viewpager2.widget.ViewPager2
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/productsRv"
+                android:isScrollContainer="true"
+                android:nestedScrollingEnabled="false"
                 android:layout_gravity="center"
-                android:padding="15dp"/>
+                android:padding="10dp"/>
+
+            <me.relex.circleindicator.CircleIndicator3
+                android:layout_margin="5dp"
+                android:id="@+id/indicator"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:ci_drawable_unselected="@drawable/purple_dot"
+                app:ci_drawable="@drawable/black_dot"
+                android:layout_gravity="center" />
+
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -112,6 +177,15 @@
                     android:textStyle="bold" />
 
             </LinearLayout>
+
+            <Button
+                android:id="@+id/more"
+                android:text="@string/more"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/login_bg_button_white"
+                android:layout_margin="15dp"/>
 
 
         </LinearLayout>

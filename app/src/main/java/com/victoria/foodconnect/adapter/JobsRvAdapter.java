@@ -3,6 +3,9 @@ package com.victoria.foodconnect.adapter;
 
 import static android.graphics.Color.BLACK;
 import static android.graphics.Color.GREEN;
+import static com.victoria.foodconnect.globals.GlobalVariables.DONATION;
+import static com.victoria.foodconnect.globals.GlobalVariables.MEDIA_TYPE;
+import static com.victoria.foodconnect.globals.GlobalVariables.READ_ONLY;
 import static com.victoria.foodconnect.pages.seller.AddNewProduct.drawableToBitmap;
 import static com.victoria.foodconnect.pages.transporter.MoreActivity.PURCHASE;
 import static com.victoria.foodconnect.utils.DataOpts.getUnderlinedSpannableBuilder;
@@ -38,7 +41,10 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.victoria.foodconnect.R;
 import com.victoria.foodconnect.domain.Domain;
 import com.victoria.foodconnect.models.Models;
+import com.victoria.foodconnect.pages.ProgressActivity;
 import com.victoria.foodconnect.pages.transporter.MoreActivity;
+import com.victoria.foodconnect.pages.transporter.MoreDonationActivity;
+import com.victoria.foodconnect.pages.transporter.donationProgress.DonationProgressActivity;
 import com.victoria.foodconnect.pages.transporter.jobProgress.JobActivityProgress;
 
 import org.jetbrains.annotations.NotNull;
@@ -58,12 +64,13 @@ public class JobsRvAdapter extends RecyclerView.Adapter<JobsRvAdapter.ViewHolder
     private final Activity mContext;
     private final LinkedList<Models.Purchase> list;
     private final Domain.AppUser user;
+    private final boolean readOnly;
 
-
-    public JobsRvAdapter(Activity context, LinkedList<Models.Purchase> list, Domain.AppUser user) {
+    public JobsRvAdapter(Activity context, LinkedList<Models.Purchase> list, Domain.AppUser user,boolean readOnly) {
         this.mContext = context;
         this.list = list;
         this.user = user;
+        this.readOnly = readOnly;
     }
 
     @NotNull
@@ -77,7 +84,7 @@ public class JobsRvAdapter extends RecyclerView.Adapter<JobsRvAdapter.ViewHolder
     @SuppressLint({"SetTextI18n", "UseCompatLoadingForDrawables"})
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Models.Purchase purchase = list.get(position);
+        Models.Purchase purchase = list.get(holder.getAdapterPosition());
 
         TextView buyer = holder.buyer;
         TextView delivery = holder.deliveryLocation;
@@ -93,43 +100,29 @@ public class JobsRvAdapter extends RecyclerView.Adapter<JobsRvAdapter.ViewHolder
         }
 
         if (!purchase.isComplete() && !purchase.getDeleted() && purchase.getAssigned() == null) {
-            more.setText("More");
+            more.setText(readOnly ? "Progress" : "More");
             more.setOnClickListener(v -> goToMore(purchase));
-        } else if (!purchase.isComplete() && !purchase.getDeleted() && purchase.getAssigned() != null && purchase.getAssigned().equals(user.getUsername())) {
+        } else if (!purchase.isComplete() && !purchase.getDeleted() && purchase.getAssigned() != null) {
             //progress
             more.setText("Progress");
             more.setOnClickListener(v -> goToProgress(purchase));
-        } else if (purchase.getDeleted() || purchase.isComplete()) {
+        } else if (purchase.getDeleted() || purchase.isComplete() && purchase.getAssigned() != null) {
             //complete
-            more.setText("Details");
+            more.setText("Rating");
+            more.setOnClickListener(v -> goToProgress(purchase));
         } else {
             //Toast.makeText(mContext, "HHMmmmmm", Toast.LENGTH_SHORT).show();
         }
 
-
         buyer.setText(getUnderlinedSpannableBuilder(purchase.getBuyersId()));
         delivery.setText("Delivery Location : " + purchase.getAddress());
-        more.setOnClickListener(v -> {
-
-            if (!purchase.isComplete() && !purchase.getDeleted() && purchase.getAssigned() == null) {
-                goToMore(purchase);
-            } else if (!purchase.isComplete() && !purchase.getDeleted() && purchase.getAssigned() != null && purchase.getAssigned().equals(user.getUsername())) {
-                //progress
-                goToProgress(purchase);
-            } else if (purchase.getDeleted() || purchase.isComplete()) {
-                //complete
-            } else {
-                //Toast.makeText(mContext, "HHMmmmmm", Toast.LENGTH_SHORT).show();
-            }
-
-        });
 
 
         productsRv.setOffscreenPageLimit(3);
         productsRv.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
         productsRv.requestTransform();
         productsRv.getChildAt(0).setOverScrollMode(RecyclerView.OVER_SCROLL_NEVER);
-        final JobProductListAdapter jobProductListAdapter = new JobProductListAdapter(mContext, purchase.getProduct());
+        final JobProductListAdapter jobProductListAdapter = new JobProductListAdapter(mContext, purchase.getProduct(),false);
         jobProductListAdapter.registerAdapterDataObserver(indicator.getAdapterDataObserver());
         productsRv.setAdapter(jobProductListAdapter);
         productsRv.setPadding(40, 0, 40, 0);
@@ -137,40 +130,19 @@ public class JobsRvAdapter extends RecyclerView.Adapter<JobsRvAdapter.ViewHolder
     }
 
     private void goToMore(Models.Purchase purchase) {
-        mContext.startActivity(new Intent(mContext, MoreActivity.class).putExtra(PURCHASE, purchase));
+        if (readOnly) {
+            mContext.startActivity(new Intent(mContext, ProgressActivity.class).putExtra(PURCHASE, purchase).putExtra(MEDIA_TYPE, PURCHASE));
+        } else {
+            mContext.startActivity(new Intent(mContext, MoreActivity.class).putExtra(PURCHASE, purchase));
+        }
     }
-
 
     private void goToProgress(Models.Purchase purchase) {
-        mContext.startActivity(new Intent(mContext, JobActivityProgress.class).putExtra(PURCHASE, purchase));
-    }
-
-    private void init(GoogleMap map) {
-
-        if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
+        if (readOnly && !purchase.isComplete()) {
+            mContext.startActivity(new Intent(mContext, ProgressActivity.class).putExtra(PURCHASE, purchase).putExtra(MEDIA_TYPE, PURCHASE));
+        } else {
+            mContext.startActivity(new Intent(mContext, JobActivityProgress.class).putExtra(PURCHASE, purchase));
         }
-
-        map.setMyLocationEnabled(true);
-        map.setOnMyLocationButtonClickListener(() -> false);
-        map.setOnMyLocationClickListener(location -> Toast.makeText(mContext, "I am here !!! ", Toast.LENGTH_SHORT).show());
-        map.getUiSettings().setZoomControlsEnabled(true);
-        map.getUiSettings().setZoomGesturesEnabled(true);
-    }
-
-
-    private void addMarkerToMap(GoogleMap googleMap, LatLng latLng, String buyer) {
-        String title = getFromLocation(latLng, mContext);
-        @SuppressLint("UseCompatLoadingForDrawables") MarkerOptions markerOptions = new MarkerOptions().position(latLng).draggable(true).title(title != null ? title : "Lat : " + String.valueOf(latLng.latitude).substring(4).concat("Long : " + String.valueOf(latLng.latitude).substring(4))).snippet(buyer + " location").icon(BitmapDescriptorFactory.fromBitmap(drawableToBitmap(mContext.getDrawable(R.drawable.ic_give_food))));
-        googleMap.clear();
-        googleMap.addMarker(markerOptions);
     }
 
     public static String getFromLocation(LatLng latLng, Context context) {

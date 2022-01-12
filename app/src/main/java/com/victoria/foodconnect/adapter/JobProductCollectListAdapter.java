@@ -74,8 +74,8 @@ public class JobProductCollectListAdapter extends RecyclerView.Adapter<JobProduc
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        int status = list.getValue(position);
-        Optional<Models.Product> productOptional = productList.stream().filter(i -> i.getId().equals(list.getKey(position))).findFirst();
+        int status = list.getValue(holder.getAdapterPosition());
+        Optional<Models.Product> productOptional = productList.stream().filter(i -> i.getId().equals(list.getKey(holder.getAdapterPosition()))).findFirst();
         productOptional.ifPresent(product -> {
 
             if (!product.getLocation().equals(HY)) {

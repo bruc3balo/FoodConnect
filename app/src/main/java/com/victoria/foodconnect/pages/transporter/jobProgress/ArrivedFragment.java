@@ -31,13 +31,15 @@ public class ArrivedFragment extends Fragment {
     private final Models.Purchase purchase;
     private final Models.DistributionModel distribution;
     private final JobActivityProgress activity;
+    private final boolean readOnly;
 
 
-    public ArrivedFragment(JobActivityProgress activity, Models.Purchase purchase, Models.DistributionModel distribution) {
+    public ArrivedFragment(JobActivityProgress activity, Models.Purchase purchase, Models.DistributionModel distribution,boolean readOnly) {
         // Required empty public constructor
         this.purchase = purchase;
         this.distribution = distribution;
         this.activity = activity;
+        this.readOnly = readOnly;
     }
 
 

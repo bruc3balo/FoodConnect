@@ -11,6 +11,7 @@ import android.widget.ProgressBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.github.ybq.android.spinkit.SpinKitView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.victoria.foodconnect.R;
@@ -20,7 +21,7 @@ import com.victoria.foodconnect.pagerTransformers.DepthPageTransformer;
 public class LoginActivity extends AppCompatActivity {
 
     @SuppressLint("StaticFieldLeak")
-    public static ProgressBar loginPb;
+    public static SpinKitView loginPb;
     private ViewPager2 loginViewPager;
     private TabLayout loginTabLayout;
 
@@ -31,8 +32,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-
-        loginPb = findViewById(R.id.loginPb);
+        loginPb = findViewById(R.id.pb);
         loginViewPager = findViewById(R.id.loginViewPager);
         loginTabLayout = findViewById(R.id.loginTabLayout);
 

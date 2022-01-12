@@ -3,6 +3,8 @@ package com.victoria.foodconnect.service;
 
 import static com.victoria.foodconnect.globals.GlobalRepository.application;
 import static com.victoria.foodconnect.globals.GlobalRepository.userRepository;
+import static com.victoria.foodconnect.globals.GlobalVariables.DONATION;
+import static com.victoria.foodconnect.globals.GlobalVariables.HY;
 import static com.victoria.foodconnect.globals.GlobalVariables.MEDIA_TYPE;
 import static com.victoria.foodconnect.globals.GlobalVariables.PRODUCT_COLLECTION;
 import static com.victoria.foodconnect.globals.GlobalVariables.PRODUCT_COLLECTION_UPDATE;
@@ -13,6 +15,8 @@ import static com.victoria.foodconnect.utils.DataOpts.getObjectMapper;
 import static com.victoria.foodconnect.utils.NotificationChannelClass.SYNCH_NOTIFICATION_CHANNEL;
 import static com.victoria.foodconnect.utils.NotificationChannelClass.getPopUri;
 
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.net.Uri;
@@ -36,6 +40,7 @@ import com.google.firebase.storage.StorageReference;
 import com.victoria.foodconnect.R;
 import com.victoria.foodconnect.domain.Domain;
 import com.victoria.foodconnect.globals.productDb.ProductViewModel;
+import com.victoria.foodconnect.globals.purchaseDb.PurchaseViewModel;
 import com.victoria.foodconnect.globals.userDb.UserViewModel;
 import com.victoria.foodconnect.models.Models;
 import com.victoria.foodconnect.utils.JsonResponse;
@@ -51,6 +56,7 @@ public class UploadPictureService extends LifecycleService implements ViewModelS
     private Models.ProductCreationFrom productCreationFrom;
     private Models.ProductUpdateForm productUpdateForm;
     private Models.UserUpdateForm userUpdateForm;
+    private Models.DonationCreationForm donationCreationForm;
     private Domain.AppUser user;
 
     final ViewModelStore mViewModelStore = new ViewModelStore();
@@ -106,13 +112,17 @@ public class UploadPictureService extends LifecycleService implements ViewModelS
                     userUpdateForm = (Models.UserUpdateForm) intent.getExtras().getSerializable(PROFILE_PICTURE);
                     uploadProfileImage(userUpdateForm.getProfile_picture());
                     break;
+
+                case DONATION:
+                    Toast.makeText(getApplication(), "Your pictures will be uploaded soon", Toast.LENGTH_SHORT).show();
+                    donationCreationForm = (Models.DonationCreationForm) intent.getExtras().getSerializable(DONATION);
+                    uploadDonationImages();
+                    break;
             }
         });
 
 
         System.out.println("Image upload started");
-
-
         return START_NOT_STICKY;
     }
 
@@ -142,7 +152,6 @@ public class UploadPictureService extends LifecycleService implements ViewModelS
         StorageReference profileBucket = FirebaseStorage.getInstance().getReference().child(PRODUCT_IMAGE).child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
         profileBucket.putFile(Uri.parse(data)).addOnProgressListener(snapshot -> showSyncNotification(getPercentageProgress(snapshot.getBytesTransferred(), snapshot.getTotalByteCount()), productUpdateForm.getProduct_name(), productUpdateForm.getProduct_description())).addOnSuccessListener(taskSnapshot -> profileBucket.getDownloadUrl().addOnSuccessListener(uri -> {
             productUpdateForm.setImage(uri.toString());
-
             startForeground(1, notification.setProgress(100, 100, true).build());
             imageUploaded = true;
             updateProductDetails();
@@ -151,6 +160,45 @@ public class UploadPictureService extends LifecycleService implements ViewModelS
             imageUploaded = false;
             stopSelf();
         }));
+    }
+
+    private void uploadDonationImages() {
+        System.out.println("step 1 : Starting image upload");
+        for (int i = 0; i < donationCreationForm.getProducts().size(); i++) {
+            Models.DonorItem p = donationCreationForm.getProducts().get(i);
+            StorageReference profileBucket = FirebaseStorage.getInstance().getReference().child(DONATION).child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()).child(p.getName());
+            int finalI = i;
+            profileBucket.putFile(Uri.parse(p.getImage())).addOnProgressListener(snapshot -> showSyncNotification(getPercentageProgress(snapshot.getBytesTransferred(), snapshot.getTotalByteCount()), "profile picture", "uploading profile picture")).addOnSuccessListener(taskSnapshot -> profileBucket.getDownloadUrl().addOnSuccessListener(uri -> {
+
+                p.setImage(uri.toString());
+
+                System.out.println("step . : Stored link uri : " + uri.toString());
+
+                if (finalI == donationCreationForm.getProducts().size() - 1) {
+                    try {
+                        Thread.sleep(3000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    postCreationForm();
+                }
+
+            }).addOnFailureListener(e -> p.setImage(HY)));
+        }
+        imageUploaded = true;
+    }
+
+    private void postCreationForm () {
+        System.out.println("step 2 : Starting data upload");
+        new ViewModelProvider(this).get(PurchaseViewModel.class).postADonation(donationCreationForm).observe(this, success -> {
+            if (!success.isPresent()) {
+                Toast.makeText(getApplicationContext(), "Failed to post donation", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            Toast.makeText(getApplicationContext(), "Donation successfully posted", Toast.LENGTH_SHORT).show();
+            stopSelf();
+        });
     }
 
     private void uploadProfileImage(String data) {

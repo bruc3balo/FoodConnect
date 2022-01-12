@@ -23,11 +23,12 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.google.android.material.navigation.NavigationView;
 import com.victoria.foodconnect.R;
 import com.victoria.foodconnect.databinding.ActivityTransporterBinding;
+import com.victoria.foodconnect.pages.transporter.fragments.DonationJobsFragment;
 import com.victoria.foodconnect.pages.transporter.fragments.JobsFragment;
 
 public class TransporterActivity extends AppCompatActivity {
 
-    ActivityTransporterBinding binding;
+    private ActivityTransporterBinding binding;
     private boolean backPressed = false;
 
 
@@ -73,7 +74,16 @@ public class TransporterActivity extends AppCompatActivity {
             switch (item.getItemId()) {
                 default:
                 case R.id.jobs:
+                    binding.subText.setVisibility(View.VISIBLE);
+                    binding.subText.setText("Purchase jobs");
                     addFragmentToContainer(getSupportFragmentManager(), binding.transporterDrawerFragment, new JobsFragment());
+                    closeDrawer(drawerLayout);
+                    break;
+
+                case R.id.donations:
+                    binding.subText.setVisibility(View.VISIBLE);
+                    binding.subText.setText("Donation jobs");
+                    addFragmentToContainer(getSupportFragmentManager(), binding.transporterDrawerFragment, new DonationJobsFragment());
                     closeDrawer(drawerLayout);
                     break;
 
@@ -83,8 +93,7 @@ public class TransporterActivity extends AppCompatActivity {
 
         userRepository.getUserLive().observe(this, appUser -> {
             if (appUser.isPresent()) {
-                toolbar.setTitle(appUser.get().getUsername());
-                toolbar.setSubtitle(appUser.get().getRole());
+                binding.text.setText(appUser.get().getUsername());
                 setNavDetails(appUser.get(), header, TransporterActivity.this);
             }
         });
@@ -94,12 +103,9 @@ public class TransporterActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        menu.add("Logout").setIcon(R.drawable.logout).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                logout(TransporterActivity.this);
-                return false;
-            }
+        menu.add("Logout").setIcon(R.drawable.logout).setOnMenuItemClickListener(menuItem -> {
+            logout(TransporterActivity.this);
+            return false;
         }).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         return super.onCreateOptionsMenu(menu);
     }
@@ -110,6 +116,8 @@ public class TransporterActivity extends AppCompatActivity {
         backPressed = false;
 
         if (getSupportFragmentManager().getFragments().isEmpty()) {
+            binding.subText.setVisibility(View.VISIBLE);
+            binding.subText.setText("Purchase jobs");
             addFragmentToContainer(getSupportFragmentManager(), binding.transporterDrawerFragment, new JobsFragment());
         }
     }

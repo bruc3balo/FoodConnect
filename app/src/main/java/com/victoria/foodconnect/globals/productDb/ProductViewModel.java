@@ -96,13 +96,6 @@ public class ProductViewModel extends AndroidViewModel {
                                     Objects.requireNonNull(map.get(product.getProduct_category().getName())).add(product);
                                 }
 
-
-                                try {
-                                    System.out.println(product.getName() + " map is " + getObjectMapper().writeValueAsString(map));
-                                } catch (JsonProcessingException e) {
-                                    e.printStackTrace();
-                                }
-
                             }
 
                         } catch (JsonProcessingException e) {

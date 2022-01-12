@@ -83,11 +83,15 @@ public class SellerActivity extends AppCompatActivity {
             switch (item.getItemId()) {
                 default:
                 case R.id.myProducts:
+                    binding.subText.setVisibility(View.VISIBLE);
+                    binding.subText.setText("My products");
                     addFragmentToContainer(getSupportFragmentManager(), binding.sellerDrawerFragment, new MyProductsSeller());
                     closeDrawer(drawerLayout);
                     break;
 
                 case R.id.myOrders:
+                    binding.subText.setVisibility(View.VISIBLE);
+                    binding.subText.setText("My orders");
                     addFragmentToContainer(getSupportFragmentManager(), binding.sellerDrawerFragment, new MyOrdersSeller());
                     closeDrawer(drawerLayout);
                     break;
@@ -98,8 +102,7 @@ public class SellerActivity extends AppCompatActivity {
         View header = sellerDrawer.getHeaderView(0);
         userRepository.getUserLive().observe(this, appUser -> {
             if (appUser.isPresent()) {
-                toolbar.setTitle(appUser.get().getUsername());
-                toolbar.setSubtitle(appUser.get().getRole());
+                binding.text.setText("Welcome "+appUser.get().getUsername());
                 setNavDetails(appUser.get(), header, SellerActivity.this);
             }
         });
@@ -124,6 +127,8 @@ public class SellerActivity extends AppCompatActivity {
         super.onResume();
         backPressed = false;
         if (getSupportFragmentManager().getFragments().isEmpty()) {
+            binding.subText.setVisibility(View.VISIBLE);
+            binding.subText.setText("My products");
             addFragmentToContainer(getSupportFragmentManager(), binding.sellerDrawerFragment, new MyProductsSeller());
         }
     }

@@ -16,48 +16,80 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="top"
-            android:background="@color/white"
+            android:background="@color/black"
             app:navigationIcon="@drawable/ic_back"
             app:subtitleTextColor="@android:color/darker_gray"
-            app:titleTextColor="@color/black" />
+            app:titleTextColor="@color/white" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
 
 
-        <RelativeLayout
-            android:layout_width="220dp"
-            android:layout_height="200dp"
-            android:layout_gravity="center"
-            android:layout_margin="30dp"
-            android:gravity="center">
-
-            <com.makeramen.roundedimageview.RoundedImageView
-                android:id="@+id/donorDp"
+            <TextView
+                android:id="@+id/donorStatus"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentBottom="true"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                app:riv_border_color="@color/semiGrey"
-                app:riv_border_width="5dp"
-                app:riv_corner_radius="10dp"
-                app:riv_mutate_background="true"
-                android:scaleType="fitXY"
-                android:src="@drawable/ic_person" />
+                android:layout_margin="15dp"
+                android:gravity="center"
+                android:text="@string/hy"
+                android:textColor="@android:color/holo_red_dark"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <RelativeLayout
+                android:layout_width="220dp"
+                android:layout_height="200dp"
+                android:layout_gravity="center"
+                android:layout_margin="30dp"
+                android:gravity="center">
+
+                <com.makeramen.roundedimageview.RoundedImageView
+                    android:id="@+id/donorDp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentBottom="true"
+                    android:layout_gravity="center"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ic_person"
+                    app:riv_border_color="@color/semiGrey"
+                    app:riv_border_width="5dp"
+                    app:riv_corner_radius="10dp"
+                    app:riv_mutate_background="true" />
 
 
+            </RelativeLayout>
 
-        </RelativeLayout>
+            <ImageButton
+                android:id="@+id/changeDp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:background="@drawable/ic_circle"
+                android:backgroundTint="@color/semiGrey"
+                android:src="@drawable/ic_image"
+                app:tint="@color/black" />
 
-        <ImageButton
-            android:id="@+id/changeDp"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+        </LinearLayout>
+
+
+        <Button
+            android:id="@+id/logoutButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:background="@drawable/ic_circle"
-            android:backgroundTint="@color/semiGrey"
-            android:src="@drawable/ic_image"
-            app:tint="@color/black" />
+            android:layout_margin="15dp"
+            android:background="@drawable/login_bg_button"
+            android:backgroundTint="@android:color/holo_red_dark"
+            android:text="Logout"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
 
     </LinearLayout>
 

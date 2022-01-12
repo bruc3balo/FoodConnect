@@ -59,7 +59,7 @@ public class BuyProductRvAdapter extends RecyclerView.Adapter<BuyProductRvAdapte
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        Map.Entry<String,LinkedList<Models.Product>> entry = productLinkedList.getEntry(position);
+        Map.Entry<String,LinkedList<Models.Product>> entry = productLinkedList.getEntry(holder.getAdapterPosition());
         holder.categoryName.setText(entry.getKey().concat(" ( ").concat(String.valueOf(entry.getValue().size())).concat(" )"));
 
         BuyerRvAdapter adapter = new BuyerRvAdapter(mContext,entry.getValue(),cartList);

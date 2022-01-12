@@ -6,6 +6,8 @@ import static com.victoria.foodconnect.globals.GlobalRepository.userApi;
 import static com.victoria.foodconnect.globals.GlobalRepository.userRepository;
 import static com.victoria.foodconnect.globals.GlobalVariables.APPLICATION_JSON;
 import static com.victoria.foodconnect.login.LoginActivity.setWindowColors;
+import static com.victoria.foodconnect.pages.ProgressActivity.inSpinnerProgress;
+import static com.victoria.foodconnect.pages.ProgressActivity.outSpinnerProgress;
 import static com.victoria.foodconnect.utils.DataOpts.clickableLink;
 import static com.victoria.foodconnect.utils.DataOpts.getAccessToken;
 import static com.victoria.foodconnect.utils.DataOpts.getDomainUserFromModelUser;
@@ -226,14 +228,14 @@ public class VerifyAccount extends AppCompatActivity {
         binding.resendButton.setEnabled(false);
         binding.checkStatus.setEnabled(false);
         binding.logoutButton.setEnabled(false);
-        binding.verifyProgress.setVisibility(View.VISIBLE);
+        inSpinnerProgress(binding.pb,null);
     }
 
     private void outProgress() {
         binding.resendButton.setEnabled(true);
         binding.checkStatus.setEnabled(true);
         binding.logoutButton.setEnabled(true);
-        binding.verifyProgress.setVisibility(View.GONE);
+        outSpinnerProgress(binding.pb,null);
     }
 
 }

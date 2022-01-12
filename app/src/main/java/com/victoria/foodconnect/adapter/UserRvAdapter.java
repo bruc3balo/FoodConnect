@@ -73,7 +73,7 @@ public class UserRvAdapter extends RecyclerView.Adapter<UserRvAdapter.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        Models.AppUser user = userLinkedList.get(position);
+        Models.AppUser user = userLinkedList.get(holder.getAdapterPosition());
 
         if (!user.getProfile_picture().equals(HY)) {
             Glide.with(mContext).load(user.getProfile_picture()).into(holder.userDp);

@@ -29,6 +29,7 @@ import com.victoria.foodconnect.globals.GlobalRepository;
 import com.victoria.foodconnect.globals.userDb.UserViewModel;
 import com.victoria.foodconnect.login.LoginActivity;
 import com.victoria.foodconnect.models.Models;
+import com.victoria.foodconnect.service.LocationService;
 import com.victoria.foodconnect.utils.JsonResponse;
 
 import java.util.HashMap;
@@ -64,6 +65,7 @@ public class SplashScreen extends AppCompatActivity {
         System.out.println("Logging out user");
         FirebaseAuth.getInstance().signOut();
         userRepository.deleteAppUserDb();
+        activity.stopService(new Intent(activity, LocationService.class));
         activity.startActivity(new Intent(activity, LoginActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
         activity.finish();
     }

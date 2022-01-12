@@ -52,8 +52,8 @@ public class TutorialVpAdapter extends RecyclerView.Adapter<TutorialVpAdapter.Vi
 
         //Glide.with(mContext).load(tutorialList.get(position).getImageId()).into(holder.tutorialImage);
         Glide.with(mContext).load(mContext.getDrawable(R.drawable.ic_give_food)).into(holder.tutorialImage);
-        holder.title.setText(tutorialList.get(position).getTitle());
-        holder.description.setText(tutorialList.get(position).getExplanation());
+        holder.title.setText(tutorialList.get(holder.getAdapterPosition()).getTitle());
+        holder.description.setText(tutorialList.get(holder.getAdapterPosition()).getExplanation());
 
     }
 

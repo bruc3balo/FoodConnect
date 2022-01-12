@@ -41,9 +41,10 @@ public class CartActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        successOrder = false;
+
         cartBinding = ActivityCartBinding.inflate(getLayoutInflater());
         setContentView(cartBinding.getRoot());
-
 
         setSupportActionBar(cartBinding.toolbar);
         cartBinding.toolbar.setNavigationOnClickListener(v -> finish());
@@ -78,13 +79,16 @@ public class CartActivity extends AppCompatActivity {
             showLocationDialog();
         });
 
-        userRepository.getUserLive().observe(this, appUser -> appUser.ifPresent(u -> user = u));
+        userRepository.getUserLive().observe(this, appUser -> appUser.ifPresent(u -> {
+            user = u;
+            cartBinding.toolbar.setTitle(u.getUsername()+"'s Cart");
+        }));
 
         setWindowColors(this);
     }
 
     private void showLocationDialog() {
-        startActivity(new Intent(this, LocationOrder.class).putExtra(CARTLIST,cartList).putExtra(PRODUCTLIST,allProducts).putExtra(USERNAME,user.getUsername()));
+        startActivity(new Intent(this, LocationOrder.class).putExtra(CARTLIST, cartList).putExtra(PRODUCTLIST, allProducts).putExtra(USERNAME, user.getUsername()));
     }
 
     @Override
@@ -96,10 +100,23 @@ public class CartActivity extends AppCompatActivity {
     }
 
 
+    private void startShimmer() {
+        cartBinding.shimmerViewContainer.startShimmer();
+        cartBinding.shimmerViewContainer.setVisibility(View.VISIBLE);
+        cartBinding.cartRv.setVisibility(View.GONE);
+    }
+
+    private void stopShimmer() {
+        cartBinding.shimmerViewContainer.setVisibility(View.GONE);
+        cartBinding.shimmerViewContainer.stopShimmer();
+        cartBinding.cartRv.setVisibility(View.VISIBLE);
+    }
+
 
     private void getAllProducts() {
+        startShimmer();
         new ViewModelProvider(this).get(ProductViewModel.class).getAllGoodBuyerProducts().observe(this, products -> {
-            cartBinding.pb.setVisibility(View.GONE);
+            stopShimmer();
             if (products.isEmpty()) {
                 Toast.makeText(CartActivity.this, "Failed to get products", Toast.LENGTH_SHORT).show();
                 return;

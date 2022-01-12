@@ -53,7 +53,7 @@ public class ProductRvAdapter extends RecyclerView.Adapter<ProductRvAdapter.View
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        Models.Product product = productLinkedList.get(position);
+        Models.Product product = productLinkedList.get(holder.getAdapterPosition());
 
         Glide.with(mContext).load(product.getImage()).into(holder.productImage);
         holder.productTitle.setText(product.getName());

@@ -44,11 +44,12 @@ public class JobProductListAdapter extends RecyclerView.Adapter<JobProductListAd
 
     private final Context mContext;
     private final LinkedList<Models.ProductCountModel> list;
+    private final boolean seller;
 
-
-    public JobProductListAdapter(Context context, LinkedList<Models.ProductCountModel> list) {
+    public JobProductListAdapter(Context context, LinkedList<Models.ProductCountModel> list,boolean seller) {
         this.mContext = context;
         this.list = list;
+        this.seller = seller;
     }
 
     @NotNull
@@ -62,7 +63,7 @@ public class JobProductListAdapter extends RecyclerView.Adapter<JobProductListAd
     @SuppressLint({"SetTextI18n", "UseCompatLoadingForDrawables"})
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Models.ProductCountModel entry = list.get(position);
+        Models.ProductCountModel entry = list.get(holder.getAdapterPosition());
 
 
         int item = entry.getCount();
@@ -83,7 +84,11 @@ public class JobProductListAdapter extends RecyclerView.Adapter<JobProductListAd
         holder.productItems.setText(item + " items");
 
 
-        holder.seller.setText("Seller : "+product.getSellersId());
+        if (seller) {
+            holder.seller.setVisibility(View.GONE);
+        } else {
+            holder.seller.setText("Seller : " + product.getSellersId());
+        }
         Glide.with(mContext).load(product.getImage()).into(holder.productImage);
 
     }

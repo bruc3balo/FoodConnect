@@ -82,7 +82,7 @@ public class CartRvAdapter extends RecyclerView.Adapter<CartRvAdapter.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        Models.Cart cart = cartList.get(position);
+        Models.Cart cart = cartList.get(holder.getAdapterPosition());
 
         Optional<Models.Product> optionalProduct = allProducts.stream().filter(i -> i.getId().equals(cart.getProductId())).findFirst();
 

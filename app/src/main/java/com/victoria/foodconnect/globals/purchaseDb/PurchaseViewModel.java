@@ -1,15 +1,17 @@
 package com.victoria.foodconnect.globals.purchaseDb;
 
+import static com.google.common.net.HttpHeaders.CONNECTION;
+import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
 import static com.victoria.foodconnect.globals.GlobalRepository.application;
 import static com.victoria.foodconnect.globals.GlobalRepository.purchaseApi;
 import static com.victoria.foodconnect.globals.GlobalRepository.reviewApi;
 import static com.victoria.foodconnect.globals.GlobalVariables.APPLICATION_JSON;
+import static com.victoria.foodconnect.globals.GlobalVariables.AUTHORIZATION;
 import static com.victoria.foodconnect.globals.GlobalVariables.BUYERS_ID;
-import static com.victoria.foodconnect.globals.GlobalVariables.ID;
-import static com.victoria.foodconnect.globals.GlobalVariables.REVIEW;
-import static com.victoria.foodconnect.globals.GlobalVariables.ROLE;
+import static com.victoria.foodconnect.globals.GlobalVariables.CONNECTION_VAL;
+import static com.victoria.foodconnect.globals.GlobalVariables.KEEP_ALIVE;
+import static com.victoria.foodconnect.globals.GlobalVariables.KEEP_ALIVE_VAL;
 import static com.victoria.foodconnect.globals.GlobalVariables.SELLERS_ID;
-import static com.victoria.foodconnect.globals.GlobalVariables.USERNAME;
 import static com.victoria.foodconnect.utils.DataOpts.getAccessToken;
 import static com.victoria.foodconnect.utils.DataOpts.getObjectMapper;
 
@@ -35,19 +37,18 @@ import io.vertx.core.json.JsonObject;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.http.Query;
 
 public class PurchaseViewModel extends AndroidViewModel {
+
 
     public PurchaseViewModel(@NonNull Application application) {
         super(application);
     }
 
-
     private MutableLiveData<Optional<Models.Remarks>> postRemark(Models.Remarks remarksForm) {
         MutableLiveData<Optional<Models.Remarks>> mutableLiveData = new MutableLiveData<>();
 
-        reviewApi.newReview(remarksForm,getAccessToken(application),APPLICATION_JSON).enqueue(new Callback<JsonResponse>() {
+        reviewApi.newReview(remarksForm, getAccessToken(application), APPLICATION_JSON).enqueue(new Callback<JsonResponse>() {
             @Override
             public void onResponse(@NonNull Call<JsonResponse> call, @NonNull Response<JsonResponse> response) {
                 JsonResponse jsonResponse = response.body();
@@ -82,12 +83,12 @@ public class PurchaseViewModel extends AndroidViewModel {
         return mutableLiveData;
     }
 
-    private MutableLiveData<Optional<Models.Remarks>> updateRemark (Models.Remarks remarks) {
+    private MutableLiveData<Optional<Models.Remarks>> updateRemark(Models.Remarks remarks) {
 
         MutableLiveData<Optional<Models.Remarks>> mutableLiveData = new MutableLiveData<>();
 
 
-        reviewApi.updateReview(remarks,getAccessToken(application),APPLICATION_JSON).enqueue(new Callback<JsonResponse>() {
+        reviewApi.updateReview(remarks, getAccessToken(application), APPLICATION_JSON).enqueue(new Callback<JsonResponse>() {
             @Override
             public void onResponse(@NonNull Call<JsonResponse> call, @NonNull Response<JsonResponse> response) {
                 JsonResponse jsonResponse = response.body();
@@ -141,6 +142,37 @@ public class PurchaseViewModel extends AndroidViewModel {
         return mutableLiveData;
     }
 
+    private MutableLiveData<Optional<Boolean>> postDonation(Models.DonationCreationForm form) {
+
+        MutableLiveData<Optional<Boolean>> success = new MutableLiveData<>();
+
+        purchaseApi.addDonation(form, getAccessToken(application), APPLICATION_JSON).enqueue(new Callback<JsonResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<JsonResponse> call, @NonNull Response<JsonResponse> response) {
+                success.setValue(Optional.of(response.code() == 200));
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<JsonResponse> call, @NonNull Throwable t) {
+                success.setValue(Optional.of(false));
+            }
+        });
+
+        return success;
+    }
+
+    public static HashMap<String, String> getHeaderMap() {
+        HashMap<String, String> headerMap = new HashMap<>();
+
+        headerMap.put(AUTHORIZATION, getAccessToken(application));
+        headerMap.put("connection", CONNECTION_VAL);
+        headerMap.put("keep-alive", KEEP_ALIVE_VAL);
+        headerMap.put(CONTENT_TYPE, APPLICATION_JSON);
+
+
+        return headerMap;
+    }
+
     private MutableLiveData<List<Models.Purchase>> getSellerPurchases(String sellerId) {
         MutableLiveData<List<Models.Purchase>> mutableLiveData = new MutableLiveData<>();
         List<Models.Purchase> purchaseList = new ArrayList<>();
@@ -149,7 +181,8 @@ public class PurchaseViewModel extends AndroidViewModel {
         HashMap<String, String> params = new HashMap<>();
         params.put(SELLERS_ID, sellerId);
 
-        purchaseApi.getAllPurchase(params, getAccessToken(application), APPLICATION_JSON).enqueue(new Callback<JsonResponse>() {
+
+        purchaseApi.getAllPurchase(params, getHeaderMap()).enqueue(new Callback<JsonResponse>() {
             @Override
             public void onResponse(@NonNull Call<JsonResponse> call, @NonNull Response<JsonResponse> response) {
                 JsonResponse jsonResponse = response.body();
@@ -188,13 +221,63 @@ public class PurchaseViewModel extends AndroidViewModel {
             public void onFailure(@NonNull Call<JsonResponse> call, @NonNull Throwable t) {
                 mutableLiveData.setValue(new ArrayList<>());
                 Toast.makeText(application, t.getMessage(), Toast.LENGTH_SHORT).show();
+                t.printStackTrace();
             }
         });
 
         return mutableLiveData;
     }
 
-    private MutableLiveData<List<Models.Purchase>> getTransporterPurchases(String username, int position) {
+    private MutableLiveData<List<Models.Donation>> getDonorDonations(String donor) {
+        MutableLiveData<List<Models.Donation>> mutableLiveData = new MutableLiveData<>();
+        List<Models.Donation> donationList = new ArrayList<>();
+
+
+        HashMap<String, String> params = new HashMap<>();
+        params.put("donor", donor);
+
+        purchaseApi.getDonation(params, getAccessToken(application), APPLICATION_JSON).enqueue(new Callback<JsonResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<JsonResponse> call, @NonNull Response<JsonResponse> response) {
+                JsonResponse jsonResponse = response.body();
+
+                if (jsonResponse == null || jsonResponse.getData() == null) {
+                    mutableLiveData.setValue(new ArrayList<>());
+                    return;
+                }
+
+                try {
+                    JsonArray purchaseArray = new JsonArray(getObjectMapper().writeValueAsString(jsonResponse.getData()));
+
+                    for (int i = 0; i < purchaseArray.size(); i++) {
+
+                        try {
+                            Models.Donation donation = getObjectMapper().readValue(new JsonObject(purchaseArray.getJsonObject(i).getMap()).toString(), Models.Donation.class);
+                            donationList.add(donation);
+                        } catch (JsonProcessingException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                }
+
+                mutableLiveData.setValue(donationList);
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<JsonResponse> call, @NonNull Throwable t) {
+                mutableLiveData.setValue(new ArrayList<>());
+                Toast.makeText(application, t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        return mutableLiveData;
+    }
+
+    private MutableLiveData<List<Models.Purchase>> getTransporterPurchases() {
         MutableLiveData<List<Models.Purchase>> mutableLiveData = new MutableLiveData<>();
         List<Models.Purchase> purchaseList = new ArrayList<>();
 
@@ -202,7 +285,7 @@ public class PurchaseViewModel extends AndroidViewModel {
         HashMap<String, String> params = new HashMap<>();
 
 
-        purchaseApi.getAllPurchase(params, getAccessToken(application), APPLICATION_JSON).enqueue(new Callback<JsonResponse>() {
+        purchaseApi.getAllPurchase(params, getHeaderMap()).enqueue(new Callback<JsonResponse>() {
             @Override
             public void onResponse(@NonNull Call<JsonResponse> call, @NonNull Response<JsonResponse> response) {
                 JsonResponse jsonResponse = response.body();
@@ -219,32 +302,7 @@ public class PurchaseViewModel extends AndroidViewModel {
 
                         try {
                             Models.Purchase purchase = getObjectMapper().readValue(new JsonObject(purchaseArray.getJsonObject(i).getMap()).toString(), Models.Purchase.class);
-
-                            switch (position) {
-
-                                    //request
-                                default:
-                                case 0:
-                                    if (!purchase.isComplete() && !purchase.getDeleted() && purchase.getAssigned() == null) {
-                                        purchaseList.add(purchase);
-                                    }
-                                    break;
-
-                                    //in progress
-                                case 1:
-                                    if (!purchase.isComplete() && !purchase.getDeleted() && purchase.getAssigned() != null && purchase.getAssigned().equals(username)) {
-                                        purchaseList.add(purchase);
-                                    }
-                                    break;
-
-                                    //completed
-                                case 2:
-                                    if (purchase.getDeleted() || purchase.isComplete()) {
-                                        purchaseList.add(purchase);
-                                    }
-                                    break;
-                            }
-
+                            purchaseList.add(purchase);
                         } catch (JsonProcessingException e) {
                             e.printStackTrace();
                         }
@@ -256,6 +314,53 @@ public class PurchaseViewModel extends AndroidViewModel {
                 }
 
                 mutableLiveData.setValue(purchaseList);
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<JsonResponse> call, @NonNull Throwable t) {
+                mutableLiveData.setValue(new ArrayList<>());
+                Toast.makeText(application, t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        return mutableLiveData;
+    }
+
+    private MutableLiveData<List<Models.Donation>> getTransporterDonations() {
+        MutableLiveData<List<Models.Donation>> mutableLiveData = new MutableLiveData<>();
+        List<Models.Donation> donationList = new ArrayList<>();
+
+        HashMap<String, String> params = new HashMap<>();
+
+        purchaseApi.getDonation(params, getAccessToken(application), APPLICATION_JSON).enqueue(new Callback<JsonResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<JsonResponse> call, @NonNull Response<JsonResponse> response) {
+                JsonResponse jsonResponse = response.body();
+
+                if (jsonResponse == null || jsonResponse.getData() == null) {
+                    mutableLiveData.setValue(new ArrayList<>());
+                    return;
+                }
+
+                try {
+                    JsonArray purchaseArray = new JsonArray(getObjectMapper().writeValueAsString(jsonResponse.getData()));
+
+                    for (int i = 0; i < purchaseArray.size(); i++) {
+
+                        try {
+                            Models.Donation donation = getObjectMapper().readValue(new JsonObject(purchaseArray.getJsonObject(i).getMap()).toString(), Models.Donation.class);
+                            donationList.add(donation);
+                        } catch (JsonProcessingException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                }
+
+                mutableLiveData.setValue(donationList);
             }
 
             @Override
@@ -276,7 +381,105 @@ public class PurchaseViewModel extends AndroidViewModel {
         HashMap<String, String> params = new HashMap<>();
         params.put(BUYERS_ID, buyerId);
 
-        purchaseApi.getAllPurchase(params, getAccessToken(application), APPLICATION_JSON).enqueue(new Callback<JsonResponse>() {
+        purchaseApi.getAllPurchase(params, getHeaderMap()).enqueue(new Callback<JsonResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<JsonResponse> call, @NonNull Response<JsonResponse> response) {
+                JsonResponse jsonResponse = response.body();
+
+                if (jsonResponse == null || jsonResponse.getData() == null) {
+                    mutableLiveData.setValue(new ArrayList<>());
+                    return;
+                }
+
+                try {
+
+                    JsonArray purchaseArray = new JsonArray(getObjectMapper().writeValueAsString(jsonResponse.getData()));
+
+                    for (int i = 0; i < purchaseArray.size(); i++) {
+
+                        try {
+                            Models.Purchase purchase = getObjectMapper().readValue(new JsonObject(purchaseArray.getJsonObject(i).getMap()).toString(), Models.Purchase.class);
+                            purchaseList.add(purchase);
+                        } catch (JsonProcessingException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                }
+
+                mutableLiveData.setValue(purchaseList);
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<JsonResponse> call, @NonNull Throwable t) {
+                mutableLiveData.setValue(new ArrayList<>());
+                Toast.makeText(application, t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        return mutableLiveData;
+    }
+
+    private MutableLiveData<List<Models.Donation>> getBeneficiaryDonations(String beneficiary) {
+        MutableLiveData<List<Models.Donation>> mutableLiveData = new MutableLiveData<>();
+        List<Models.Donation> donationList = new ArrayList<>();
+
+
+        HashMap<String, String> params = new HashMap<>();
+        params.put("beneficiary", beneficiary);
+
+        purchaseApi.getDonation(params, getAccessToken(application), APPLICATION_JSON).enqueue(new Callback<JsonResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<JsonResponse> call, @NonNull Response<JsonResponse> response) {
+                JsonResponse jsonResponse = response.body();
+
+                if (jsonResponse == null || jsonResponse.getData() == null) {
+                    mutableLiveData.setValue(new ArrayList<>());
+                    return;
+                }
+
+                try {
+                    JsonArray purchaseArray = new JsonArray(getObjectMapper().writeValueAsString(jsonResponse.getData()));
+
+                    for (int i = 0; i < purchaseArray.size(); i++) {
+
+                        try {
+                            Models.Donation donation = getObjectMapper().readValue(new JsonObject(purchaseArray.getJsonObject(i).getMap()).toString(), Models.Donation.class);
+                            donationList.add(donation);
+
+                        } catch (JsonProcessingException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                }
+
+                mutableLiveData.setValue(donationList);
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<JsonResponse> call, @NonNull Throwable t) {
+                mutableLiveData.setValue(new ArrayList<>());
+                Toast.makeText(application, t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        return mutableLiveData;
+    }
+
+    private MutableLiveData<List<Models.Purchase>> getAllPurchases() {
+        MutableLiveData<List<Models.Purchase>> mutableLiveData = new MutableLiveData<>();
+        List<Models.Purchase> purchaseList = new ArrayList<>();
+
+        HashMap<String, String> params = new HashMap<>();
+
+        purchaseApi.getAllPurchase(params, getHeaderMap()).enqueue(new Callback<JsonResponse>() {
             @Override
             public void onResponse(@NonNull Call<JsonResponse> call, @NonNull Response<JsonResponse> response) {
                 JsonResponse jsonResponse = response.body();
@@ -321,13 +524,13 @@ public class PurchaseViewModel extends AndroidViewModel {
         return mutableLiveData;
     }
 
-    private MutableLiveData<List<Models.Purchase>> getAllPurchases() {
-        MutableLiveData<List<Models.Purchase>> mutableLiveData = new MutableLiveData<>();
-        List<Models.Purchase> purchaseList = new ArrayList<>();
+    private MutableLiveData<List<Models.Donation>> getAllDonations() {
+        MutableLiveData<List<Models.Donation>> mutableLiveData = new MutableLiveData<>();
+        List<Models.Donation> donationList = new ArrayList<>();
 
         HashMap<String, String> params = new HashMap<>();
 
-        purchaseApi.getAllPurchase(params, getAccessToken(application), APPLICATION_JSON).enqueue(new Callback<JsonResponse>() {
+        purchaseApi.getDonation(params, getAccessToken(application), APPLICATION_JSON).enqueue(new Callback<JsonResponse>() {
             @Override
             public void onResponse(@NonNull Call<JsonResponse> call, @NonNull Response<JsonResponse> response) {
                 JsonResponse jsonResponse = response.body();
@@ -343,10 +546,10 @@ public class PurchaseViewModel extends AndroidViewModel {
                     for (int i = 0; i < purchaseArray.size(); i++) {
 
                         try {
-                            Models.Purchase purchase = getObjectMapper().readValue(new JsonObject(purchaseArray.getJsonObject(i).getMap()).toString(), Models.Purchase.class);
+                            Models.Donation donation = getObjectMapper().readValue(new JsonObject(purchaseArray.getJsonObject(i).getMap()).toString(), Models.Donation.class);
 
-                            if (!purchase.getDeleted()) {
-                                purchaseList.add(purchase);
+                            if (!donation.isDeleted()) {
+                                donationList.add(donation);
                             }
 
                         } catch (JsonProcessingException e) {
@@ -359,7 +562,7 @@ public class PurchaseViewModel extends AndroidViewModel {
                     e.printStackTrace();
                 }
 
-                mutableLiveData.setValue(purchaseList);
+                mutableLiveData.setValue(donationList);
             }
 
             @Override
@@ -391,18 +594,36 @@ public class PurchaseViewModel extends AndroidViewModel {
         return success;
     }
 
-    private MutableLiveData<Optional<Models.DistributionModel>> getADistribution(Long purchaseId) {
-        MutableLiveData<Optional<Models.DistributionModel>> mutableLiveData = new MutableLiveData<>();
-        List<Models.DistributionModel> list = new ArrayList<>();
+    private MutableLiveData<Optional<Boolean>> acceptDonationJob(Long donationId, String transporterUsername) {
+        MutableLiveData<Optional<Boolean>> success = new MutableLiveData<>();
 
-        HashMap<String,String> params = new HashMap<>();
-        params.put("purchasesId", String.valueOf(purchaseId));
-
-        purchaseApi.getDistribution(params).enqueue(new Callback<JsonResponse>() {
+        purchaseApi.addDonationDistribution(donationId, transporterUsername).enqueue(new Callback<JsonResponse>() {
             @Override
             public void onResponse(@NonNull Call<JsonResponse> call, @NonNull Response<JsonResponse> response) {
                 JsonResponse jsonResponse = response.body();
+                success.setValue(Optional.of(response.code() == 200));
+            }
 
+            @Override
+            public void onFailure(@NonNull Call<JsonResponse> call, @NonNull Throwable t) {
+                success.setValue(Optional.empty());
+            }
+        });
+
+        return success;
+    }
+
+    private MutableLiveData<Optional<Models.DonationDistribution>> getADonationDistribution(Long donationId) {
+        MutableLiveData<Optional<Models.DonationDistribution>> mutableLiveData = new MutableLiveData<>();
+        List<Models.DonationDistribution> list = new ArrayList<>();
+
+        HashMap<String, String> params = new HashMap<>();
+        params.put("donationId", String.valueOf(donationId));
+
+        purchaseApi.getDonationDistribution(params).enqueue(new Callback<JsonResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<JsonResponse> call, @NonNull Response<JsonResponse> response) {
+                JsonResponse jsonResponse = response.body();
 
 
                 if (jsonResponse == null || jsonResponse.getData() == null) {
@@ -413,6 +634,65 @@ public class PurchaseViewModel extends AndroidViewModel {
                 try {
                     JsonArray purchaseArray = new JsonArray(getObjectMapper().writeValueAsString(jsonResponse.getData()));
 
+
+                    for (int i = 0; i < purchaseArray.size(); i++) {
+
+                        try {
+                            Models.DonationDistribution distributionModel = getObjectMapper().readValue(new JsonObject(purchaseArray.getJsonObject(i).getMap()).toString(), Models.DonationDistribution.class);
+
+                            if (!distributionModel.getDeleted()) {
+                                list.add(distributionModel);
+                            }
+
+                        } catch (JsonProcessingException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                }
+
+                if (list.isEmpty()) {
+                    mutableLiveData.setValue(Optional.empty());
+                } else {
+                    mutableLiveData.setValue(Optional.of(list.get(0)));
+                }
+
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<JsonResponse> call, @NonNull Throwable t) {
+                mutableLiveData.setValue(Optional.empty());
+            }
+        });
+
+
+        return mutableLiveData;
+    }
+
+
+    private MutableLiveData<Optional<Models.DistributionModel>> getADistribution(Long purchaseId) {
+        MutableLiveData<Optional<Models.DistributionModel>> mutableLiveData = new MutableLiveData<>();
+        List<Models.DistributionModel> list = new ArrayList<>();
+
+        HashMap<String, String> params = new HashMap<>();
+        params.put("purchasesId", String.valueOf(purchaseId));
+
+        purchaseApi.getDistribution(params).enqueue(new Callback<JsonResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<JsonResponse> call, @NonNull Response<JsonResponse> response) {
+                JsonResponse jsonResponse = response.body();
+
+
+                if (jsonResponse == null || jsonResponse.getData() == null) {
+                    mutableLiveData.setValue(Optional.empty());
+                    return;
+                }
+
+                try {
+                    JsonArray purchaseArray = new JsonArray(getObjectMapper().writeValueAsString(jsonResponse.getData()));
 
 
                     for (int i = 0; i < purchaseArray.size(); i++) {
@@ -538,14 +818,50 @@ public class PurchaseViewModel extends AndroidViewModel {
         return updatedModel;
     }
 
-    //expose
+    private MutableLiveData<Optional<Models.DonationDistribution>> updateDonationDistribution(Models.DonorDistributionUpdateForm form) {
+        MutableLiveData<Optional<Models.DonationDistribution>> updatedModel = new MutableLiveData<>();
 
+        purchaseApi.updateDonationDistribution(form).enqueue(new Callback<JsonResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<JsonResponse> call, @NonNull Response<JsonResponse> response) {
+                try {
+
+                    JsonResponse jsonResponse = response.body();
+
+                    if (response.code() != 200 || jsonResponse == null || jsonResponse.isHas_error() || !jsonResponse.isSuccess() || jsonResponse.getData() == null) {
+                        updatedModel.setValue(Optional.empty());
+                        return;
+                    }
+
+                    JsonObject distModel = new JsonObject(getObjectMapper().writeValueAsString(jsonResponse.getData()));
+                    Models.DonationDistribution updatedDist = getObjectMapper().readValue(distModel.toString(), Models.DonationDistribution.class);
+                    updatedModel.setValue(Optional.of(updatedDist));
+
+                } catch (JsonProcessingException e) {
+
+                    e.printStackTrace();
+                    updatedModel.setValue(Optional.empty());
+                }
+
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<JsonResponse> call, @NonNull Throwable t) {
+                updatedModel.setValue(Optional.empty());
+            }
+        });
+
+        return updatedModel;
+    }
+
+
+    //expose
     public LiveData<List<Models.Purchase>> getSellerPurchaseList(String sellerId) {
         return getSellerPurchases(sellerId);
     }
 
-    public LiveData<List<Models.Purchase>> getTransporterJobsList(String username, int position) {
-        return getTransporterPurchases(username, position);
+    public LiveData<List<Models.Purchase>> getTransporterJobsList() {
+        return getTransporterPurchases();
     }
 
     public LiveData<List<Models.Purchase>> getBuyerPurchaseList(String buyerId) {
@@ -564,6 +880,10 @@ public class PurchaseViewModel extends AndroidViewModel {
         return acceptJob(purchaseId, transporterUsername);
     }
 
+    public LiveData<Optional<Boolean>> acceptDonationTransportJob(Long donationId, String transporterUsername) {
+        return acceptDonationJob(donationId, transporterUsername);
+    }
+
     public LiveData<List<Models.DistributionModel>> getDistributions(HashMap<String, String> params, Boolean paid, Boolean completed) {
         return getAllDistributions(params, paid, completed);
     }
@@ -572,16 +892,44 @@ public class PurchaseViewModel extends AndroidViewModel {
         return updateDistribution(form);
     }
 
+    public LiveData<Optional<Models.DonationDistribution>> updateADonationDistribution(Models.DonorDistributionUpdateForm form) {
+        return updateDonationDistribution(form);
+    }
+
     public LiveData<Optional<Models.DistributionModel>> getADistributionLive(Long purchaseId) {
         return getADistribution(purchaseId);
     }
+
+    public LiveData<Optional<Models.DonationDistribution>> getADonationDistributionLive(Long donationId) {
+        return getADonationDistribution(donationId);
+    }
+
 
     public LiveData<Optional<Models.Remarks>> createNewRemark(Models.Remarks remarksForm) {
         return postRemark(remarksForm);
     }
 
-    public LiveData<Optional<Models.Remarks>> updateARemark (Models.Remarks remarks) {
+    public LiveData<Optional<Models.Remarks>> updateARemark(Models.Remarks remarks) {
         return updateRemark(remarks);
     }
 
+    public LiveData<Optional<Boolean>> postADonation(Models.DonationCreationForm form) {
+        return postDonation(form);
+    }
+
+    public LiveData<List<Models.Donation>> getADonorDonations(String donor) {
+        return getDonorDonations(donor);
+    }
+
+    public LiveData<List<Models.Donation>> getATransporterDonations() {
+        return getTransporterDonations();
+    }
+
+    public LiveData<List<Models.Donation>> getABeneficiaryDonations(String beneficiary) {
+        return getBeneficiaryDonations(beneficiary);
+    }
+
+    public LiveData<List<Models.Donation>> getAllDonationsLive() {
+        return getAllDonations();
+    }
 }

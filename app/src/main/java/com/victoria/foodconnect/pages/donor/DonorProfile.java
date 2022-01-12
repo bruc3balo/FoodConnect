@@ -1,5 +1,6 @@
 package com.victoria.foodconnect.pages.donor;
 
+import static com.victoria.foodconnect.SplashScreen.logout;
 import static com.victoria.foodconnect.globals.GlobalRepository.userRepository;
 import static com.victoria.foodconnect.globals.GlobalVariables.HY;
 import static com.victoria.foodconnect.globals.GlobalVariables.MEDIA_TYPE;
@@ -19,6 +20,7 @@ import androidx.appcompat.widget.Toolbar;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -66,7 +68,6 @@ public class DonorProfile extends AppCompatActivity {
         ImageButton changeDp = binding.changeDp;
         changeDp.setOnClickListener(v -> getProfileImage());
 
-
         userRepository.getUserLive().observe(this, appUser -> {
             if (!appUser.isPresent()) {
                 Toast.makeText(DonorProfile.this, "Failed to get user data", Toast.LENGTH_SHORT).show();
@@ -81,7 +82,25 @@ public class DonorProfile extends AppCompatActivity {
                 Glide.with(DonorProfile.this).load(getDrawable(R.drawable.ic_image)).into(profilePic);
             }
 
+            if (appUser.get().getProfile_picture().equals(HY)) {
+                binding.donorStatus.setTextColor(Color.RED);
+                binding.donorStatus.setText("You need to upload your picture to be verified .\n Click here to upload your picture");
+            } else {
+                if (appUser.get().isVerified()) {
+                    binding.donorStatus.setTextColor(Color.GREEN);
+                    binding.donorStatus.setText("Verified");
+                } else {
+                    binding.donorStatus.setTextColor(Color.DKGRAY);
+                    binding.donorStatus.setText("Pending verification");
+                }
+            }
+
+            toolbar.setTitle(user.getUsername()+"'s profile");
+            toolbar.setSubtitle(user.getNames());
+
         });
+
+        binding.logoutButton.setOnClickListener(v -> logout(DonorProfile.this));
 
         setWindowColors(this);
 

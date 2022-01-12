@@ -70,7 +70,7 @@ public class ProductCategoryRvAdapter extends RecyclerView.Adapter<ProductCatego
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        Models.ProductCategory productCategory = productCategoryArrayList.get(position);
+        Models.ProductCategory productCategory = productCategoryArrayList.get(holder.getAdapterPosition());
         holder.categoryName.setText(productCategory.getName());
 
         setStatus(productCategory.getDeleted(), holder.deleted);

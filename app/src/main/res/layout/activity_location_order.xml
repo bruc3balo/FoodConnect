@@ -32,15 +32,13 @@
             android:textColor="@color/black"
             android:textStyle="bold" />
 
-        <com.google.android.gms.maps.MapView
+        <fragment
+            android:layout_marginTop="25dp"
             android:id="@+id/mapView"
-            android:layout_width="match_parent"
-            android:layout_height="350dp"
             android:layout_gravity="center"
-            android:apiKey="@string/google_maps_key"
-            android:background="@color/semiGrey"
-            android:minWidth="350dp"
-            android:minHeight="350dp" />
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="350dp" />
 
         <Button
             android:id="@+id/confirm"

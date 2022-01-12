@@ -5,6 +5,8 @@ import static com.victoria.foodconnect.globals.GlobalVariables.LONGITUDE;
 import static com.victoria.foodconnect.globals.GlobalVariables.MEDIA_TYPE;
 import static com.victoria.foodconnect.globals.GlobalVariables.PRODUCT_COLLECTION;
 import static com.victoria.foodconnect.login.LoginActivity.setWindowColors;
+import static com.victoria.foodconnect.pages.ProgressActivity.inSpinnerProgress;
+import static com.victoria.foodconnect.pages.ProgressActivity.outSpinnerProgress;
 import static com.victoria.foodconnect.utils.DataOpts.doIHavePermission;
 import static com.victoria.foodconnect.utils.DataOpts.getObjectMapper;
 import static com.victoria.foodconnect.utils.DataOpts.getStringFromMap;
@@ -188,7 +190,6 @@ public class AddNewProduct extends AppCompatActivity implements OnMapReadyCallba
 
     }
 
-
     private void saveNewProduct() {
         startService(new Intent(AddNewProduct.this, UploadPictureService.class).putExtra(PRODUCT_COLLECTION, newProduct).putExtra(MEDIA_TYPE, PRODUCT_COLLECTION));
         finish();
@@ -226,8 +227,10 @@ public class AddNewProduct extends AppCompatActivity implements OnMapReadyCallba
     private void populateProductCategories() {
         System.out.println("GET PRODUCT CATEGORY DATA");
 
+        inSpinnerProgress(binding.pb,null);
 
         new ViewModelProvider(this).get(ProductViewModel.class).getAllProductCategoriesLive().observe(this, jsonResponse -> {
+            outSpinnerProgress(binding.pb,null);
             if (!jsonResponse.isPresent()) {
                 Toast.makeText(this, "No product categories", Toast.LENGTH_SHORT).show();
                 return;
@@ -252,7 +255,6 @@ public class AddNewProduct extends AppCompatActivity implements OnMapReadyCallba
                     }
 
                 }
-
 
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
@@ -374,7 +376,7 @@ public class AddNewProduct extends AppCompatActivity implements OnMapReadyCallba
             LatLng latLng = new LatLng(marker.getPosition().latitude, marker.getPosition().longitude);
             LinkedHashMap<String, String> locationMap = new LinkedHashMap<>();
             locationMap.put(LATITUDE, String.valueOf(latLng.latitude));
-            locationMap.put(LONGITUDE, String.valueOf(latLng.latitude));
+            locationMap.put(LONGITUDE, String.valueOf(latLng.longitude));
             String location = getStringFromMap(locationMap);
             newProduct.setLocation(location);
             return address.getAddressLine(0);
@@ -393,7 +395,7 @@ public class AddNewProduct extends AppCompatActivity implements OnMapReadyCallba
             binding.locationTv.setText("Supply location : " + address.getAddressLine(0));
             LinkedHashMap<String, String> locationMap = new LinkedHashMap<>();
             locationMap.put(LATITUDE, String.valueOf(latLng.latitude));
-            locationMap.put(LONGITUDE, String.valueOf(latLng.latitude));
+            locationMap.put(LONGITUDE, String.valueOf(latLng.longitude));
             String location = getStringFromMap(locationMap);
             newProduct.setLocation(location);
 

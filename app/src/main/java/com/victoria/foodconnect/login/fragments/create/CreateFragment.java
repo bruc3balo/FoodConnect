@@ -4,6 +4,7 @@ package com.victoria.foodconnect.login.fragments.create;
 import static com.victoria.foodconnect.globals.GlobalRepository.userRepository;
 import static com.victoria.foodconnect.globals.GlobalVariables.HY;
 import static com.victoria.foodconnect.login.LoginActivity.loginPb;
+import static com.victoria.foodconnect.pages.ProgressActivity.inSpinnerProgress;
 import static com.victoria.foodconnect.utils.DataOpts.getDomainUserFromModelUser;
 import static com.victoria.foodconnect.utils.DataOpts.getObjectMapper;
 import static com.victoria.foodconnect.utils.DataOpts.proceed;
@@ -66,7 +67,7 @@ public class CreateFragment extends Fragment {
         final View v = inflater.inflate(R.layout.fragment_create, container, false);
 
         createB = v.findViewById(R.id.registerUserButton);
-        outProgress(loginPb, createB);
+        inSpinnerProgress(loginPb, createB);
 
         EditText namesField = v.findViewById(R.id.namesField);
         EditText userNameField = v.findViewById(R.id.usernameField);
@@ -90,12 +91,12 @@ public class CreateFragment extends Fragment {
     }
 
     private void authNewUser() {
-        inProgress(loginPb, createB);
+        inSpinnerProgress(loginPb, createB);
 
         new ViewModelProvider(this).get(UserViewModel.class).createNewUser(newUserForm).observe(getViewLifecycleOwner(), jsonResponseResponse ->  {
 
             if (!jsonResponseResponse.isPresent()) {
-                outProgress(loginPb, createB);
+                inSpinnerProgress(loginPb, createB);
                 Toast.makeText(requireContext(), "Failed to send request", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -104,19 +105,19 @@ public class CreateFragment extends Fragment {
 
             if (response == null) {
                 Toast.makeText(requireContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
-                outProgress(loginPb, createB);
+                inSpinnerProgress(loginPb, createB);
                 return;
             }
 
             if (response.isHas_error()) {
                 Toast.makeText(requireContext(), response.getApi_code_description(), Toast.LENGTH_SHORT).show();
-                outProgress(loginPb, createB);
+                inSpinnerProgress(loginPb, createB);
                 return;
             }
 
             if (response.getData() == null) {
                 Toast.makeText(requireContext(), "No user data", Toast.LENGTH_SHORT).show();
-                outProgress(loginPb, createB);
+                inSpinnerProgress(loginPb, createB);
                 return;
             }
 
@@ -132,7 +133,7 @@ public class CreateFragment extends Fragment {
 
                 if (firebaseDbUser == null) {
                     Toast.makeText(requireContext(), "Failed to get user data", Toast.LENGTH_SHORT).show();
-                    outProgress(loginPb, createB);
+                    inSpinnerProgress(loginPb, createB);
                     return;
                 }
 
@@ -146,7 +147,7 @@ public class CreateFragment extends Fragment {
 
 
             } catch (JsonProcessingException | InterruptedException e) {
-                outProgress(loginPb, createB);
+                inSpinnerProgress(loginPb, createB);
                 if (e instanceof JsonProcessingException) {
                     Toast.makeText(requireContext(), "Problem mapping user data", Toast.LENGTH_SHORT).show();
                 } else {
@@ -250,16 +251,6 @@ public class CreateFragment extends Fragment {
         return valid;
     }
 
-    private void inProgress(ProgressBar progressBar, Button button) {
-        progressBar.setVisibility(View.VISIBLE);
-        button.setEnabled(false);
-
-    }
-
-    private void outProgress(ProgressBar progressBar, Button button) {
-        progressBar.setVisibility(View.GONE);
-        button.setEnabled(true);
-    }
 
     private void populateList() {
         UserViewModel userViewModel = new ViewModelProvider(this).get(UserViewModel.class);

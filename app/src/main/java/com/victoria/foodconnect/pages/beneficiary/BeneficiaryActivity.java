@@ -1,44 +1,46 @@
 package com.victoria.foodconnect.pages.beneficiary;
 
-import static android.graphics.Color.TRANSPARENT;
 import static com.victoria.foodconnect.SplashScreen.logout;
 import static com.victoria.foodconnect.globals.GlobalRepository.userRepository;
 import static com.victoria.foodconnect.login.LoginActivity.setWindowColors;
-import static com.victoria.foodconnect.utils.DataOpts.getObjectMapper;
+import static com.victoria.foodconnect.pages.ProgressActivity.inSpinnerProgress;
+import static com.victoria.foodconnect.pages.ProgressActivity.outSpinnerProgress;
+import static com.victoria.foodconnect.pages.seller.SellerActivity.closeDrawer;
+import static com.victoria.foodconnect.pages.seller.SellerActivity.setNavDetails;
 import static com.victoria.foodconnect.utils.SimilarityClass.alike;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager2.widget.CompositePageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.google.gson.Gson;
+import com.google.android.material.navigation.NavigationView;
 import com.victoria.foodconnect.R;
 import com.victoria.foodconnect.adapter.BuyProductRvAdapter;
 import com.victoria.foodconnect.databinding.ActivityBeneficiaryBinding;
 import com.victoria.foodconnect.globals.cartDb.CartViewMode;
 import com.victoria.foodconnect.globals.productDb.ProductViewModel;
-import com.victoria.foodconnect.globals.userDb.UserViewModel;
 import com.victoria.foodconnect.models.Models;
 import com.victoria.foodconnect.pages.CartActivity;
-import com.victoria.foodconnect.utils.JsonResponse;
+import com.victoria.foodconnect.pages.beneficiary.fragment.OrdersFragment;
+import com.victoria.foodconnect.pages.beneficiary.fragment.ReceiveDonationsFragment;
+import com.victoria.foodconnect.pages.transporter.TransporterActivity;
 import com.victoria.foodconnect.utils.MyLinkedMap;
 
 import java.util.ArrayList;
@@ -46,8 +48,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
-import io.vertx.core.json.JsonArray;
-import io.vertx.core.json.JsonObject;
 import me.relex.circleindicator.CircleIndicator3;
 
 public class BeneficiaryActivity extends AppCompatActivity {
@@ -58,12 +58,11 @@ public class BeneficiaryActivity extends AppCompatActivity {
     private final LinkedList<Models.Cart> cartLinkedList = new LinkedList<>();
     private final MyLinkedMap<String, LinkedList<Models.Product>> allProductLinkedList = new MyLinkedMap<>();
     private ProductViewModel productViewModel;
-    private boolean searching = false;
     private boolean backPressed = false;
     private TextView badge;
-    private ImageButton cartButton;
 
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,9 +71,10 @@ public class BeneficiaryActivity extends AppCompatActivity {
 
         Toolbar toolbar = binding.toolbar;
         setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_hamburger);
+        toolbar.setNavigationOnClickListener(view -> binding.getRoot().openDrawer(GravityCompat.START));
 
         CircleIndicator3 indicator = binding.productCategoryIndicator;
-
 
         productViewModel = new ViewModelProvider(this).get(ProductViewModel.class);
 
@@ -83,6 +83,7 @@ public class BeneficiaryActivity extends AppCompatActivity {
                 if (appUser.isPresent()) {
                     toolbar.setTitle(appUser.get().getUsername());
                     toolbar.setSubtitle(appUser.get().getRole());
+                    setNavDetails(appUser.get(), binding.beneNavigation.getHeaderView(0), BeneficiaryActivity.this);
                 }
             });
         }
@@ -114,27 +115,73 @@ public class BeneficiaryActivity extends AppCompatActivity {
             }
         });
 
-
         productsRv.setClipToPadding(false);
         productsRv.setClipChildren(false);
         productsRv.setPadding(0,20,0,20);
 
-
         indicator.setViewPager(productsRv);
 
         badge = findViewById(R.id.cartNo);
-        cartButton = findViewById(R.id.btnOpenCart);
-        cartButton.setOnClickListener(v -> startActivity(new Intent(BeneficiaryActivity.this, CartActivity.class)));
+        binding.layoutforprofileimage.setOnClickListener(v -> goToCart());
 
+        DrawerLayout drawerLayout = binding.getRoot();
+        drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
+            @Override
+            public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
+
+            }
+
+            @Override
+            public void onDrawerOpened(@NonNull View drawerView) {
+
+            }
+
+            @Override
+            public void onDrawerClosed(@NonNull View drawerView) {
+
+            }
+
+            @Override
+            public void onDrawerStateChanged(int newState) {
+
+            }
+        });
+
+        NavigationView donorNavigation = binding.beneNavigation;
+        View header = donorNavigation.getHeaderView(0);
+        donorNavigation.setNavigationItemSelectedListener(item -> {
+            switch (item.getItemId()) {
+                default:
+                case R.id.orders:
+                    goToOrders();
+                    closeDrawer(drawerLayout);
+                    break;
+
+                case R.id.donations:
+                    goToDonations();
+                    closeDrawer(drawerLayout);
+                    break;
+            }
+            return false;
+        });
 
         getCarts();
 
         // optional
-
         setWindowColors(this);
+    }
 
+    private void goToOrders() {
+        startActivity(new Intent(this, OrdersFragment.class));
+    }
 
+    private void goToDonations() {
+        startActivity(new Intent(this, ReceiveDonationsFragment.class));
+    }
 
+    private void goToCart() {
+        System.out.println("GOING TO CART");
+        startActivity(new Intent(BeneficiaryActivity.this, CartActivity.class));
     }
 
     public void getCarts() {
@@ -157,29 +204,13 @@ public class BeneficiaryActivity extends AppCompatActivity {
 
             cartLinkedList.clear();
             cartLinkedList.addAll(carts);
-            visibleBadge();
             buyProductRvAdapter.notifyDataSetChanged();
+            visibleBadge();
         });
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        //        if (!searching) {
-        //            menu.add("Logout").setIcon(R.drawable.logout).setOnMenuItemClickListener(menuItem -> {
-        //                logout(BeneficiaryActivity.this);
-        //                return false;
-        //            }).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-        //
-        //            menu.add("Search").setIcon(R.drawable.ic_search_black_24dp).setOnMenuItemClickListener(menuItem -> {
-        //                showSearch();
-        //                return false;
-        //            }).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        //
-        //        } else {
-        //            menu.add("Close").setIcon(R.drawable.x).setOnMenuItemClickListener(menuItem -> {
-        //                hideSearch();
-        //                return false;
-        //            }).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.buyer_menu, menu);
@@ -265,9 +296,9 @@ public class BeneficiaryActivity extends AppCompatActivity {
     @SuppressLint("NotifyDataSetChanged")
     private void populateProducts() {
         System.out.println("products populated "+allProductLinkedList.size());
-        binding.buyerPb.setVisibility(View.VISIBLE);
+        inSpinnerProgress(binding.pb,null);
         productViewModel.getAllBuyerProducts().observe(this, products -> {
-            binding.buyerPb.setVisibility(View.GONE);
+            outSpinnerProgress(binding.pb,null);
             if (!products.isEmpty()) {
                 productLinkedList.clear();
                 allProductLinkedList.putAll(products);
@@ -289,17 +320,12 @@ public class BeneficiaryActivity extends AppCompatActivity {
 
     private void visibleBadge() {
         if (cartLinkedList.isEmpty()) {
-            cartButton.setVisibility(View.GONE);
-            badge.setVisibility(View.GONE);
-            cartButton.setEnabled(false);
-            badge.setBackgroundTintList(ColorStateList.valueOf(TRANSPARENT));
+            binding.layoutforprofileimage.setVisibility(View.GONE);
         } else {
-            cartButton.setVisibility(View.VISIBLE);
-            badge.setVisibility(View.VISIBLE);
-            badge.setBackgroundTintList(null);
-            badge.setText(String.valueOf(cartLinkedList.size()));
-            cartButton.setEnabled(true);
+            binding.layoutforprofileimage.setVisibility(View.VISIBLE);
         }
+
+        badge.setText(String.valueOf(cartLinkedList.size()));
     }
 
     @Override

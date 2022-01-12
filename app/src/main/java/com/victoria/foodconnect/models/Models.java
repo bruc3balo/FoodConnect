@@ -13,6 +13,8 @@ import androidx.annotation.NonNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.victoria.foodconnect.utils.MyLinkedMap;
+import com.victoria.foodconnect.utils.ProductStatus;
+import com.victoria.foodconnect.utils.ProgressStatus;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -25,6 +27,55 @@ import java.util.Set;
 
 
 public class Models implements Serializable {
+
+    public static class ProgressModel implements Serializable {
+        private String name;
+        private ProgressStatus status;
+        private String id;
+
+        public ProgressModel() {
+
+        }
+
+        public ProgressModel(String name) {
+            this.name = name;
+        }
+
+        public ProgressModel(String name, ProgressStatus status) {
+            this.name = name;
+            this.status = status;
+        }
+
+        public ProgressModel(String name, ProgressStatus status,String id) {
+            this.name = name;
+            this.status = status;
+            this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public ProgressStatus getStatus() {
+            return status;
+        }
+
+        public void setStatus(ProgressStatus status) {
+            this.status = status;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+    }
 
     public static class NewUserForm implements Serializable {
         private String name;
@@ -770,6 +821,7 @@ public class Models implements Serializable {
 
     public static class Product implements Serializable {
 
+
         private String id;
 
         private String name;
@@ -1298,8 +1350,19 @@ public class Models implements Serializable {
 
         private boolean complete;
 
+        private Boolean success;
+
+
         public Purchase() {
 
+        }
+
+        public Boolean getSuccess() {
+            return success;
+        }
+
+        public void setSuccess(Boolean success) {
+            this.success = success;
         }
 
         public String getAddress() {
@@ -1401,7 +1464,7 @@ public class Models implements Serializable {
         }
     }
 
-    public static class PurchaseCreationForm {
+    public static class PurchaseCreationForm implements Serializable {
 
         private String buyersId;
 
@@ -1453,7 +1516,7 @@ public class Models implements Serializable {
         }
     }
 
-    public static class DistributionModel implements Serializable{
+    public static class DistributionModel implements Serializable {
 
         private String documentId;
 
@@ -1621,7 +1684,7 @@ public class Models implements Serializable {
         }
     }
 
-    public static class Remarks implements Serializable{
+    public static class Remarks implements Serializable {
 
         private String documentId;
 
@@ -1634,6 +1697,8 @@ public class Models implements Serializable {
         private String beneficiary;
 
         private Long distribution_id;
+
+        private Long donation_distribution_id;
 
         public Remarks() {
 
@@ -1689,6 +1754,14 @@ public class Models implements Serializable {
 
         public void setDistribution_id(Long distribution_id) {
             this.distribution_id = distribution_id;
+        }
+
+        public Long getDonation_distribution_id() {
+            return donation_distribution_id;
+        }
+
+        public void setDonation_distribution_id(Long donation_distribution_id) {
+            this.donation_distribution_id = donation_distribution_id;
         }
     }
 
@@ -1791,4 +1864,490 @@ public class Models implements Serializable {
         }
     }
 
+    public static class Donation implements Serializable{
+
+        private String documentId;
+
+        private Long id;
+
+        private AppUser donor_username;
+
+        private AppUser beneficiary_username;
+
+        private Date createdAt;
+
+        private String delivery_location;
+
+        private String delivery_address;
+
+        private String collection_location;
+
+        private String collection_address;
+
+        private boolean deleted;
+
+        private boolean complete;
+
+        private Boolean success;
+
+        private String assigned;
+
+        private final LinkedList<DonorItem> products = new LinkedList<>();
+
+        public Donation() {
+
+        }
+
+        public Donation(String documentId, Long id, AppUser donor_username, AppUser beneficiary_username, Date createdAt, String delivery_location, String delivery_address, String collection_location, String collection_address, boolean deleted, boolean complete, Boolean success,String assigned) {
+            this.documentId = documentId;
+            this.id = id;
+            this.donor_username = donor_username;
+            this.beneficiary_username = beneficiary_username;
+            this.createdAt = createdAt;
+            this.delivery_location = delivery_location;
+            this.delivery_address = delivery_address;
+            this.collection_location = collection_location;
+            this.collection_address = collection_address;
+            this.deleted = deleted;
+            this.complete = complete;
+            this.assigned = assigned;
+            this.success = success;
+        }
+
+        public Boolean getSuccess() {
+            return success;
+        }
+
+        public void setSuccess(Boolean success) {
+            this.success = success;
+        }
+
+        public String getDocumentId() {
+            return documentId;
+        }
+
+        public void setDocumentId(String documentId) {
+            this.documentId = documentId;
+        }
+
+        public Long getId() {
+            return id;
+        }
+
+        public void setId(Long id) {
+            this.id = id;
+        }
+
+        public AppUser getDonor_username() {
+            return donor_username;
+        }
+
+        public void setDonor_username(AppUser donor_username) {
+            this.donor_username = donor_username;
+        }
+
+        public AppUser getBeneficiary_username() {
+            return beneficiary_username;
+        }
+
+        public void setBeneficiary_username(AppUser beneficiary_username) {
+            this.beneficiary_username = beneficiary_username;
+        }
+
+        public Date getCreatedAt() {
+            return createdAt;
+        }
+
+        public void setCreatedAt(Date createdAt) {
+            this.createdAt = createdAt;
+        }
+
+        public String getDelivery_location() {
+            return delivery_location;
+        }
+
+        public void setDelivery_location(String delivery_location) {
+            this.delivery_location = delivery_location;
+        }
+
+        public String getDelivery_address() {
+            return delivery_address;
+        }
+
+        public void setDelivery_address(String delivery_address) {
+            this.delivery_address = delivery_address;
+        }
+
+        public String getCollection_location() {
+            return collection_location;
+        }
+
+        public void setCollection_location(String collection_location) {
+            this.collection_location = collection_location;
+        }
+
+        public String getCollection_address() {
+            return collection_address;
+        }
+
+        public void setCollection_address(String collection_address) {
+            this.collection_address = collection_address;
+        }
+
+        public boolean isDeleted() {
+            return deleted;
+        }
+
+        public void setDeleted(boolean deleted) {
+            this.deleted = deleted;
+        }
+
+        public boolean isComplete() {
+            return complete;
+        }
+
+        public void setComplete(boolean complete) {
+            this.complete = complete;
+        }
+
+        public String getAssigned() {
+            return assigned;
+        }
+
+        public void setAssigned(String assigned) {
+            this.assigned = assigned;
+        }
+
+        public LinkedList<DonorItem> getProducts() {
+            return products;
+        }
+    }
+
+    public static class DonorItem implements Serializable {
+
+        private String image;
+
+        private String name;
+
+        private String description;
+
+        public DonorItem() {
+
+        }
+
+        public String getImage() {
+            return image;
+        }
+
+        public void setImage(String image) {
+            this.image = image;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
+    }
+
+    public static class DonorDistributionUpdateForm implements Serializable {
+
+        private Long id;
+
+        private Boolean deleted;
+
+        private String last_known_location;
+
+        private Integer status;
+
+        private Long remarks;
+
+        public DonorDistributionUpdateForm() {
+
+        }
+
+        public DonorDistributionUpdateForm(Long id,Integer status) {
+            this.id = id;
+            this.status = status;
+        }
+
+        public DonorDistributionUpdateForm(Long id, Boolean deleted, String last_known_location, Integer status, Long remarks) {
+            this.id = id;
+            this.deleted = deleted;
+            this.last_known_location = last_known_location;
+            this.status = status;
+            this.remarks = remarks;
+        }
+
+        public Long getId() {
+            return id;
+        }
+
+        public void setId(Long id) {
+            this.id = id;
+        }
+
+        public Boolean getDeleted() {
+            return deleted;
+        }
+
+        public void setDeleted(Boolean deleted) {
+            this.deleted = deleted;
+        }
+
+        public String getLast_known_location() {
+            return last_known_location;
+        }
+
+        public void setLast_known_location(String last_known_location) {
+            this.last_known_location = last_known_location;
+        }
+
+        public Integer getStatus() {
+            return status;
+        }
+
+        public void setStatus(Integer status) {
+            this.status = status;
+        }
+
+        public Long getRemarks() {
+            return remarks;
+        }
+
+        public void setRemarks(Long remarks) {
+            this.remarks = remarks;
+        }
+    }
+
+    public static class DonationCreationForm implements Serializable {
+
+        private String donor;
+
+        private String beneficiary;
+
+        private String delivery_location;
+
+        private String delivery_address;
+
+        private String collection_location;
+
+        private String collection_address;
+
+        private final LinkedList<DonorItem> products = new LinkedList<>();
+
+        public DonationCreationForm() {
+
+        }
+
+        public DonationCreationForm(String donor, String beneficiary, String delivery_location, String delivery_address, String collection_location, String collection_address) {
+            this.donor = donor;
+            this.beneficiary = beneficiary;
+            this.delivery_location = delivery_location;
+            this.delivery_address = delivery_address;
+            this.collection_location = collection_location;
+            this.collection_address = collection_address;
+        }
+
+        public String getDonor() {
+            return donor;
+        }
+
+        public void setDonor(String donor) {
+            this.donor = donor;
+        }
+
+        public String getBeneficiary() {
+            return beneficiary;
+        }
+
+        public void setBeneficiary(String beneficiary) {
+            this.beneficiary = beneficiary;
+        }
+
+        public String getDelivery_location() {
+            return delivery_location;
+        }
+
+        public void setDelivery_location(String delivery_location) {
+            this.delivery_location = delivery_location;
+        }
+
+        public String getDelivery_address() {
+            return delivery_address;
+        }
+
+        public void setDelivery_address(String delivery_address) {
+            this.delivery_address = delivery_address;
+        }
+
+        public String getCollection_location() {
+            return collection_location;
+        }
+
+        public void setCollection_location(String collection_location) {
+            this.collection_location = collection_location;
+        }
+
+        public String getCollection_address() {
+            return collection_address;
+        }
+
+        public void setCollection_address(String collection_address) {
+            this.collection_address = collection_address;
+        }
+
+        public LinkedList<DonorItem> getProducts() {
+            return products;
+        }
+    }
+
+    public static class DonationDistribution implements Serializable  {
+
+        private Long id;
+
+        private AppUser transporter;
+
+        private AppUser beneficiary;
+
+        private AppUser donor;
+
+        private Integer status;
+
+        private Date created_at;
+
+        private Date updated_at;
+
+        private Date completed_at;
+
+        private Donation donationId;
+
+        private String last_known_location;
+
+        private Boolean deleted;
+
+        private Boolean reported;
+
+        private Remarks remarks;
+
+
+
+        public DonationDistribution() {
+
+        }
+
+        public Long getId() {
+            return id;
+        }
+
+        public void setId(Long id) {
+            this.id = id;
+        }
+
+        public AppUser getTransporter() {
+            return transporter;
+        }
+
+        public void setTransporter(AppUser transporter) {
+            this.transporter = transporter;
+        }
+
+        public AppUser getBeneficiary() {
+            return beneficiary;
+        }
+
+        public void setBeneficiary(AppUser beneficiary) {
+            this.beneficiary = beneficiary;
+        }
+
+        public AppUser getDonor() {
+            return donor;
+        }
+
+        public void setDonor(AppUser donor) {
+            this.donor = donor;
+        }
+
+        public Integer getStatus() {
+            return status;
+        }
+
+        public void setStatus(Integer status) {
+            this.status = status;
+        }
+
+        public Date getCreated_at() {
+            return created_at;
+        }
+
+        public void setCreated_at(Date created_at) {
+            this.created_at = created_at;
+        }
+
+        public Date getUpdated_at() {
+            return updated_at;
+        }
+
+        public void setUpdated_at(Date updated_at) {
+            this.updated_at = updated_at;
+        }
+
+        public Date getCompleted_at() {
+            return completed_at;
+        }
+
+        public void setCompleted_at(Date completed_at) {
+            this.completed_at = completed_at;
+        }
+
+        public Donation getDonationId() {
+            return donationId;
+        }
+
+        public void setDonationId(Donation donationId) {
+            this.donationId = donationId;
+        }
+
+        public String getLast_known_location() {
+            return last_known_location;
+        }
+
+        public void setLast_known_location(String last_known_location) {
+            this.last_known_location = last_known_location;
+        }
+
+        public Boolean getDeleted() {
+            return deleted;
+        }
+
+        public void setDeleted(Boolean deleted) {
+            this.deleted = deleted;
+        }
+
+        public Boolean getReported() {
+            return reported;
+        }
+
+        public void setReported(Boolean reported) {
+            this.reported = reported;
+        }
+
+        public Remarks getRemarks() {
+            return remarks;
+        }
+
+        public void setRemarks(Remarks remarks) {
+            this.remarks = remarks;
+        }
+    }
 }

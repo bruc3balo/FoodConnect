@@ -68,11 +68,6 @@ public class JobActivityProgress extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        menu.add("TELL").setOnMenuItemClickListener(item -> {
-            Toast.makeText(JobActivityProgress.this, String.valueOf(binding.progressPages.getCurrentItem()), Toast.LENGTH_SHORT).show();
-            return false;
-        });
-
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -87,7 +82,7 @@ public class JobActivityProgress extends AppCompatActivity {
     private void setUpJobPager(Models.Purchase purchase, Models.DistributionModel distribution) {
         ViewPager2 jobPager = binding.progressPages;
         CircleIndicator3 indicator = binding.indicator;
-        jobPagerAdapter = new JobProgressPagerAdapter(JobActivityProgress.this,getSupportFragmentManager(), getLifecycle(), purchase, distribution);
+        jobPagerAdapter = new JobProgressPagerAdapter(JobActivityProgress.this,getSupportFragmentManager(), getLifecycle(), purchase, distribution,false);
         jobPager.setUserInputEnabled(false);
         jobPager.setAdapter(jobPagerAdapter);
         jobPager.setPageTransformer(new DepthPageTransformer());

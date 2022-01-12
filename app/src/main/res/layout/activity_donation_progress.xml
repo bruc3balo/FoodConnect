@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".pages.transporter.donationProgress.DonationProgressActivity">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            app:title="Donation Progress"
+            android:background="@android:color/black"
+            app:navigationIcon="@drawable/ic_back"
+            app:subtitleTextColor="@color/semiWhite"
+            app:titleTextColor="@color/white" />
+
+        <me.relex.circleindicator.CircleIndicator3
+            android:layout_margin="5dp"
+            android:id="@+id/indicator"
+            android:minHeight="50dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:ci_drawable_unselected="@drawable/purple_dot_big"
+            app:ci_drawable="@drawable/black_dot"
+            android:layout_gravity="center" />
+
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:layout_weight="1"
+            android:id="@+id/progressPages"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_gravity="center"
+            android:isScrollContainer="true"
+            android:padding="10dp" />
+
+
+    </LinearLayout>
+
+
+    <com.github.ybq.android.spinkit.SpinKitView
+        android:id="@+id/pb"
+        style="@style/SpinKitView.Large.WanderingCubes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        app:SpinKit_Color="@android:color/holo_red_dark" />
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
