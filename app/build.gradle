@@ -61,6 +61,15 @@ dependencies {
     //shimmer
     implementation 'com.facebook.shimmer:shimmer:0.5.0'
 
+    //mapps
+    implementation 'com.google.maps.android:android-maps-utils:2.2.3'
+
+    //anychart
+    implementation 'com.github.AnyChart:AnyChart-Android:1.1.2'
+
+    //mpchart
+
+    //implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
 
     //retrofit

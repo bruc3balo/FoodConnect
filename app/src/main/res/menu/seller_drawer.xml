@@ -4,5 +4,6 @@
     <group android:id="@+id/seller" >
     <item android:id="@+id/myProducts" android:title="@string/my_products" />
     <item android:id="@+id/myOrders" android:title="@string/orders" />
+    <item android:id="@+id/stats" android:title="@string/stats" />
     </group>
 </menu>

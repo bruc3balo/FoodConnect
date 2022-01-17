@@ -10,6 +10,8 @@ import static com.victoria.foodconnect.pages.transporter.MoreActivity.PURCHASE;
 import static com.victoria.foodconnect.utils.DataOpts.getObjectMapper;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -47,7 +49,10 @@ public class DonationProgressActivity extends AppCompatActivity {
     @SuppressLint("StaticFieldLeak")
     private static SpinKitView pb;
     private boolean readOnly;
+    public static MutableLiveData<Optional<Boolean>> refreshJobDonationProgress = new MutableLiveData<>();
 
+    //todo add marker for collecting location
+    //todo move camera to destination
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,12 +77,11 @@ public class DonationProgressActivity extends AppCompatActivity {
         setWindowColors(this);
     }
 
-
     private void getDonationDistribution(Long donationId) {
         donationInProgress();
         purchaseViewModel.getADonationDistributionLive(donationId).observe(this, optionalDistributionModel -> {
             donationOutProgress();
-            optionalDistributionModel.ifPresent(this::setPageData);
+            optionalDistributionModel.ifPresent(d -> setUpDonationPager(donation, d));
         });
     }
 
@@ -90,27 +94,36 @@ public class DonationProgressActivity extends AppCompatActivity {
         jobPager.setPageTransformer(new DepthPageTransformer());
         donationProgressPagerAdapter.registerAdapterDataObserver(indicator.getAdapterDataObserver());
         indicator.setViewPager(jobPager);
+        setPageData(distribution);
     }
 
     public static void updateDonationDistribution(DonationProgressActivity donationProgressActivity, Models.DonorDistributionUpdateForm form) {
         donationInProgress();
         new ViewModelProvider(donationProgressActivity).get(PurchaseViewModel.class).updateADonationDistribution(form).observe(donationProgressActivity, optionalDistributionModel -> {
             donationOutProgress();
-            optionalDistributionModel.ifPresent(donationProgressActivity::setPageData);
+            optionalDistributionModel.ifPresent(donationProgressActivity::updatePage);
         });
     }
 
+    private void updatePage(Models.DonationDistribution distribution) {
+        Arrays.stream(DistributionStatus.values()).filter(i -> i.getCode() == distribution.getStatus()).findFirst().ifPresent(status -> binding.toolbar.setSubtitle(status.getDescription()));
+        donationProgressPagerAdapter = new DonationProgressPagerAdapter(DonationProgressActivity.this, getSupportFragmentManager(), getLifecycle(), donation, distribution, false);
+        binding.progressPages.setAdapter(donationProgressPagerAdapter);
+        binding.progressPages.setCurrentItem(distribution.getStatus());
+        donationProgressPagerAdapter.notifyDataSetChanged();
+    }
+
+
     public static void donationInProgress() {
-        inSpinnerProgress(pb,null);
+        inSpinnerProgress(pb, null);
     }
 
     public static void donationOutProgress() {
-        outSpinnerProgress(pb,null);
+        outSpinnerProgress(pb, null);
     }
 
     private void setPageData(Models.DonationDistribution distribution) {
         distributionModel = distribution;
-        setUpDonationPager(donation, distribution);
         System.out.println("STATUS IS " + distribution.getStatus());
         Optional<DistributionStatus> distributionStatus = Arrays.stream(DistributionStatus.values()).filter(i -> i.getCode() == distribution.getStatus()).findFirst();
         binding.toolbar.setTitle(donation.getDelivery_address());
@@ -133,6 +146,39 @@ public class DonationProgressActivity extends AppCompatActivity {
 
                 break;
         }
+    }
+
+
+    private void addRefreshListener() {
+        refreshData().observe(this, refresh -> {
+            if (refresh.isPresent()) {
+                if (user != null) {
+                    getDonationDistribution(donation.getId());
+                }
+            }
+        });
+    }
+
+    private void removeListeners() {
+        refreshData().removeObservers(this);
+    }
+
+    //listener for updates
+    private LiveData<Optional<Boolean>> refreshData() {
+        return refreshJobDonationProgress;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getDonationDistribution(donation.getId());
+        addRefreshListener();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        removeListeners();
     }
 
 }

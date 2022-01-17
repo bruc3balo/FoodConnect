@@ -10,12 +10,16 @@ import android.content.Intent;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
+import com.victoria.foodconnect.globals.directions.DirectionsApi;
+import com.victoria.foodconnect.globals.notificationsDb.NotificationApi;
 import com.victoria.foodconnect.globals.productDb.ProductApi;
 import com.victoria.foodconnect.globals.purchaseDb.PurchaseApi;
 import com.victoria.foodconnect.globals.purchaseDb.ReviewApi;
+import com.victoria.foodconnect.globals.statsDb.StatsApi;
 import com.victoria.foodconnect.globals.userDb.UserApi;
 import com.victoria.foodconnect.globals.userDb.UserRepository;
 import com.victoria.foodconnect.pages.LocationOrder;
+import com.victoria.foodconnect.service.LocationService;
 
 import java.util.concurrent.TimeUnit;
 
@@ -34,6 +38,9 @@ public class GlobalRepository extends Application {
     public static ProductApi productApi;
     public static PurchaseApi purchaseApi;
     public static ReviewApi reviewApi;
+    public static DirectionsApi directionsApi;
+    public static StatsApi statsApi;
+    public static NotificationApi notificationApi;
     public static boolean initialized = false;
 
     public GlobalRepository() {
@@ -67,10 +74,15 @@ public class GlobalRepository extends Application {
             productApi = retrofit.create(ProductApi.class);
             purchaseApi = retrofit.create(PurchaseApi.class);
             reviewApi = retrofit.create(ReviewApi.class);
+            statsApi = retrofit.create(StatsApi.class);
+            notificationApi = retrofit.create(NotificationApi.class);
+
+            Retrofit directionsFit = new Retrofit.Builder().baseUrl("https://maps.googleapis.com/maps/api/").client(client).addConverterFactory(JacksonConverterFactory.create()).build();
+            directionsApi = directionsFit.create(DirectionsApi.class);
 
             initialized = true;
 
-            application.startService(new Intent(application, LocationOrder.class));
+            application.startService(new Intent(application, LocationService.class));
 
 
             System.out.println("======================== INITIALIZED ========================");

@@ -5,6 +5,7 @@ import static com.victoria.foodconnect.globals.GlobalRepository.userRepository;
 import static com.victoria.foodconnect.globals.GlobalVariables.HY;
 import static com.victoria.foodconnect.login.LoginActivity.loginPb;
 import static com.victoria.foodconnect.pages.ProgressActivity.inSpinnerProgress;
+import static com.victoria.foodconnect.pages.ProgressActivity.outSpinnerProgress;
 import static com.victoria.foodconnect.utils.DataOpts.getDomainUserFromModelUser;
 import static com.victoria.foodconnect.utils.DataOpts.getObjectMapper;
 import static com.victoria.foodconnect.utils.DataOpts.proceed;
@@ -67,7 +68,7 @@ public class CreateFragment extends Fragment {
         final View v = inflater.inflate(R.layout.fragment_create, container, false);
 
         createB = v.findViewById(R.id.registerUserButton);
-        inSpinnerProgress(loginPb, createB);
+        outSpinnerProgress(loginPb, createB);
 
         EditText namesField = v.findViewById(R.id.namesField);
         EditText userNameField = v.findViewById(R.id.usernameField);

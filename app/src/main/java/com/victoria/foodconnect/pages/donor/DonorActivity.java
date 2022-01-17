@@ -24,6 +24,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.victoria.foodconnect.R;
 import com.victoria.foodconnect.databinding.ActivityDonorBinding;
 import com.victoria.foodconnect.pages.donor.fragments.DonationsFragment;
+import com.victoria.foodconnect.pages.donor.fragments.DonorStatsFragment;
 import com.victoria.foodconnect.pages.transporter.fragments.JobsFragment;
 
 public class DonorActivity extends AppCompatActivity {
@@ -79,6 +80,12 @@ public class DonorActivity extends AppCompatActivity {
                     closeDrawer(drawerLayout);
                     break;
 
+                    case R.id.stats:
+                        binding.subText.setVisibility(View.VISIBLE);
+                        binding.subText.setText("Statistics");
+                        addFragmentToContainer(getSupportFragmentManager(), binding.donorDrawerFragment, new DonorStatsFragment());
+                        closeDrawer(drawerLayout);
+                        break;
 
             }
             return false;

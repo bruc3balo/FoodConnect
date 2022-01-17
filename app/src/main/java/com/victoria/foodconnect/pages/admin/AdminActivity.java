@@ -28,6 +28,7 @@ import com.victoria.foodconnect.R;
 import com.victoria.foodconnect.databinding.ActivityAdminBinding;
 import com.victoria.foodconnect.domain.Domain;
 import com.victoria.foodconnect.pages.admin.fragments.ProductsFragment;
+import com.victoria.foodconnect.pages.admin.fragments.StatsFragment;
 import com.victoria.foodconnect.pages.admin.fragments.UsersFragment;
 import com.victoria.foodconnect.pages.beneficiary.BeneficiaryActivity;
 import com.victoria.foodconnect.pages.seller.fragments.MyOrdersSeller;
@@ -103,6 +104,13 @@ public class AdminActivity extends AppCompatActivity {
                     binding.subText.setVisibility(View.VISIBLE);
                     binding.subText.setText("Users");
                     addFragmentToContainer(getSupportFragmentManager(), binding.adminFragment, new UsersFragment());
+                    closeDrawer(drawerLayout);
+                    break;
+
+                case R.id.stats:
+                    binding.subText.setVisibility(View.VISIBLE);
+                    binding.subText.setText("Statistics");
+                    addFragmentToContainer(getSupportFragmentManager(), binding.adminFragment, new StatsFragment());
                     closeDrawer(drawerLayout);
                     break;
             }

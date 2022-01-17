@@ -20,6 +20,9 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -57,17 +60,16 @@ public class ToCollectionFragment extends Fragment {
         this.readOnly = readOnly;
     }
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentToCollectionBinding.inflate(inflater);
+        setHasOptionsMenu(true);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapView);
         if (mapFragment != null) {
@@ -110,11 +112,26 @@ public class ToCollectionFragment extends Fragment {
 
     }
 
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        menu.add("Delivery").setTitle("Delivery").setIcon(android.R.drawable.ic_menu_mylocation).setOnMenuItemClickListener(item -> {
+            showLocation();
+            return false;
+        }).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+
+    private void showLocation() {
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Objects.requireNonNull(getPositionFromString(donation.getCollection_location())), 14));
+        addMarkerToMap(activity,googleMap, getPositionFromString(donation.getCollection_address()), donation.getCollection_address());
+    }
+
+
     private void goToBeneficiary() {
         donationInProgress();
         binding.goToBeneficiary.setEnabled(false);
         updateDonationDistribution(activity, new Models.DonorDistributionUpdateForm(distribution.getId(), DistributionStatus.ON_THE_WAY.getCode()));
         donationOutProgress();
-
     }
 }

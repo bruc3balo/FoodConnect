@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".pages.donor.fragments.DonorStatsFragment">
+
+    <com.anychart.AnyChartView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:id="@+id/anychart"/>
+
+    <com.github.ybq.android.spinkit.SpinKitView
+        android:id="@+id/pb"
+        style="@style/SpinKitView.Large.WanderingCubes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        app:SpinKit_Color="@android:color/holo_red_dark" />
+
+    <LinearLayout
+        android:visibility="gone"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/noData">
+
+        <ImageView
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:src="@drawable/ic_warning"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/no_data"
+            android:layout_marginBottom="50dp"
+            android:textSize="30sp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textColor="@color/black"/>
+
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

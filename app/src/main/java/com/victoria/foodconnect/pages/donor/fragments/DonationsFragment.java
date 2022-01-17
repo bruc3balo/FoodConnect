@@ -11,6 +11,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,6 +32,7 @@ import com.victoria.foodconnect.globals.purchaseDb.PurchaseViewModel;
 import com.victoria.foodconnect.models.Models;
 
 import java.util.LinkedList;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -41,6 +44,7 @@ public class DonationsFragment extends Fragment {
     private final LinkedList<Models.Donation> donationList = new LinkedList<>();
     private final LinkedList<Models.Donation> allDonationList = new LinkedList<>();
     private DonationRvAdapter donationRvAdapter;
+    public static MutableLiveData<Optional<Boolean>> refreshDonationDonor = new MutableLiveData<>();
 
 
     public DonationsFragment() {
@@ -88,7 +92,6 @@ public class DonationsFragment extends Fragment {
         }));
 
 
-
         return binding.getRoot();
     }
 
@@ -108,6 +111,7 @@ public class DonationsFragment extends Fragment {
                 return;
             }
 
+            allDonationList.clear();
             allDonationList.addAll(donations);
             filterList();
         });
@@ -120,12 +124,17 @@ public class DonationsFragment extends Fragment {
             //request
             default:
             case 0:
-                donationList.clear();donationList.addAll(allDonationList.stream().filter(donation -> !donation.isComplete() && !donation.isDeleted() && donation.getAssigned() == null).collect(Collectors.toList()));
+                donationList.clear();
+                donationRvAdapter.notifyDataSetChanged();
+
+                donationList.addAll(allDonationList.stream().filter(donation -> !donation.isComplete() && !donation.isDeleted() && donation.getAssigned() == null).collect(Collectors.toList()));
                 donationRvAdapter.notifyDataSetChanged();
                 break;
 
             //in progress
             case 1:
+                donationList.clear();
+                donationRvAdapter.notifyDataSetChanged();
 
                 donationList.addAll(allDonationList.stream().filter(donation -> !donation.isComplete() && !donation.isDeleted() && donation.getAssigned() != null).collect(Collectors.toList()));
                 donationRvAdapter.notifyDataSetChanged();
@@ -134,12 +143,36 @@ public class DonationsFragment extends Fragment {
 
             //completed
             case 2:
-                donationList.clear();donationList.addAll(allDonationList.stream().filter(donation -> donation.isDeleted() || donation.isComplete() && donation.getAssigned() != null).collect(Collectors.toList()));
+                donationList.clear();
+                donationRvAdapter.notifyDataSetChanged();
+
+                donationList.addAll(allDonationList.stream().filter(donation -> donation.isDeleted() || donation.isComplete() && donation.getAssigned() != null).collect(Collectors.toList()));
                 donationRvAdapter.notifyDataSetChanged();
 
                 break;
         }
     }
+
+    private void addRefreshListener() {
+        refreshData().observe(this, refresh -> {
+            if (refresh.isPresent()) {
+                if (user != null) {
+                    getDonations(user.getUsername());
+                }
+            }
+        });
+    }
+
+
+    private void removeListeners() {
+        refreshData().removeObservers(this);
+    }
+
+    //listener for updates
+    private LiveData<Optional<Boolean>> refreshData() {
+        return refreshDonationDonor;
+    }
+
 
     @Override
     public void onResume() {
@@ -147,5 +180,13 @@ public class DonationsFragment extends Fragment {
         if (user != null) {
             getDonations(user.getUsername());
         }
+
+        addRefreshListener();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        removeListeners();
     }
 }

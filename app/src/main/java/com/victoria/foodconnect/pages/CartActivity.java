@@ -37,6 +37,7 @@ public class CartActivity extends AppCompatActivity {
     private Domain.AppUser user;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

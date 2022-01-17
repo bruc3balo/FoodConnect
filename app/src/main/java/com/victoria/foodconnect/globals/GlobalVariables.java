@@ -35,11 +35,17 @@ public class GlobalVariables {
     public static final String TUTORIAL = "tutorial";
     public static final String REVIEW = "review";
 
+    public static final String NOTIFICATION = "notification";
+    public static final String TITLE = "title";
+    public static final String SUBTEXT = "sub_text";
+    public static final String NOTIFIED = "notified";
+    public static final String UPDATE = "update";
 
-    //public static final String API_URL = "https://food-dstribution-api-vic.herokuapp.com";
-    public static final String API_URL = "https://b89d-197-232-244-229.ngrok.io";
+
+    public static final String API_URL = "https://food-dstribution-api-vic.herokuapp.com";
+    // public static final String API_URL = "https://ab3a-197-232-244-229.ngrok.io";
     //public static final String API_URL = "http://localhost:5000";
-    //public static final String API_URL = "http://192.168.0.8:5000";
+    //public static final String API_URL = "http://192.168.0.7:5000";
     public static final String CONTEXT_URL = "/api/v1/";
     public static final String HY = "-";
     public static final String KEY = "^";
@@ -71,6 +77,8 @@ public class GlobalVariables {
     public static final String GAS = "Gas";
     public static final String PRODUCT_AMOUNT = "productAmount";
 
+    public static final String DISTRIBUTION_COLLECTION = "distribution";
+    public static final String DONATION_DISTRIBUTION_COLLECTION = "donation_distribution";
 
     public static final String LOGGED_IN = "logged_in";
     public static final String ACCESS_TOKEN = "access_token";

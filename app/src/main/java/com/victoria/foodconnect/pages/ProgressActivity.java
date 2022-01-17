@@ -12,6 +12,9 @@ import android.view.View;
 import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -40,6 +43,10 @@ public class ProgressActivity extends AppCompatActivity {
     private ProgressRvAdapter progressRvAdapter;
     private PurchaseViewModel purchaseViewModel;
     public static Timer spinTimer;
+    public static MutableLiveData<Optional<Boolean>> refreshPurchaseProgress = new MutableLiveData<>();
+    public static MutableLiveData<Optional<Boolean>> refreshDonationProgress = new MutableLiveData<>();
+    private Models.Donation donation;
+    private Models.Purchase purchase;
 
 
     @Override
@@ -63,12 +70,16 @@ public class ProgressActivity extends AppCompatActivity {
         switch (getIntent().getExtras().get(MEDIA_TYPE).toString()) {
             case DONATION:
                 binding.toolbar.setTitle("Donation");
-                populateDonation((Models.Donation) getIntent().getExtras().get(DONATION));
+                donation = (Models.Donation) getIntent().getExtras().get(DONATION);
+                populateDonation(donation);
+                refreshDonationData().observe(this, refresh -> refresh.ifPresent(r -> populateDonation(donation)));
                 break;
 
             case PURCHASE:
                 binding.toolbar.setTitle("Purchase");
-                populatePurchase((Models.Purchase) getIntent().getExtras().get(PURCHASE));
+                purchase = (Models.Purchase) getIntent().getExtras().get(PURCHASE);
+                populatePurchase(purchase);
+                refreshPurchaseData().observe(this, refresh -> refresh.ifPresent(r -> populatePurchase(purchase)));
                 break;
         }
 
@@ -113,14 +124,16 @@ public class ProgressActivity extends AppCompatActivity {
             button.setEnabled(true);
         }
         pb.setVisibility(View.GONE);
-       if(spinTimer != null) {
-           spinTimer.cancel();
-       }
+        if (spinTimer != null) {
+            spinTimer.cancel();
+        }
     }
 
     private void populateDonation(Models.Donation donation) {
+        inSpinnerProgress(binding.pb, null);
         Models.ProgressModel progressModel = new Models.ProgressModel(donation.getAssigned() != null ? "Assigned" : "Assigning", donation.getAssigned() != null ? ProgressStatus.COMPLETE : ProgressStatus.NEW);
         purchaseViewModel.getADonationDistributionLive(donation.getId()).observe(this, donationDistribution -> {
+            outSpinnerProgress(binding.pb, null);
             if (!donationDistribution.isPresent()) {
                 progressList.clear();
                 progressList.add(progressModel);
@@ -152,7 +165,6 @@ public class ProgressActivity extends AppCompatActivity {
 
 
                     progressStatus.ifPresent(ps -> {
-
 
 
                         System.out.println(progress.getName() + " :  current -> " + current.getCode() + " progress -> " + ps.getCode());
@@ -189,7 +201,7 @@ public class ProgressActivity extends AppCompatActivity {
 
     private void populatePurchase(Models.Purchase purchase) {
         Models.ProgressModel progressModel = new Models.ProgressModel(purchase.getAssigned() != null ? "Assigned" : "Assigning", purchase.getAssigned() != null ? ProgressStatus.COMPLETE : ProgressStatus.NEW);
-
+        inSpinnerProgress(binding.pb, null);
         purchaseViewModel.getADistributionLive(purchase.getId()).observe(this, donationDistribution -> {
             outSpinnerProgress(binding.pb, null);
 
@@ -209,7 +221,7 @@ public class ProgressActivity extends AppCompatActivity {
             donationDistribution.ifPresent(d -> {
 
                 if (d.getStatus() == DistributionStatus.COMPLETE.getCode() || d.getStatus() == DistributionStatus.DNF.getCode()) {
-                    setUpPurchasePager(purchase,d);
+                    setUpPurchasePager(purchase, d);
                 }
 
                 progressList.clear();
@@ -254,6 +266,33 @@ public class ProgressActivity extends AppCompatActivity {
         });
 
 
+    }
+
+
+    private void removeListeners() {
+        if (refreshPurchaseData().hasObservers() || refreshPurchaseData().hasActiveObservers()) {
+            refreshPurchaseData().removeObservers(this);
+        }
+
+        if (refreshDonationData().hasObservers() || refreshDonationData().hasActiveObservers()) {
+            refreshDonationData().removeObservers(this);
+        }
+    }
+
+    //listener for updates
+    private LiveData<Optional<Boolean>> refreshPurchaseData() {
+        return refreshPurchaseProgress;
+    }
+
+    private LiveData<Optional<Boolean>> refreshDonationData() {
+        return refreshDonationProgress;
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        removeListeners();
     }
 
 

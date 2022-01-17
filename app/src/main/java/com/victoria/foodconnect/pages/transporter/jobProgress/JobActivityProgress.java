@@ -13,6 +13,8 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -39,6 +41,7 @@ public class JobActivityProgress extends AppCompatActivity {
     private PurchaseViewModel purchaseViewModel;
     @SuppressLint("StaticFieldLeak")
     private static ProgressBar pb;
+    public static MutableLiveData<Optional<Boolean>> refreshJobPurchaseProgress = new MutableLiveData<>();
 
 
     @Override
@@ -75,27 +78,37 @@ public class JobActivityProgress extends AppCompatActivity {
         jobInProgress();
         purchaseViewModel.getADistributionLive(purchaseId).observe(this, optionalDistributionModel -> {
             jobOutProgress();
-            optionalDistributionModel.ifPresent(this::setPageData);
+            optionalDistributionModel.ifPresent(d -> setUpJobPager(purchase, d));
         });
     }
 
     private void setUpJobPager(Models.Purchase purchase, Models.DistributionModel distribution) {
         ViewPager2 jobPager = binding.progressPages;
         CircleIndicator3 indicator = binding.indicator;
-        jobPagerAdapter = new JobProgressPagerAdapter(JobActivityProgress.this,getSupportFragmentManager(), getLifecycle(), purchase, distribution,false);
+        jobPagerAdapter = new JobProgressPagerAdapter(JobActivityProgress.this, getSupportFragmentManager(), getLifecycle(), purchase, distribution, false);
         jobPager.setUserInputEnabled(false);
         jobPager.setAdapter(jobPagerAdapter);
         jobPager.setPageTransformer(new DepthPageTransformer());
         jobPagerAdapter.registerAdapterDataObserver(indicator.getAdapterDataObserver());
         indicator.setViewPager(jobPager);
+        setPageData(distribution);
     }
 
     public static void update(JobActivityProgress jobActivityProgress, Models.DistributionUpdateForm form) {
         jobInProgress();
         new ViewModelProvider(jobActivityProgress).get(PurchaseViewModel.class).updateADistribution(form).observe(jobActivityProgress, optionalDistributionModel -> {
             jobOutProgress();
-            optionalDistributionModel.ifPresent(jobActivityProgress::setPageData);
+            optionalDistributionModel.ifPresent(jobActivityProgress::updatePage);
         });
+    }
+
+    private void updatePage (Models.DistributionModel distribution) {
+        Arrays.stream(DistributionStatus.values()).filter(i -> i.getCode() == distribution.getStatus()).findFirst().ifPresent(status -> binding.toolbar.setSubtitle(status.getDescription()));
+        jobPagerAdapter = new JobProgressPagerAdapter(JobActivityProgress.this, getSupportFragmentManager(), getLifecycle(), purchase, distribution, false);
+        binding.progressPages.setAdapter(jobPagerAdapter);
+        binding.progressPages.setCurrentItem(distribution.getStatus());
+        jobPagerAdapter.notifyDataSetChanged();
+
     }
 
     public static void jobInProgress() {
@@ -108,8 +121,7 @@ public class JobActivityProgress extends AppCompatActivity {
 
     private void setPageData(Models.DistributionModel distribution) {
         distributionModel = distribution;
-        setUpJobPager(purchase, distribution);
-        System.out.println("STATUS IS "+distribution.getStatus());
+        System.out.println("STATUS IS " + distribution.getStatus());
         Optional<DistributionStatus> distributionStatus = Arrays.stream(DistributionStatus.values()).filter(i -> i.getCode() == distribution.getStatus()).findFirst();
         binding.toolbar.setTitle(purchase.getAddress());
         distributionStatus.ifPresent(status -> binding.toolbar.setSubtitle(status.getDescription()));
@@ -134,4 +146,34 @@ public class JobActivityProgress extends AppCompatActivity {
     }
 
 
+
+    private void addRefreshListener() {
+        refreshData().observe(this, refresh -> {
+            if (refresh.isPresent()) {
+                getDistribution(purchase.getId());
+            }
+        });
+    }
+
+    private void removeListeners() {
+        refreshData().removeObservers(this);
+    }
+
+    //listener for updates
+    private LiveData<Optional<Boolean>> refreshData() {
+        return refreshJobPurchaseProgress;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getDistribution(purchase.getId());
+        addRefreshListener();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        removeListeners();
+    }
 }

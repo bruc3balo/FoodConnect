@@ -17,6 +17,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -35,6 +36,7 @@ import com.victoria.foodconnect.models.Models;
 import com.victoria.foodconnect.pagerTransformers.DepthPageTransformer;
 
 import java.util.LinkedList;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class JobsFragment extends Fragment {
@@ -48,6 +50,8 @@ public class JobsFragment extends Fragment {
     public static final String[] ordersArray = new String[]{"Progress", "Successful", "Failed"};
     private Domain.AppUser user;
     private int pos;
+    public static MutableLiveData<Optional<Boolean>> refreshJobTrans = new MutableLiveData<>();
+
 
     public JobsFragment() {
         // Required empty public constructor
@@ -111,6 +115,7 @@ public class JobsFragment extends Fragment {
                 return;
             }
 
+            allPurchaseList.clear();
             allPurchaseList.addAll(purchases);
             filterList();
         });

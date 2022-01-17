@@ -137,6 +137,9 @@ public class DataOpts {
                 case "ROLE_ADMIN_TRAINEE":
                     refreshStaticToken().observe((LifecycleOwner) activity, success -> {
                         if (success) {
+                            if (!locationServiceRunning) {
+                                activity.startService(new Intent(activity, LocationService.class));
+                            }
                             goToAdminPage(activity);
                         } else {
                             logout(activity);
@@ -215,6 +218,9 @@ public class DataOpts {
 
                     refreshStaticToken().observe((LifecycleOwner) activity, success -> {
                         if (success) {
+                            if (!locationServiceRunning) {
+                                activity.startService(new Intent(activity, LocationService.class));
+                            }
                             goToSellerPage(activity);
                         } else {
                             logout(activity);

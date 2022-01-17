@@ -22,6 +22,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -82,6 +85,8 @@ public class CollectingFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentCollectingBinding.inflate(inflater);
+
+        setHasOptionsMenu(true);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapView);
         if (mapFragment != null) {
@@ -150,6 +155,21 @@ public class CollectingFragment extends Fragment {
         }));
 
         return binding.getRoot();
+    }
+
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        menu.add("Delivery").setTitle("Delivery").setIcon(android.R.drawable.ic_menu_mylocation).setOnMenuItemClickListener(item -> {
+            showLocation();
+            return false;
+        }).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    private void showLocation() {
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Objects.requireNonNull(getPositionFromString(purchase.getLocation())), 14));
+        addMarkerToMap(activity,googleMap, getPositionFromString(purchase.getLocation()), purchase.getAddress());
     }
 
     private void goToBeneficiary() {

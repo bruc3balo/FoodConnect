@@ -34,6 +34,7 @@ public class StartFragment extends Fragment {
     private Models.Donation donation;
     private DonationProgressActivity activity;
     private boolean readOnly;
+
     public StartFragment() {
 
     }

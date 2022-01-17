@@ -19,6 +19,7 @@
     <application
         android:name=".utils.NotificationChannelClass"
         android:allowBackup="false"
+        tools:replace="android:allowBackup"
         android:icon="@drawable/ic_give_food"
         android:label="@string/app_name"
         android:roundIcon="@drawable/ic_give_food"
@@ -98,6 +99,8 @@
             android:name=".service.LocationService"
             android:enabled="true"
             android:exported="true" />
+
+        <receiver android:name=".broadcast.UpdateBroadcast" />
     </application>
 
 </manifest>

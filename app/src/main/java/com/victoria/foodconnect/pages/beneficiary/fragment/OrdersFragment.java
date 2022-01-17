@@ -11,6 +11,8 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatSpinner;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -27,6 +29,7 @@ import com.victoria.foodconnect.globals.purchaseDb.PurchaseViewModel;
 import com.victoria.foodconnect.models.Models;
 
 import java.util.LinkedList;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class OrdersFragment extends AppCompatActivity {
@@ -37,6 +40,7 @@ public class OrdersFragment extends AppCompatActivity {
     private final LinkedList<Models.Purchase> purchaseList = new LinkedList<>();
     private final LinkedList<Models.Purchase> allPurchaseList = new LinkedList<>();
     private JobsRvAdapter purchaseRvAdapter;
+    public static MutableLiveData<Optional<Boolean>> refreshPurchaseBene = new MutableLiveData<>();
 
 
     public OrdersFragment() {
@@ -104,6 +108,7 @@ public class OrdersFragment extends AppCompatActivity {
                 return;
             }
 
+            allPurchaseList.clear();
             allPurchaseList.addAll(purchases);
             filterList();
         });
@@ -117,13 +122,16 @@ public class OrdersFragment extends AppCompatActivity {
             default:
             case 0:
                 purchaseList.clear();
+                purchaseRvAdapter.notifyDataSetChanged();
                 purchaseList.addAll(allPurchaseList.stream().filter(purchase -> !purchase.isComplete() && !purchase.getDeleted() && purchase.getAssigned() == null).collect(Collectors.toList()));
                 purchaseRvAdapter.notifyDataSetChanged();
+
                 break;
 
             //in progress
             case 1:
                 purchaseList.clear();
+                purchaseRvAdapter.notifyDataSetChanged();
                 purchaseList.addAll(allPurchaseList.stream().filter(purchase -> !purchase.isComplete() && !purchase.getDeleted() && purchase.getAssigned() != null).collect(Collectors.toList()));
                 purchaseRvAdapter.notifyDataSetChanged();
                 break;
@@ -131,11 +139,32 @@ public class OrdersFragment extends AppCompatActivity {
             //completed
             case 2:
                 purchaseList.clear();
+                purchaseRvAdapter.notifyDataSetChanged();
                 purchaseList.addAll(allPurchaseList.stream().filter(purchase -> purchase.getDeleted() || purchase.isComplete() && purchase.getAssigned() != null).collect(Collectors.toList()));
                 purchaseRvAdapter.notifyDataSetChanged();
                 break;
         }
 
+    }
+
+    private void addRefreshListener() {
+        refreshData().observe(this, refresh -> {
+            System.out.println("REFRESH RECEIVED");
+            if (refresh.isPresent()) {
+                if (user != null) {
+                    getOrders();
+                }
+            }
+        });
+    }
+
+    private void removeListeners() {
+        refreshData().removeObservers(this);
+    }
+
+    //listener for updates
+    private LiveData<Optional<Boolean>> refreshData() {
+        return refreshPurchaseBene;
     }
 
     @Override
@@ -144,5 +173,13 @@ public class OrdersFragment extends AppCompatActivity {
         if (user != null) {
             getOrders();
         }
+
+        addRefreshListener();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        removeListeners();
     }
 }

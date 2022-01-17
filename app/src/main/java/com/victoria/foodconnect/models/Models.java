@@ -8,12 +8,18 @@ import static com.victoria.foodconnect.globals.GlobalVariables.PRODUCT_DESCRIPTI
 import static com.victoria.foodconnect.globals.GlobalVariables.PRODUCT_NAME;
 import static com.victoria.foodconnect.globals.GlobalVariables.PRODUCT_PRICE;
 import static com.victoria.foodconnect.globals.GlobalVariables.UNIT;
+import static com.victoria.foodconnect.pages.admin.fragments.StatsFragment.getProductFromString;
+
+
+import android.os.Build;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 
+import com.anychart.chart.common.dataentry.DataEntry;
+import com.anychart.chart.common.dataentry.ValueDataEntry;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.victoria.foodconnect.utils.MyLinkedMap;
-import com.victoria.foodconnect.utils.ProductStatus;
 import com.victoria.foodconnect.utils.ProgressStatus;
 
 import java.io.Serializable;
@@ -46,7 +52,7 @@ public class Models implements Serializable {
             this.status = status;
         }
 
-        public ProgressModel(String name, ProgressStatus status,String id) {
+        public ProgressModel(String name, ProgressStatus status, String id) {
             this.name = name;
             this.status = status;
             this.id = id;
@@ -860,7 +866,7 @@ public class Models implements Serializable {
             this.name = name;
         }
 
-        public Product(String name, BigDecimal price, String image, String created_at, String updated_at, Boolean deleted, Boolean disabled,String location) {
+        public Product(String name, BigDecimal price, String image, String created_at, String updated_at, Boolean deleted, Boolean disabled, String location) {
             this.name = name;
             this.price = price;
             this.image = image;
@@ -1434,7 +1440,7 @@ public class Models implements Serializable {
         }
     }
 
-    public static class ProductCountModel implements Serializable{
+    public static class ProductCountModel implements Serializable {
 
         private Models.Product Product;
         private Integer count;
@@ -1478,7 +1484,7 @@ public class Models implements Serializable {
 
         }
 
-        public PurchaseCreationForm(String buyersId,LinkedHashMap<String, Integer> products) {
+        public PurchaseCreationForm(String buyersId, LinkedHashMap<String, Integer> products) {
             this.buyersId = buyersId;
             this.products = products;
         }
@@ -1765,7 +1771,7 @@ public class Models implements Serializable {
         }
     }
 
-    public static class DistributionUpdateForm implements Serializable{
+    public static class DistributionUpdateForm implements Serializable {
 
         private Long id;
 
@@ -1785,19 +1791,19 @@ public class Models implements Serializable {
 
         }
 
-        public DistributionUpdateForm(Long id,Integer status) {
+        public DistributionUpdateForm(Long id, Integer status) {
             this.id = id;
             this.status = status;
         }
 
-        public DistributionUpdateForm(Long id,Integer status,Boolean paid) {
+        public DistributionUpdateForm(Long id, Integer status, Boolean paid) {
             this.id = id;
             this.status = status;
             this.paid = paid;
         }
 
 
-        public DistributionUpdateForm(Long id,Map<String, Integer> product_status) {
+        public DistributionUpdateForm(Long id, Map<String, Integer> product_status) {
             this.id = id;
             this.product_status = product_status;
         }
@@ -1864,7 +1870,7 @@ public class Models implements Serializable {
         }
     }
 
-    public static class Donation implements Serializable{
+    public static class Donation implements Serializable {
 
         private String documentId;
 
@@ -1898,7 +1904,7 @@ public class Models implements Serializable {
 
         }
 
-        public Donation(String documentId, Long id, AppUser donor_username, AppUser beneficiary_username, Date createdAt, String delivery_location, String delivery_address, String collection_location, String collection_address, boolean deleted, boolean complete, Boolean success,String assigned) {
+        public Donation(String documentId, Long id, AppUser donor_username, AppUser beneficiary_username, Date createdAt, String delivery_location, String delivery_address, String collection_location, String collection_address, boolean deleted, boolean complete, Boolean success, String assigned) {
             this.documentId = documentId;
             this.id = id;
             this.donor_username = donor_username;
@@ -2076,7 +2082,7 @@ public class Models implements Serializable {
 
         }
 
-        public DonorDistributionUpdateForm(Long id,Integer status) {
+        public DonorDistributionUpdateForm(Long id, Integer status) {
             this.id = id;
             this.status = status;
         }
@@ -2212,7 +2218,7 @@ public class Models implements Serializable {
         }
     }
 
-    public static class DonationDistribution implements Serializable  {
+    public static class DonationDistribution implements Serializable {
 
         private Long id;
 
@@ -2239,7 +2245,6 @@ public class Models implements Serializable {
         private Boolean reported;
 
         private Remarks remarks;
-
 
 
         public DonationDistribution() {
@@ -2350,4 +2355,150 @@ public class Models implements Serializable {
             this.remarks = remarks;
         }
     }
+
+    public static class NotificationModels {
+
+        private String documentId;
+
+        private Long id;
+
+        private String description;
+
+        private String title;
+
+        private String sub_text;
+
+        private String uid;
+
+        private Date created_at;
+
+        private boolean notified;
+
+        private String updating;
+
+        public NotificationModels() {
+
+        }
+
+        public NotificationModels(String documentId, Long id, String description, String title, String sub_text, String uid, Date created_at, boolean notified) {
+            this.documentId = documentId;
+            this.id = id;
+            this.description = description;
+            this.title = title;
+            this.sub_text = sub_text;
+            this.uid = uid;
+            this.created_at = created_at;
+            this.notified = notified;
+        }
+
+        public String getDocumentId() {
+            return documentId;
+        }
+
+        public void setDocumentId(String documentId) {
+            this.documentId = documentId;
+        }
+
+        public Long getId() {
+            return id;
+        }
+
+        public void setId(Long id) {
+            this.id = id;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public String getSub_text() {
+            return sub_text;
+        }
+
+        public void setSub_text(String sub_text) {
+            this.sub_text = sub_text;
+        }
+
+        public String getUid() {
+            return uid;
+        }
+
+        public void setUid(String uid) {
+            this.uid = uid;
+        }
+
+        public Date getCreated_at() {
+            return created_at;
+        }
+
+        public void setCreated_at(Date created_at) {
+            this.created_at = created_at;
+        }
+
+        public boolean isNotified() {
+            return notified;
+        }
+
+        public void setNotified(boolean notified) {
+            this.notified = notified;
+        }
+
+        public String getUpdating() {
+            return updating;
+        }
+
+        public void setUpdating(String updating) {
+            this.updating = updating;
+        }
+    }
+
+    public static class SellerStats implements Serializable {
+
+        private final MyLinkedMap<String, Integer> products = new MyLinkedMap<>();
+
+        private Integer month;
+
+        public SellerStats() {
+        }
+
+        public SellerStats(Integer month, MyLinkedMap<String, Integer> emptyProducts) {
+            this.month = month;
+            products.putAll(emptyProducts);
+        }
+
+        public MyLinkedMap<String, Integer> getProducts() {
+            return products;
+        }
+
+        public Integer getMonth() {
+            return month;
+        }
+
+        public void setMonth(Integer month) {
+            this.month = month;
+        }
+    }
+
+    public static class Bar3dDataEntry extends ValueDataEntry {
+
+        public Bar3dDataEntry(SellerStats stats, Boolean product) {
+            super(stats.getMonth(), stats.getProducts().getValue(0));
+            stats.getProducts().forEach((pid, num) -> setValue(product ? getProductFromString(pid) : pid, num));
+        }
+
+
+    }
+
 }

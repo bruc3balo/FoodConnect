@@ -16,6 +16,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -64,6 +66,8 @@ public class MyProductsSeller extends Fragment {
 
     private Domain.AppUser user;
     private boolean requested = false;
+    public static MutableLiveData<Optional<Boolean>> refreshProductsSeller = new MutableLiveData<>();
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -159,6 +163,7 @@ public class MyProductsSeller extends Fragment {
         productRvAdapter.notifyDataSetChanged();
 
         if (query.isEmpty()) {
+            productList.clear();
             productList.addAll(allProductList);
             productRvAdapter.notifyDataSetChanged();
         } else {
@@ -174,13 +179,7 @@ public class MyProductsSeller extends Fragment {
         }
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (user != null) {
-            getProductCategories();
-        }
-    }
+
 
     private void getProductCategories() {
         requested = true;
@@ -231,7 +230,7 @@ public class MyProductsSeller extends Fragment {
                 return;
             }
 
-            productList.clear();
+            allProductList.clear();
 
             try {
                 JsonArray serviceArray = new JsonArray(getObjectMapper().writeValueAsString(jsonResponse.get().getData()));
@@ -261,16 +260,55 @@ public class MyProductsSeller extends Fragment {
     }
 
     @SuppressLint("NotifyDataSetChanged")
+
+    //todo change buyer to beneficiary
     private void filterProducts(String productCategory) {
         productList.clear();
         productRvAdapter.notifyDataSetChanged();
+
         allProductList.forEach(p -> {
             if (p.getProduct_category().getName().equals(productCategory)) {
                 productList.add(p);
-                if (!productList.isEmpty()) {
-                    productRvAdapter.notifyItemInserted(productList.size() - 1);
+                productRvAdapter.notifyDataSetChanged();
+            }
+        });
+    }
+
+
+
+
+    private void addRefreshListener() {
+        refreshData().observe(this, refresh -> {
+            if (refresh.isPresent()) {
+                if (user != null) {
+                    getProductCategories();
                 }
             }
         });
+    }
+
+    private void removeListeners() {
+        refreshData().removeObservers(this);
+    }
+
+    //listener for updates
+    private LiveData<Optional<Boolean>> refreshData() {
+        return refreshProductsSeller;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (user != null) {
+            getProductCategories();
+        }
+
+        addRefreshListener();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        removeListeners();
     }
 }

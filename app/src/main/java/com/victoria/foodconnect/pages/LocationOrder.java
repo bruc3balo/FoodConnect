@@ -71,7 +71,6 @@ public class LocationOrder extends AppCompatActivity {
     public static final String CARTLIST = "c";
     public static final String PRODUCTLIST = "p";
     private final ArrayList<Address> placesList = new ArrayList<>();
-    private Geocoder geocoder;
     private String username;
 
 
@@ -81,7 +80,7 @@ public class LocationOrder extends AppCompatActivity {
         binding = ActivityLocationOrderBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        geocoder = new Geocoder(this);
+        new Geocoder(this);
 
 
         final Bundle extras = getIntent().getExtras();

@@ -11,6 +11,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -43,6 +45,8 @@ public class MyOrdersSeller extends Fragment {
     private final LinkedList<Models.Purchase> purchaseList = new LinkedList<>();
     private final LinkedList<Models.Purchase> allPurchaseList = new LinkedList<>();
     private int pos;
+    private Domain.AppUser appUser;
+    public static MutableLiveData<Optional<Boolean>> refreshPurchaseSeller = new MutableLiveData<>();
 
 
     public MyOrdersSeller() {
@@ -68,6 +72,7 @@ public class MyOrdersSeller extends Fragment {
             adapter = new PurchaseRvAdapter(requireContext(), u, purchaseList);
             rv.setAdapter(adapter);
 
+            this.appUser = u;
             getPurchases(u.getUsername());
 
             AppCompatSpinner spinner = binding.ordersCategory;
@@ -111,21 +116,58 @@ public class MyOrdersSeller extends Fragment {
         switch (position) {
             case 0:
                 purchaseList.clear();
+                adapter.notifyDataSetChanged();
+
                 purchaseList.addAll(allPurchaseList.stream().filter(i -> i.getSuccess() == null).collect(Collectors.toList()));
                 adapter.notifyDataSetChanged();
                 break;
 
             case 1:
                 purchaseList.clear();
+                adapter.notifyDataSetChanged();
+
                 purchaseList.addAll(allPurchaseList.stream().filter(i -> i.getSuccess() != null && i.getSuccess()).collect(Collectors.toList()));
                 adapter.notifyDataSetChanged();
                 break;
 
             case 2:
                 purchaseList.clear();
+                adapter.notifyDataSetChanged();
+
                 purchaseList.addAll(allPurchaseList.stream().filter(i -> i.getSuccess() != null && !i.getSuccess()).collect(Collectors.toList()));
                 adapter.notifyDataSetChanged();
                 break;
         }
+    }
+
+    private void addRefreshListener() {
+        refreshData().observe(this, refresh -> {
+            if (refresh.isPresent()) {
+                if (appUser != null) {
+                    getPurchases(appUser.getUsername());
+                }
+            }
+        });
+    }
+
+    private void removeListeners() {
+        refreshData().removeObservers(this);
+    }
+
+    //listener for updates
+    private LiveData<Optional<Boolean>> refreshData() {
+        return refreshPurchaseSeller;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        addRefreshListener();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        removeListeners();
     }
 }

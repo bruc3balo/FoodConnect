@@ -10,6 +10,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,6 +31,7 @@ import com.victoria.foodconnect.globals.purchaseDb.PurchaseViewModel;
 import com.victoria.foodconnect.models.Models;
 
 import java.util.LinkedList;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -41,6 +43,9 @@ public class DonationJobsFragment extends Fragment {
     private final LinkedList<Models.Donation> allDonationList = new LinkedList<>();
     private Domain.AppUser user;
     private int pos;
+    public static MutableLiveData<Optional<Boolean>> refreshDonationTrans = new MutableLiveData<>();
+
+
 
     public DonationJobsFragment() {
         // Required empty public constructor
@@ -106,6 +111,7 @@ public class DonationJobsFragment extends Fragment {
                 return;
             }
 
+            allDonationList.clear();
             allDonationList.addAll(donations);
             filterList();
         });
@@ -120,6 +126,8 @@ public class DonationJobsFragment extends Fragment {
             case 0:
 
                 donationList.clear();
+                donationRvAdapter.notifyDataSetChanged();
+
                 donationList.addAll(allDonationList.stream().filter(donation -> !donation.isComplete() && !donation.isDeleted() && donation.getAssigned() == null).collect(Collectors.toList()));
                 donationRvAdapter.notifyDataSetChanged();
 
@@ -128,6 +136,8 @@ public class DonationJobsFragment extends Fragment {
             //in progress
             case 1:
                 donationList.clear();
+                donationRvAdapter.notifyDataSetChanged();
+
                 donationList.addAll(allDonationList.stream().filter(donation -> !donation.isComplete() && !donation.isDeleted() && donation.getAssigned() != null && donation.getAssigned().equals(user.getUsername())).collect(Collectors.toList()));
                 donationRvAdapter.notifyDataSetChanged();
 
@@ -136,6 +146,8 @@ public class DonationJobsFragment extends Fragment {
             //completed
             case 2:
                 donationList.clear();
+                donationRvAdapter.notifyDataSetChanged();
+
                 donationList.addAll(allDonationList.stream().filter(donation -> donation.isDeleted() || donation.isComplete() && donation.getAssigned() != null).collect(Collectors.toList()));
                 donationRvAdapter.notifyDataSetChanged();
                 break;

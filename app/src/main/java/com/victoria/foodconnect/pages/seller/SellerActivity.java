@@ -33,6 +33,7 @@ import com.victoria.foodconnect.databinding.ActivitySellerBinding;
 import com.victoria.foodconnect.domain.Domain;
 import com.victoria.foodconnect.pages.seller.fragments.MyOrdersSeller;
 import com.victoria.foodconnect.pages.seller.fragments.MyProductsSeller;
+import com.victoria.foodconnect.pages.seller.fragments.SellerStatsFragment;
 
 public class SellerActivity extends AppCompatActivity {
 
@@ -93,6 +94,13 @@ public class SellerActivity extends AppCompatActivity {
                     binding.subText.setVisibility(View.VISIBLE);
                     binding.subText.setText("My orders");
                     addFragmentToContainer(getSupportFragmentManager(), binding.sellerDrawerFragment, new MyOrdersSeller());
+                    closeDrawer(drawerLayout);
+                    break;
+
+                case R.id.stats:
+                    binding.subText.setVisibility(View.VISIBLE);
+                    binding.subText.setText("Statistics");
+                    addFragmentToContainer(getSupportFragmentManager(), binding.sellerDrawerFragment, new SellerStatsFragment());
                     closeDrawer(drawerLayout);
                     break;
             }

@@ -61,8 +61,7 @@ public class ProductsFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
         binding = FragmentProductsBinding.inflate(inflater);
@@ -95,7 +94,7 @@ public class ProductsFragment extends Fragment {
 
         userRepository.getUserLive().observe(requireActivity(), appUser -> {
             if (!appUser.isPresent()) {
-                Toast.makeText(requireContext(), "Failed to get user info", Toast.LENGTH_SHORT).show();
+                Toast.makeText( requireContext(), "Failed to get user info", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -120,7 +119,7 @@ public class ProductsFragment extends Fragment {
         productViewModel.getAllProductCategoriesLive().observe(requireActivity(), jsonResponse -> {
             if (!jsonResponse.isPresent()) {
                 outSpinnerProgress(binding.pb,null);
-                Toast.makeText(requireContext(), "No product categories", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(requireContext(), "No product categories", Toast.LENGTH_SHORT).show();
                 return;
             }
 

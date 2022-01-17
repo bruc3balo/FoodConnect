@@ -34,13 +34,13 @@ import java.util.Map;
 
 public class ReviewFragment extends Fragment {
 
+
     private FragmentReviewBinding binding;
 
     //purchase
     private Models.Purchase purchase;
     private Models.DistributionModel distribution;
     private JobActivityProgress activity;
-
 
     //donation
     private Models.Donation donation;

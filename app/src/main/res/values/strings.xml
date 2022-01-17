@@ -99,6 +99,10 @@
     <string name="donation_job">Donation Jobs</string>
     <string name="start_journey">Start Journey</string>
     <string name="donations">Donations</string>
+    <string name="stats">Statistics</string>
+    <string name="no_data">No data</string>
+    <string name="no_donor_data">No donor data</string>
+    <string name="no_seller_data">No seller data</string>
 
 
 </resources>

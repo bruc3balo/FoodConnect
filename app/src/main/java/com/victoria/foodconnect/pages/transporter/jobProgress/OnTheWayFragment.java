@@ -18,6 +18,9 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -72,6 +75,8 @@ public class OnTheWayFragment extends Fragment {
 
         binding = FragmentOnTheWayBinding.inflate(inflater);
 
+        setHasOptionsMenu(true);
+
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapView);
         if (mapFragment != null) {
             mapFragment.getMapAsync(googleMap -> {
@@ -91,6 +96,15 @@ public class OnTheWayFragment extends Fragment {
         }));
 
         return binding.getRoot();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+       menu.add("Delivery").setTitle("Delivery").setIcon(android.R.drawable.ic_menu_mylocation).setOnMenuItemClickListener(item -> {
+           showLocation();
+           return false;
+       }).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     private void deliveredProducts() {
@@ -116,6 +130,13 @@ public class OnTheWayFragment extends Fragment {
         d.show();
     }
 
+
+    private void showLocation() {
+
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Objects.requireNonNull(getPositionFromString(purchase.getLocation())), 14));
+        addMarkerToMap(googleMap, getPositionFromString(purchase.getLocation()), purchase.getAddress());
+
+    }
 
     private void init() {
 

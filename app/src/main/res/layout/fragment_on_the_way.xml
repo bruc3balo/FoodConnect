@@ -16,6 +16,7 @@
         tools:context=".pages.transporter.MapsFragment" />
 
 
+
     <Button
         android:id="@+id/arrived"
         android:layout_width="wrap_content"
