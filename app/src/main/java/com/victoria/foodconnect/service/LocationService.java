@@ -91,7 +91,7 @@ public class LocationService extends LifecycleService implements ViewModelStoreO
             userRepository.getUserLive().observe(this, optionalUser -> optionalUser.ifPresent(user -> {
                 myUser = user;
                 getDeviceLocation();
-                //getAllNotifications(user.getUsername());
+                //      getAllNotifications(user.getUsername());
             }));
         }
 
