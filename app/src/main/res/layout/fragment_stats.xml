@@ -7,158 +7,22 @@
     tools:context=".pages.admin.fragments.StatsFragment">
 
 
-    <androidx.core.widget.NestedScrollView
+    <GridLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
+        <GridView
+            android:id="@+id/gridView"
+            android:numColumns="2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <LinearLayout
-                android:id="@+id/sellerStats"
-                android:layout_width="match_parent"
-                android:layout_height="800dp"
-                android:layout_gravity="center"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
 
 
-                    <androidx.appcompat.widget.AppCompatSpinner
-                        android:id="@+id/seller"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_margin="10dp"
-                        android:gravity="center"
-                        android:minHeight="48dp"
-                        tools:ignore="SpeakableTextPresentCheck" />
 
+        </GridView>
 
-                    <com.anychart.AnyChartView
-                        android:layout_weight="1"
-                        android:id="@+id/sellerProductsChart"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_gravity="center"
-                        android:visibility="visible" />
-
-
-                </LinearLayout>
-
-                <com.github.ybq.android.spinkit.SpinKitView
-                    android:id="@+id/sellerPb"
-                    style="@style/SpinKitView.Large.WanderingCubes"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    app:SpinKit_Color="@android:color/holo_red_dark" />
-
-                <LinearLayout
-                    android:id="@+id/sellerNoData"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:visibility="gone">
-
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:src="@drawable/ic_warning" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginBottom="50dp"
-                        android:gravity="center"
-                        android:text="@string/no_seller_data"
-                        android:textColor="@color/black"
-                        android:textSize="30sp" />
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/donorStats"
-                android:layout_width="match_parent"
-                android:layout_height="800dp"
-                android:layout_gravity="center"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-
-                    <androidx.appcompat.widget.AppCompatSpinner
-                        android:id="@+id/donor"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_margin="10dp"
-                        android:gravity="center"
-                        android:minHeight="48dp"
-                        tools:ignore="SpeakableTextPresentCheck" />
-
-
-                    <com.anychart.AnyChartView
-                        android:layout_weight="1"
-                        android:id="@+id/donationProductsChart"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_gravity="center"
-                        android:visibility="visible" />
-
-
-                </LinearLayout>
-
-                <com.github.ybq.android.spinkit.SpinKitView
-                    android:id="@+id/donorPb"
-                    style="@style/SpinKitView.Large.WanderingCubes"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    app:SpinKit_Color="@android:color/holo_red_dark" />
-
-                <LinearLayout
-                    android:id="@+id/noDonorData"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:visibility="gone">
-
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:src="@drawable/ic_warning" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginBottom="50dp"
-                        android:gravity="center"
-                        android:text="@string/no_donor_data"
-                        android:textColor="@color/black"
-                        android:textSize="30sp" />
-
-                </LinearLayout>
-
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-    </androidx.core.widget.NestedScrollView>
+    </GridLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

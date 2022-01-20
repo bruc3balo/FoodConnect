@@ -8,6 +8,8 @@ import static com.victoria.foodconnect.pages.seller.SellerActivity.closeDrawer;
 import static com.victoria.foodconnect.pages.seller.SellerActivity.isDrawerOpen;
 import static com.victoria.foodconnect.pages.seller.SellerActivity.setNavDetails;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,6 +27,8 @@ import com.victoria.foodconnect.R;
 import com.victoria.foodconnect.databinding.ActivityTransporterBinding;
 import com.victoria.foodconnect.pages.transporter.fragments.DonationJobsFragment;
 import com.victoria.foodconnect.pages.transporter.fragments.JobsFragment;
+import com.victoria.foodconnect.pages.transporter.fragments.TransporterDonationStats;
+import com.victoria.foodconnect.pages.transporter.fragments.TransporterPurchaseStats;
 
 public class TransporterActivity extends AppCompatActivity {
 
@@ -32,6 +36,7 @@ public class TransporterActivity extends AppCompatActivity {
     private boolean backPressed = false;
 
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,6 +92,16 @@ public class TransporterActivity extends AppCompatActivity {
                     closeDrawer(drawerLayout);
                     break;
 
+                case R.id.purchaseStats:
+                    closeDrawer(drawerLayout);
+                    goToTransporterPurchases();
+                    break;
+
+                case R.id.donationsStats:
+                    closeDrawer(drawerLayout);
+                    goToTransporterDonations();
+                    break;
+
             }
             return false;
         });
@@ -99,6 +114,14 @@ public class TransporterActivity extends AppCompatActivity {
         });
 
         setWindowColors(this);
+    }
+
+    private void goToTransporterDonations() {
+        startActivity(new Intent(TransporterActivity.this, TransporterDonationStats.class));
+    }
+
+    private void goToTransporterPurchases() {
+        startActivity(new Intent(TransporterActivity.this, TransporterPurchaseStats.class));
     }
 
     @Override

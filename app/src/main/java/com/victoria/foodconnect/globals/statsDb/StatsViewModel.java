@@ -235,6 +235,214 @@ public class StatsViewModel extends AndroidViewModel {
         return mutableLiveData;
     }
 
+    private MutableLiveData<List<SellerStats>> getBeneficiaryPurchaseStats(Integer year, String beneficiary) {
+        MutableLiveData<List<SellerStats>> mutableLiveData = new MutableLiveData<>();
+        LinkedHashSet<SellerStats> statsLinkedHashSet = new LinkedHashSet<>();
+
+        HashMap<String, String> params = new HashMap<>();
+        params.put("year", String.valueOf(year));
+        params.put(USERNAME, beneficiary);
+
+        statsApi.getAllBeneficiaryPurchaseStats(params, getHeaderMap()).enqueue(new Callback<JsonResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<JsonResponse> call, @NonNull Response<JsonResponse> response) {
+                JsonResponse jsonResponse = response.body();
+
+                if (jsonResponse == null || response.code() != 200 || !jsonResponse.isSuccess() || jsonResponse.getData() == null) {
+                    mutableLiveData.setValue(new ArrayList<>());
+                    System.out.println("Failed to get stats");
+                    return;
+                }
+
+
+                try {
+                    JsonArray serviceArray = new JsonArray(getObjectMapper().writeValueAsString(jsonResponse.getData()));
+
+                    //populate keys
+                    for (int i = 0; i < serviceArray.size(); i++) {
+                        try {
+                            Models.SellerStats sellerStats = getObjectMapper().readValue(new JsonObject(serviceArray.getJsonObject(i).getMap()).toString(), Models.SellerStats.class);
+                            statsLinkedHashSet.add(sellerStats);
+                        } catch (JsonProcessingException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    mutableLiveData.setValue(new ArrayList<>(statsLinkedHashSet));
+
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                    mutableLiveData.setValue(new ArrayList<>());
+
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<JsonResponse> call, @NonNull Throwable t) {
+                mutableLiveData.setValue(new ArrayList<>());
+            }
+        });
+
+        return mutableLiveData;
+    }
+
+    private MutableLiveData<List<SellerStats>> getBeneficiaryDonationsStats(Integer year, String beneficiary) {
+        MutableLiveData<List<SellerStats>> mutableLiveData = new MutableLiveData<>();
+        LinkedHashSet<SellerStats> statsLinkedHashSet = new LinkedHashSet<>();
+
+        HashMap<String, String> params = new HashMap<>();
+        params.put("year", String.valueOf(year));
+        params.put(USERNAME, beneficiary);
+
+        statsApi.getAllBeneficiaryDonationsStats(params, getHeaderMap()).enqueue(new Callback<JsonResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<JsonResponse> call, @NonNull Response<JsonResponse> response) {
+                JsonResponse jsonResponse = response.body();
+
+                if (jsonResponse == null || response.code() != 200 || !jsonResponse.isSuccess() || jsonResponse.getData() == null) {
+                    mutableLiveData.setValue(new ArrayList<>());
+                    System.out.println("Failed to get stats");
+                    return;
+                }
+
+
+                try {
+                    JsonArray serviceArray = new JsonArray(getObjectMapper().writeValueAsString(jsonResponse.getData()));
+
+                    //populate keys
+                    for (int i = 0; i < serviceArray.size(); i++) {
+                        try {
+                            Models.SellerStats sellerStats = getObjectMapper().readValue(new JsonObject(serviceArray.getJsonObject(i).getMap()).toString(), Models.SellerStats.class);
+                            statsLinkedHashSet.add(sellerStats);
+                        } catch (JsonProcessingException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    mutableLiveData.setValue(new ArrayList<>(statsLinkedHashSet));
+
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                    mutableLiveData.setValue(new ArrayList<>());
+
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<JsonResponse> call, @NonNull Throwable t) {
+                mutableLiveData.setValue(new ArrayList<>());
+            }
+        });
+
+        return mutableLiveData;
+    }
+
+    private MutableLiveData<List<SellerStats>> getTransporterDonationsStats(Integer year, String transporter) {
+        MutableLiveData<List<SellerStats>> mutableLiveData = new MutableLiveData<>();
+        LinkedHashSet<SellerStats> statsLinkedHashSet = new LinkedHashSet<>();
+
+        HashMap<String, String> params = new HashMap<>();
+        params.put("year", String.valueOf(year));
+        params.put(USERNAME, transporter);
+
+
+        statsApi.getAllTransporterDonationsStats(params, getHeaderMap()).enqueue(new Callback<JsonResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<JsonResponse> call, @NonNull Response<JsonResponse> response) {
+                JsonResponse jsonResponse = response.body();
+
+                if (jsonResponse == null || response.code() != 200 || !jsonResponse.isSuccess() || jsonResponse.getData() == null) {
+                    mutableLiveData.setValue(new ArrayList<>());
+                    System.out.println("Failed to get stats");
+                    return;
+                }
+
+
+                try {
+                    JsonArray serviceArray = new JsonArray(getObjectMapper().writeValueAsString(jsonResponse.getData()));
+
+                    //populate keys
+                    for (int i = 0; i < serviceArray.size(); i++) {
+                        try {
+                            Models.SellerStats sellerStats = getObjectMapper().readValue(new JsonObject(serviceArray.getJsonObject(i).getMap()).toString(), Models.SellerStats.class);
+                            statsLinkedHashSet.add(sellerStats);
+                        } catch (JsonProcessingException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    mutableLiveData.setValue(new ArrayList<>(statsLinkedHashSet));
+
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                    mutableLiveData.setValue(new ArrayList<>());
+
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<JsonResponse> call, @NonNull Throwable t) {
+                mutableLiveData.setValue(new ArrayList<>());
+            }
+        });
+
+        return mutableLiveData;
+    }
+
+    private MutableLiveData<List<SellerStats>> getTransporterPurchasesStats(Integer year, String transporter) {
+        MutableLiveData<List<SellerStats>> mutableLiveData = new MutableLiveData<>();
+        LinkedHashSet<SellerStats> statsLinkedHashSet = new LinkedHashSet<>();
+
+
+        HashMap<String, String> params = new HashMap<>();
+        params.put("year", String.valueOf(year));
+        params.put(USERNAME, transporter);
+
+
+        statsApi.getAllTransporterDonationsStats(params, getHeaderMap()).enqueue(new Callback<JsonResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<JsonResponse> call, @NonNull Response<JsonResponse> response) {
+                JsonResponse jsonResponse = response.body();
+
+                if (jsonResponse == null || response.code() != 200 || !jsonResponse.isSuccess() || jsonResponse.getData() == null) {
+                    mutableLiveData.setValue(new ArrayList<>());
+                    System.out.println("Failed to get stats");
+                    return;
+                }
+
+
+                try {
+                    JsonArray serviceArray = new JsonArray(getObjectMapper().writeValueAsString(jsonResponse.getData()));
+
+                    //populate keys
+                    for (int i = 0; i < serviceArray.size(); i++) {
+                        try {
+                            Models.SellerStats sellerStats = getObjectMapper().readValue(new JsonObject(serviceArray.getJsonObject(i).getMap()).toString(), Models.SellerStats.class);
+                            statsLinkedHashSet.add(sellerStats);
+                        } catch (JsonProcessingException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    mutableLiveData.setValue(new ArrayList<>(statsLinkedHashSet));
+
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                    mutableLiveData.setValue(new ArrayList<>());
+
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<JsonResponse> call, @NonNull Throwable t) {
+                mutableLiveData.setValue(new ArrayList<>());
+            }
+        });
+
+        return mutableLiveData;
+    }
+
+
     //expose
 
     public LiveData<List<SellerStats>> getSellerStatsLive(Integer year, String sellerName) {
@@ -253,5 +461,20 @@ public class StatsViewModel extends AndroidViewModel {
         return getAllDonorStats(year);
     }
 
+    public LiveData<List<SellerStats>> getBeneficiaryPurchaseStatsLive(Integer year, String beneficiary) {
+        return getBeneficiaryPurchaseStats(year, beneficiary);
+    }
+
+    public LiveData<List<SellerStats>> getBeneficiaryDonationsStatsLive(Integer year, String beneficiary) {
+        return getBeneficiaryDonationsStats(year, beneficiary);
+    }
+
+    public LiveData<List<SellerStats>> getTransporterDonationsStatsLive(Integer year, String transporter) {
+        return getTransporterDonationsStats(year, transporter);
+    }
+
+    public LiveData<List<SellerStats>> getTransporterPurchasesStatsLive(Integer year, String transporter) {
+        return getTransporterPurchasesStats(year, transporter);
+    }
 
 }

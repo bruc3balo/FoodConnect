@@ -4,5 +4,7 @@
     <group android:id="@+id/beneficiary" >
     <item android:id="@+id/orders" android:title="@string/orders" />
     <item android:id="@+id/donations" android:title="@string/donations" />
+        <item android:id="@+id/purchaseStats" android:title="@string/purchase_stats" />
+        <item android:id="@+id/donationsStats" android:title="@string/donation_stats" />
     </group>
 </menu>

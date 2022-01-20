@@ -80,7 +80,7 @@ public class DonorStatsFragment extends Fragment {
 
             if (sellerStats.isEmpty() || sellerStats.get(0).getProducts().isEmpty()) {
                 Toast.makeText(requireContext(), "No data", Toast.LENGTH_SHORT).show();
-                anyChartView.clear();
+                //anyChartView.clear();
                 outSpinnerProgress(binding.pb, null);
                 binding.noData.setVisibility(View.VISIBLE);
                 return;

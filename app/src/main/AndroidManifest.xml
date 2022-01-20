@@ -19,12 +19,27 @@
     <application
         android:name=".utils.NotificationChannelClass"
         android:allowBackup="false"
-        tools:replace="android:allowBackup"
         android:icon="@drawable/ic_give_food"
         android:label="@string/app_name"
         android:roundIcon="@drawable/ic_give_food"
         android:supportsRtl="true"
-        android:theme="@style/Theme.FoodConnect">
+        android:theme="@style/Theme.FoodConnect"
+        tools:replace="android:allowBackup">
+        <activity
+            android:name=".pages.transporter.fragments.TransporterDonationStats"
+            android:exported="false" />
+        <activity
+            android:name=".pages.transporter.fragments.TransporterPurchaseStats"
+            android:exported="false" />
+        <activity
+            android:name=".pages.beneficiary.fragment.BuyerDonationsStats"
+            android:exported="false" />
+        <activity
+            android:name=".pages.admin.activities.SellerStatsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".pages.admin.activities.DonorStatsActivity"
+            android:exported="false" />
         <activity
             android:name=".pages.ProgressActivity"
             android:exported="false" />
@@ -93,6 +108,7 @@
         </activity>
         <activity android:name=".pages.beneficiary.fragment.OrdersFragment" />
         <activity android:name=".pages.beneficiary.fragment.ReceiveDonationsFragment" />
+        <activity android:name=".pages.beneficiary.fragment.BuyerPurchasesStats" />
 
         <service android:name=".service.UploadPictureService" />
         <service

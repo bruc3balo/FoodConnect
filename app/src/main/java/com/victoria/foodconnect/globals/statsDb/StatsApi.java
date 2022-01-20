@@ -1,5 +1,7 @@
 package com.victoria.foodconnect.globals.statsDb;
 
+import static com.victoria.foodconnect.globals.GlobalVariables.USERNAME;
+
 import com.victoria.foodconnect.utils.JsonResponse;
 
 import java.util.HashMap;
@@ -25,4 +27,17 @@ public interface StatsApi {
 
     @GET(base + "/all_donor")
     Call<JsonResponse> getAllDonorStats(@Query(value = "year") Integer year, @HeaderMap HashMap<String, String> headers);
+
+    @GET(base + "/all_bene_donations")
+    Call<JsonResponse> getAllBeneficiaryDonationsStats(@QueryMap HashMap<String, String> params, @HeaderMap HashMap<String, String> headers);
+
+    @GET(base + "/all_bene_purchase")
+    Call<JsonResponse> getAllBeneficiaryPurchaseStats(@QueryMap HashMap<String, String> params, @HeaderMap HashMap<String, String> headers);
+
+    @GET(base + "/all_trans_donations")
+    Call<JsonResponse> getAllTransporterDonationsStats(@QueryMap HashMap<String, String> params, @HeaderMap HashMap<String, String> headers);
+
+    @GET(base + "/all_trans_purchases")
+    Call<JsonResponse> getAllTransporterPurchasesStats(@QueryMap HashMap<String, String> params, @HeaderMap HashMap<String, String> headers);
+
 }

@@ -103,6 +103,12 @@
     <string name="no_data">No data</string>
     <string name="no_donor_data">No donor data</string>
     <string name="no_seller_data">No seller data</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="donor_stats">Donor Statistics</string>
+    <string name="ps">Purchase Statistics</string>
+    <string name="title_activity_transporter_donation_stats">TransporterDonationStats</string>
+    <string name="purchase_stats">Purchase Stats</string>
+    <string name="donation_stats">Donation Stats</string>
 
 
 </resources>

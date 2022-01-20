@@ -8,6 +8,7 @@ import static com.victoria.foodconnect.globals.GlobalVariables.PRODUCT_DESCRIPTI
 import static com.victoria.foodconnect.globals.GlobalVariables.PRODUCT_NAME;
 import static com.victoria.foodconnect.globals.GlobalVariables.PRODUCT_PRICE;
 import static com.victoria.foodconnect.globals.GlobalVariables.UNIT;
+import static com.victoria.foodconnect.pages.admin.activities.DonorStatsActivity.getMonth;
 import static com.victoria.foodconnect.pages.admin.fragments.StatsFragment.getProductFromString;
 
 
@@ -2494,7 +2495,7 @@ public class Models implements Serializable {
     public static class Bar3dDataEntry extends ValueDataEntry {
 
         public Bar3dDataEntry(SellerStats stats, Boolean product) {
-            super(stats.getMonth(), stats.getProducts().getValue(0));
+            super(getMonth(stats.getMonth()), stats.getProducts().getValue(0));
             stats.getProducts().forEach((pid, num) -> setValue(product ? getProductFromString(pid) : pid, num));
         }
 

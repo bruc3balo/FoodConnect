@@ -78,7 +78,7 @@ import io.vertx.core.json.JsonObject;
 
 public class AddNewProduct extends AppCompatActivity implements OnMapReadyCallback {
 
-    private static final int LOCATION_PERMISSION_CODE = 1;
+    public static final int LOCATION_PERMISSION_CODE = 1;
     private ActivityAddNewProductBinding binding;
     private final ArrayList<Models.ProductCategory> allProductCategories = new ArrayList<>();
     private final ProductCreationFrom newProduct = new ProductCreationFrom();

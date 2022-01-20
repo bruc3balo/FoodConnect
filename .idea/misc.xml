@@ -32,12 +32,14 @@
         <entry key="..\:/Users/Bruce/AndroidStudioProjects/FoodConnect/app/src/main/res/layout/activity_admin.xml" value="0.375" />
         <entry key="..\:/Users/Bruce/AndroidStudioProjects/FoodConnect/app/src/main/res/layout/activity_beneficiary.xml" value="0.33" />
         <entry key="..\:/Users/Bruce/AndroidStudioProjects/FoodConnect/app/src/main/res/layout/activity_buy_orders.xml" value="0.4578313253012048" />
+        <entry key="..\:/Users/Bruce/AndroidStudioProjects/FoodConnect/app/src/main/res/layout/activity_buyer_donations_stats.xml" value="0.1259259259259259" />
         <entry key="..\:/Users/Bruce/AndroidStudioProjects/FoodConnect/app/src/main/res/layout/activity_cart.xml" value="0.375" />
         <entry key="..\:/Users/Bruce/AndroidStudioProjects/FoodConnect/app/src/main/res/layout/activity_certified_authority.xml" value="0.2109375" />
         <entry key="..\:/Users/Bruce/AndroidStudioProjects/FoodConnect/app/src/main/res/layout/activity_dnf_donation.xml" value="0.3609375" />
         <entry key="..\:/Users/Bruce/AndroidStudioProjects/FoodConnect/app/src/main/res/layout/activity_donation_progress.xml" value="0.375" />
         <entry key="..\:/Users/Bruce/AndroidStudioProjects/FoodConnect/app/src/main/res/layout/activity_donor.xml" value="0.375" />
         <entry key="..\:/Users/Bruce/AndroidStudioProjects/FoodConnect/app/src/main/res/layout/activity_donor_profile.xml" value="0.375" />
+        <entry key="..\:/Users/Bruce/AndroidStudioProjects/FoodConnect/app/src/main/res/layout/activity_donor_stats.xml" value="0.375" />
         <entry key="..\:/Users/Bruce/AndroidStudioProjects/FoodConnect/app/src/main/res/layout/activity_job_progress.xml" value="0.375" />
         <entry key="..\:/Users/Bruce/AndroidStudioProjects/FoodConnect/app/src/main/res/layout/activity_location_order.xml" value="0.375" />
         <entry key="..\:/Users/Bruce/AndroidStudioProjects/FoodConnect/app/src/main/res/layout/activity_login.xml" value="0.1" />
@@ -47,8 +49,11 @@
         <entry key="..\:/Users/Bruce/AndroidStudioProjects/FoodConnect/app/src/main/res/layout/activity_product_category_managment.xml" value="0.375" />
         <entry key="..\:/Users/Bruce/AndroidStudioProjects/FoodConnect/app/src/main/res/layout/activity_progress.xml" value="0.3609375" />
         <entry key="..\:/Users/Bruce/AndroidStudioProjects/FoodConnect/app/src/main/res/layout/activity_seller.xml" value="0.22" />
+        <entry key="..\:/Users/Bruce/AndroidStudioProjects/FoodConnect/app/src/main/res/layout/activity_seller_stats.xml" value="0.375" />
         <entry key="..\:/Users/Bruce/AndroidStudioProjects/FoodConnect/app/src/main/res/layout/activity_splash_screen.xml" value="0.375" />
         <entry key="..\:/Users/Bruce/AndroidStudioProjects/FoodConnect/app/src/main/res/layout/activity_transporter.xml" value="0.25" />
+        <entry key="..\:/Users/Bruce/AndroidStudioProjects/FoodConnect/app/src/main/res/layout/activity_transporter_donation_stats.xml" value="0.375" />
+        <entry key="..\:/Users/Bruce/AndroidStudioProjects/FoodConnect/app/src/main/res/layout/activity_transporter_purchase_stats.xml" value="0.3609375" />
         <entry key="..\:/Users/Bruce/AndroidStudioProjects/FoodConnect/app/src/main/res/layout/activity_tutorial.xml" value="0.67" />
         <entry key="..\:/Users/Bruce/AndroidStudioProjects/FoodConnect/app/src/main/res/layout/activity_verify_account.xml" value="0.375" />
         <entry key="..\:/Users/Bruce/AndroidStudioProjects/FoodConnect/app/src/main/res/layout/badge.xml" value="0.75" />
@@ -64,6 +69,7 @@
         <entry key="..\:/Users/Bruce/AndroidStudioProjects/FoodConnect/app/src/main/res/layout/fragment_accepted.xml" value="0.375" />
         <entry key="..\:/Users/Bruce/AndroidStudioProjects/FoodConnect/app/src/main/res/layout/fragment_arrived.xml" value="0.3384223918575064" />
         <entry key="..\:/Users/Bruce/AndroidStudioProjects/FoodConnect/app/src/main/res/layout/fragment_arrived_donation.xml" value="0.375" />
+        <entry key="..\:/Users/Bruce/AndroidStudioProjects/FoodConnect/app/src/main/res/layout/fragment_buyer_purchases_stats.xml" value="0.30925925925925923" />
         <entry key="..\:/Users/Bruce/AndroidStudioProjects/FoodConnect/app/src/main/res/layout/fragment_choose_beneficiary.xml" value="0.375" />
         <entry key="..\:/Users/Bruce/AndroidStudioProjects/FoodConnect/app/src/main/res/layout/fragment_collecting.xml" value="0.3609375" />
         <entry key="..\:/Users/Bruce/AndroidStudioProjects/FoodConnect/app/src/main/res/layout/fragment_complete.xml" value="0.375" />
@@ -94,10 +100,12 @@
         <entry key="..\:/Users/Bruce/AndroidStudioProjects/FoodConnect/app/src/main/res/layout/fragment_to_collection.xml" value="0.36203703703703705" />
         <entry key="..\:/Users/Bruce/AndroidStudioProjects/FoodConnect/app/src/main/res/layout/fragment_user_stats.xml" value="0.375" />
         <entry key="..\:/Users/Bruce/AndroidStudioProjects/FoodConnect/app/src/main/res/layout/fragment_users.xml" value="0.375" />
+        <entry key="..\:/Users/Bruce/AndroidStudioProjects/FoodConnect/app/src/main/res/layout/grid_row.xml" value="0.375" />
         <entry key="..\:/Users/Bruce/AndroidStudioProjects/FoodConnect/app/src/main/res/layout/info_layout.xml" value="0.375" />
         <entry key="..\:/Users/Bruce/AndroidStudioProjects/FoodConnect/app/src/main/res/layout/job_item.xml" value="0.33" />
         <entry key="..\:/Users/Bruce/AndroidStudioProjects/FoodConnect/app/src/main/res/layout/map_layout.xml" value="0.375" />
         <entry key="..\:/Users/Bruce/AndroidStudioProjects/FoodConnect/app/src/main/res/layout/multi_tree_item.xml" value="0.375" />
+        <entry key="..\:/Users/Bruce/AndroidStudioProjects/FoodConnect/app/src/main/res/layout/new_info_layout.xml" value="0.32222222222222224" />
         <entry key="..\:/Users/Bruce/AndroidStudioProjects/FoodConnect/app/src/main/res/layout/product_category_item.xml" value="0.23333333333333334" />
         <entry key="..\:/Users/Bruce/AndroidStudioProjects/FoodConnect/app/src/main/res/layout/product_item.xml" value="0.375" />
         <entry key="..\:/Users/Bruce/AndroidStudioProjects/FoodConnect/app/src/main/res/layout/product_item_buy.xml" value="0.375" />
@@ -117,12 +125,12 @@
         <entry key="..\:/Users/Bruce/AndroidStudioProjects/FoodConnect/app/src/main/res/layout/verification_layout.xml" value="0.1578125" />
         <entry key="..\:/Users/Bruce/AndroidStudioProjects/FoodConnect/app/src/main/res/layout/yes_no_layout.xml" value="0.375" />
         <entry key="..\:/Users/Bruce/AndroidStudioProjects/FoodConnect/app/src/main/res/menu/admin_drawer.xml" value="0.375" />
-        <entry key="..\:/Users/Bruce/AndroidStudioProjects/FoodConnect/app/src/main/res/menu/bene_drawer.xml" value="0.375" />
+        <entry key="..\:/Users/Bruce/AndroidStudioProjects/FoodConnect/app/src/main/res/menu/bene_drawer.xml" value="0.1" />
         <entry key="..\:/Users/Bruce/AndroidStudioProjects/FoodConnect/app/src/main/res/menu/buyer_menu.xml" value="0.375" />
         <entry key="..\:/Users/Bruce/AndroidStudioProjects/FoodConnect/app/src/main/res/menu/donor_drawer.xml" value="0.22279792746113988" />
         <entry key="..\:/Users/Bruce/AndroidStudioProjects/FoodConnect/app/src/main/res/menu/search_menu.xml" value="0.375" />
         <entry key="..\:/Users/Bruce/AndroidStudioProjects/FoodConnect/app/src/main/res/menu/seller_drawer.xml" value="0.25" />
-        <entry key="..\:/Users/Bruce/AndroidStudioProjects/FoodConnect/app/src/main/res/menu/transporter_drawer.xml" value="0.375" />
+        <entry key="..\:/Users/Bruce/AndroidStudioProjects/FoodConnect/app/src/main/res/menu/transporter_drawer.xml" value="0.1" />
         <entry key="..\:/Users/Bruce/AndroidStudioProjects/FoodConnect/app/src/main/res/mipmap-anydpi-v26/food_connect_logo.xml" value="0.22708333333333333" />
         <entry key="..\:/Users/Bruce/AndroidStudioProjects/FoodConnect/app/src/main/res/mipmap-anydpi-v26/food_connect_logo_round.xml" value="0.22708333333333333" />
       </map>

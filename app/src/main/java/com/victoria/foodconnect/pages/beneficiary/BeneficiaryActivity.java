@@ -38,9 +38,13 @@ import com.victoria.foodconnect.globals.cartDb.CartViewMode;
 import com.victoria.foodconnect.globals.productDb.ProductViewModel;
 import com.victoria.foodconnect.models.Models;
 import com.victoria.foodconnect.pages.CartActivity;
+import com.victoria.foodconnect.pages.beneficiary.fragment.BuyerDonationsStats;
+import com.victoria.foodconnect.pages.beneficiary.fragment.BuyerPurchasesStats;
 import com.victoria.foodconnect.pages.beneficiary.fragment.OrdersFragment;
 import com.victoria.foodconnect.pages.beneficiary.fragment.ReceiveDonationsFragment;
 import com.victoria.foodconnect.pages.transporter.TransporterActivity;
+import com.victoria.foodconnect.pages.transporter.fragments.TransporterDonationStats;
+import com.victoria.foodconnect.pages.transporter.fragments.TransporterPurchaseStats;
 import com.victoria.foodconnect.utils.MyLinkedMap;
 
 import java.util.ArrayList;
@@ -161,6 +165,17 @@ public class BeneficiaryActivity extends AppCompatActivity {
                     goToDonations();
                     closeDrawer(drawerLayout);
                     break;
+
+                case R.id.purchaseStats:
+                    closeDrawer(drawerLayout);
+                    goToBuyerPurchases();
+                    break;
+
+                case R.id.donationsStats:
+                    closeDrawer(drawerLayout);
+                    goToBuyerDonations();
+
+                    break;
             }
             return false;
         });
@@ -169,6 +184,14 @@ public class BeneficiaryActivity extends AppCompatActivity {
 
         // optional
         setWindowColors(this);
+    }
+
+    private void goToBuyerDonations() {
+        startActivity(new Intent(BeneficiaryActivity.this, BuyerDonationsStats.class));
+    }
+
+    private void goToBuyerPurchases() {
+        startActivity(new Intent(BeneficiaryActivity.this, BuyerPurchasesStats.class));
     }
 
     private void goToOrders() {
