@@ -42,6 +42,7 @@ public class JobActivityProgress extends AppCompatActivity {
     @SuppressLint("StaticFieldLeak")
     private static ProgressBar pb;
     public static MutableLiveData<Optional<Boolean>> refreshJobPurchaseProgress = new MutableLiveData<>();
+    private final MutableLiveData<Optional<Integer>> currentStatus = new MutableLiveData<>();
 
 
     @Override
@@ -106,7 +107,7 @@ public class JobActivityProgress extends AppCompatActivity {
         Arrays.stream(DistributionStatus.values()).filter(i -> i.getCode() == distribution.getStatus()).findFirst().ifPresent(status -> binding.toolbar.setSubtitle(status.getDescription()));
         jobPagerAdapter = new JobProgressPagerAdapter(JobActivityProgress.this, getSupportFragmentManager(), getLifecycle(), purchase, distribution, false);
         binding.progressPages.setAdapter(jobPagerAdapter);
-        binding.progressPages.setCurrentItem(distribution.getStatus());
+        currentStatus.setValue(Optional.of(distribution.getStatus()));
         jobPagerAdapter.notifyDataSetChanged();
 
     }
@@ -126,7 +127,7 @@ public class JobActivityProgress extends AppCompatActivity {
         binding.toolbar.setTitle(purchase.getAddress());
         distributionStatus.ifPresent(status -> binding.toolbar.setSubtitle(status.getDescription()));
         jobPagerAdapter.notifyDataSetChanged();
-        binding.progressPages.setCurrentItem(distribution.getStatus());
+        currentStatus.setValue(Optional.of(distribution.getStatus()));
 
 
         switch (distribution.getStatus()) {
@@ -153,15 +154,21 @@ public class JobActivityProgress extends AppCompatActivity {
                 getDistribution(purchase.getId());
             }
         });
+        observeStatus().observe(this,status ->status.ifPresent(s->binding.progressPages.setCurrentItem(s)));
     }
 
     private void removeListeners() {
         refreshData().removeObservers(this);
+        observeStatus().removeObservers(this);
     }
 
     //listener for updates
-    private LiveData<Optional<Boolean>> refreshData() {
+    private LiveData<Optional<Boolean>> refreshData () {
         return refreshJobPurchaseProgress;
+    }
+
+    private LiveData<Optional<Integer>> observeStatus () {
+        return currentStatus;
     }
 
     @Override

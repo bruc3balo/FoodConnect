@@ -12,6 +12,7 @@ import static com.victoria.foodconnect.utils.DataOpts.getObjectMapper;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -50,6 +51,7 @@ public class DonationProgressActivity extends AppCompatActivity {
     private static SpinKitView pb;
     private boolean readOnly;
     public static MutableLiveData<Optional<Boolean>> refreshJobDonationProgress = new MutableLiveData<>();
+    private final MutableLiveData<Optional<Integer>> currentStatus = new MutableLiveData<>();
 
     //todo add marker for collecting location
     //todo move camera to destination
@@ -109,7 +111,7 @@ public class DonationProgressActivity extends AppCompatActivity {
         Arrays.stream(DistributionStatus.values()).filter(i -> i.getCode() == distribution.getStatus()).findFirst().ifPresent(status -> binding.toolbar.setSubtitle(status.getDescription()));
         donationProgressPagerAdapter = new DonationProgressPagerAdapter(DonationProgressActivity.this, getSupportFragmentManager(), getLifecycle(), donation, distribution, false);
         binding.progressPages.setAdapter(donationProgressPagerAdapter);
-        binding.progressPages.setCurrentItem(distribution.getStatus());
+        currentStatus.setValue(Optional.of(distribution.getStatus()));
         donationProgressPagerAdapter.notifyDataSetChanged();
     }
 
@@ -129,8 +131,7 @@ public class DonationProgressActivity extends AppCompatActivity {
         binding.toolbar.setTitle(donation.getDelivery_address());
         distributionStatus.ifPresent(status -> binding.toolbar.setSubtitle(status.getDescription()));
         donationProgressPagerAdapter.notifyDataSetChanged();
-        binding.progressPages.setCurrentItem(distribution.getStatus());
-
+        currentStatus.setValue(Optional.of(distribution.getStatus()));
 
         switch (distribution.getStatus()) {
 
@@ -157,15 +158,22 @@ public class DonationProgressActivity extends AppCompatActivity {
                 }
             }
         });
+
+        observeStatus().observe(this, status -> status.ifPresent(s -> binding.progressPages.setCurrentItem(s)));
     }
 
     private void removeListeners() {
         refreshData().removeObservers(this);
+        observeStatus().removeObservers(this);
     }
 
     //listener for updates
     private LiveData<Optional<Boolean>> refreshData() {
         return refreshJobDonationProgress;
+    }
+
+    private LiveData<Optional<Integer>> observeStatus() {
+        return currentStatus;
     }
 
     @Override

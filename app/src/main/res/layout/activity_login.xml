@@ -35,6 +35,7 @@
                 android:contentDescription="@string/logo"
                 android:src="@mipmap/food_connect_logo" />
 
+
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 

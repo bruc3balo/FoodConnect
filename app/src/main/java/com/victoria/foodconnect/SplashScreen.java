@@ -108,7 +108,7 @@ public class SplashScreen extends AppCompatActivity {
         d.setContentView(R.layout.new_info_layout);
         d.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         TextView infoTv = d.findViewById(R.id.newInfoTv);
-        infoTv.setText("This application requires GPS to work properly, you need enable it. Flip the switch");
+        infoTv.setText("This application requires GPS to work properly, you need enable it");
         Button dismiss = d.findViewById(R.id.dismissButton);
         dismiss.setOnClickListener(v -> d.dismiss());
         d.setOnDismissListener(dialog -> getGpsResult());
@@ -161,7 +161,7 @@ public class SplashScreen extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull @NotNull String[] permissions, @NonNull @NotNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull @NotNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
 
