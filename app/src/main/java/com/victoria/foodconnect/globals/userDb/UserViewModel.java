@@ -39,6 +39,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -177,6 +178,7 @@ public class UserViewModel extends AndroidViewModel {
                 }
 
                 try {
+                    System.out.println("numbers are "+jsonResponse.getData().toString());
                     List numbers = getObjectMapper().readValue(new JSONArray(jsonResponse.getData().toString()).toString(), List.class);
                     numbers.forEach(e -> mobileList.add(e.toString()));
                     numbersMutable.setValue(Optional.of(mobileList));

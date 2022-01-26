@@ -1,16 +1,26 @@
 package com.victoria.foodconnect.login.fragments.create;
 
 
+import static com.victoria.foodconnect.SplashScreen.logout;
+import static com.victoria.foodconnect.globals.GlobalRepository.application;
 import static com.victoria.foodconnect.globals.GlobalRepository.userRepository;
+import static com.victoria.foodconnect.globals.GlobalVariables.ACCESS_TOKEN;
 import static com.victoria.foodconnect.globals.GlobalVariables.HY;
+import static com.victoria.foodconnect.globals.GlobalVariables.PASSWORD;
+import static com.victoria.foodconnect.globals.GlobalVariables.USERNAME;
+import static com.victoria.foodconnect.globals.GlobalVariables.USER_COLLECTION;
 import static com.victoria.foodconnect.login.LoginActivity.loginPb;
 import static com.victoria.foodconnect.pages.ProgressActivity.inSpinnerProgress;
 import static com.victoria.foodconnect.pages.ProgressActivity.outSpinnerProgress;
+import static com.victoria.foodconnect.utils.DataOpts.clickableLink;
+import static com.victoria.foodconnect.utils.DataOpts.editSp;
 import static com.victoria.foodconnect.utils.DataOpts.getDomainUserFromModelUser;
 import static com.victoria.foodconnect.utils.DataOpts.getObjectMapper;
+import static com.victoria.foodconnect.utils.DataOpts.getSp;
 import static com.victoria.foodconnect.utils.DataOpts.proceed;
 
 import android.app.Dialog;
+import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -20,6 +30,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
@@ -27,14 +38,21 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.victoria.foodconnect.R;
 import com.victoria.foodconnect.databinding.RoleDialogBinding;
 import com.victoria.foodconnect.globals.userDb.UserViewModel;
+import com.victoria.foodconnect.login.VerifyAccount;
 import com.victoria.foodconnect.models.AppRolesEnum;
 import com.victoria.foodconnect.models.Models;
 import com.victoria.foodconnect.utils.JsonResponse;
 
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 import io.vertx.core.json.JsonObject;
 
@@ -94,7 +112,7 @@ public class CreateFragment extends Fragment {
     private void authNewUser() {
         inSpinnerProgress(loginPb, createB);
 
-        new ViewModelProvider(this).get(UserViewModel.class).createNewUser(newUserForm).observe(getViewLifecycleOwner(), jsonResponseResponse ->  {
+        new ViewModelProvider(this).get(UserViewModel.class).createNewUser(newUserForm).observe(getViewLifecycleOwner(), jsonResponseResponse -> {
 
             if (!jsonResponseResponse.isPresent()) {
                 inSpinnerProgress(loginPb, createB);
@@ -105,8 +123,8 @@ public class CreateFragment extends Fragment {
             JsonResponse response = jsonResponseResponse.get().body();
 
             if (response == null) {
-                Toast.makeText(requireContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
-                inSpinnerProgress(loginPb, createB);
+                Toast.makeText(requireContext(), "Something went wrong creating account", Toast.LENGTH_SHORT).show();
+                outSpinnerProgress(loginPb, createB);
                 return;
             }
 
@@ -142,10 +160,7 @@ public class CreateFragment extends Fragment {
 
                 Thread.sleep(2000);
 
-
-
-                proceed(requireActivity());
-
+                loginUserToAPi();
 
             } catch (JsonProcessingException | InterruptedException e) {
                 inSpinnerProgress(loginPb, createB);
@@ -157,10 +172,78 @@ public class CreateFragment extends Fragment {
                 e.printStackTrace();
             }
 
-        }) ;
+        });
 
 
     }
+
+    private void loginUserToAPi() {
+        inSpinnerProgress(loginPb,createB);
+        new ViewModelProvider(this).get(UserViewModel.class).getToken(new Models.UsernameAndPasswordAuthenticationRequest(newUserForm.getUsername(), newUserForm.getPassword())).observe(requireActivity(), loginResponseResponse -> {
+            if (!loginResponseResponse.isPresent()) {
+                Toast.makeText(requireContext(), "User doesn't exists or try again", Toast.LENGTH_SHORT).show();
+                outSpinnerProgress(loginPb,createB);
+                return;
+            }
+
+
+            Models.LoginResponse response = loginResponseResponse.get().body();
+
+            if (loginResponseResponse.get().code() == 403) {
+                Toast.makeText(requireContext(), "User doesn't exist", Toast.LENGTH_SHORT).show();
+                outSpinnerProgress(loginPb,createB);
+                return;
+            } else if (loginResponseResponse.get().code() == 401) {
+                Toast.makeText(requireContext(), "Forbidden", Toast.LENGTH_SHORT).show();
+                outSpinnerProgress(loginPb,createB);
+                return;
+            }
+
+            if (response == null) {
+                Toast.makeText(requireContext(), "Failed to get access", Toast.LENGTH_SHORT).show();
+                outSpinnerProgress(loginPb,createB);
+                return;
+            }
+
+            Map<String, String> credentials = new HashMap<>();
+            credentials.put(ACCESS_TOKEN, response.getAccess_token());
+            credentials.put(PASSWORD, newUserForm.getPassword());
+            credentials.put(USERNAME, newUserForm.getUsername());
+
+            editSp(USER_COLLECTION, credentials, application);
+
+            signInUser(newUserForm.getEmail_address(), Objects.requireNonNull(getSp(USER_COLLECTION, application).get(PASSWORD)).toString());
+        });
+
+    }
+
+    private void signInUser(String username, String password) {
+        inSpinnerProgress(loginPb,createB);
+        FirebaseAuth.getInstance().signInWithEmailAndPassword(username, password).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                sendPersonalVerificationEmail();
+            } else {
+                Toast.makeText(requireContext(), Objects.requireNonNull(task.getException()).toString(), Toast.LENGTH_SHORT).show();
+                outSpinnerProgress(loginPb,createB);
+            }
+        });
+    }
+
+
+    private void sendPersonalVerificationEmail() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            user.sendEmailVerification().addOnCompleteListener(task -> {
+                if (!task.isSuccessful()) {
+                    Toast.makeText(requireContext(), Optional.ofNullable(task.getException() != null ? task.getException().getLocalizedMessage() : "Failed").orElse("Failed to send verification email"), Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(requireContext(), "Verification email sent successfully", Toast.LENGTH_SHORT).show();
+                }
+                proceed(requireActivity());
+            });
+        }
+    }
+
 
     private void showRoleDialog() {
         Dialog d = new Dialog(requireContext());
@@ -210,16 +293,16 @@ public class CreateFragment extends Fragment {
         } else if (usernameList.contains(username.getText().toString())) {
             username.setError("Username already taken");
             username.requestFocus();
-        }else if (name.getText().toString().isEmpty()) {
+        } else if (name.getText().toString().isEmpty()) {
             name.requestFocus();
             name.setError("Required");
         } else if (email.getText().toString().isEmpty()) {
             email.requestFocus();
             email.setError("Required");
-        }  else if (!email.getText().toString().contains("@")) {
+        } else if (!email.getText().toString().contains("@")) {
             email.requestFocus();
             email.setError("Invalid email");
-        }  else if (emailList.contains(email.getText().toString())) {
+        } else if (emailList.contains(email.getText().toString())) {
             email.requestFocus();
             email.setError("Email already taken");
         } else if (phone.getText().toString().isEmpty()) {

@@ -86,7 +86,6 @@
                     android:layout_margin="5dp"
                     android:background="@drawable/login_bg_button_white"
                     android:backgroundTint="@android:color/holo_orange_light"
-                    android:drawableEnd="@drawable/ic_cash"
                     android:drawablePadding="10dp"
                     android:elevation="12dp"
                     android:padding="15dp"

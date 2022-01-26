@@ -23,6 +23,8 @@ import retrofit2.http.QueryMap;
 
 public interface UserApi {
 
+    //retrofit
+
     String baseUser = "user";
     String baseAdmin = "auth";
 

@@ -1,7 +1,5 @@
 package com.victoria.foodconnect.globals.statsDb;
 
-import static com.victoria.foodconnect.globals.GlobalVariables.USERNAME;
-
 import com.victoria.foodconnect.utils.JsonResponse;
 
 import java.util.HashMap;
@@ -13,6 +11,10 @@ import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
 
 public interface StatsApi {
+
+    //todo stats api for purchase
+    // transporter stats
+
 
     String base = "stats";
 

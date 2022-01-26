@@ -94,55 +94,13 @@ public class VerifyAccount extends AppCompatActivity {
                 } else {
                     String info = "Failed to send verification email to"+ user.getEmail();
                     binding.newInfoTv.setText(clickableLink(info), TextView.BufferType.SPANNABLE);
-                    Toast.makeText(VerifyAccount.this, info, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(VerifyAccount.this, task.getException() != null ? task.getException().getLocalizedMessage() : info, Toast.LENGTH_SHORT).show();
                 }
                 outProgress();
             });
         } else {
+            Toast.makeText(getApplicationContext(), "Sign in to verify account", Toast.LENGTH_SHORT).show();
             logout(VerifyAccount.this);
-        }
-    }
-
-    private void resendEmailVerification() {
-        if (user != null) {
-            inProgress();
-            userApi.verifyEmail(user.getEmail_address(), getAccessToken(application), APPLICATION_JSON).enqueue(new Callback<JsonResponse>() {
-                @Override
-                public void onResponse(@NonNull Call<JsonResponse> call, @NonNull Response<JsonResponse> response) {
-                    outProgress();
-
-                    int code = response.code();
-                    JsonResponse jsonResponse = response.body();
-                    if (code == 200) {
-
-                        if (jsonResponse == null || jsonResponse.getData() == null) {
-
-                            binding.newInfoTv.setText("Check email for link");
-                            return;
-                        }
-
-                        String url = jsonResponse.getData().toString();
-
-                        binding.newInfoTv.setText(clickableLink(url), TextView.BufferType.SPANNABLE);
-                        binding.newInfoTv.setTextColor(Color.CYAN);
-                        binding.newInfoTv.setOnClickListener(tv -> {
-                            Intent i = new Intent(Intent.ACTION_VIEW);
-                            i.setData(Uri.parse(url));
-                            startActivity(i);
-                        });
-
-
-                    } else {
-                        binding.newInfoTv.setText("Problem sending email verification");
-                    }
-                }
-
-                @Override
-                public void onFailure(@NonNull Call<JsonResponse> call, @NonNull Throwable t) {
-                    outProgress();
-                    Toast.makeText(VerifyAccount.this, t.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            });
         }
     }
 
