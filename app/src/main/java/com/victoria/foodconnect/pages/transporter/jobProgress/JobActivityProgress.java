@@ -2,34 +2,28 @@ package com.victoria.foodconnect.pages.transporter.jobProgress;
 
 import static com.victoria.foodconnect.globals.GlobalRepository.userRepository;
 import static com.victoria.foodconnect.login.LoginActivity.setWindowColors;
+import static com.victoria.foodconnect.pages.seller.SellerActivity.addFragmentToContainer;
 import static com.victoria.foodconnect.pages.transporter.MoreActivity.PURCHASE;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.viewpager2.widget.ViewPager2;
 
-import com.victoria.foodconnect.adapter.JobProgressPagerAdapter;
 import com.victoria.foodconnect.databinding.ActivityJobProgressBinding;
 import com.victoria.foodconnect.domain.Domain;
 import com.victoria.foodconnect.globals.purchaseDb.PurchaseViewModel;
 import com.victoria.foodconnect.models.Models;
-import com.victoria.foodconnect.pagerTransformers.DepthPageTransformer;
 import com.victoria.foodconnect.utils.DistributionStatus;
 
 import java.util.Arrays;
 import java.util.Optional;
-
-import me.relex.circleindicator.CircleIndicator3;
 
 public class JobActivityProgress extends AppCompatActivity {
 
@@ -37,7 +31,6 @@ public class JobActivityProgress extends AppCompatActivity {
     private Models.Purchase purchase;
     private Domain.AppUser user;
     private Models.DistributionModel distributionModel;
-    private JobProgressPagerAdapter jobPagerAdapter;
     private PurchaseViewModel purchaseViewModel;
     @SuppressLint("StaticFieldLeak")
     private static ProgressBar pb;
@@ -69,9 +62,32 @@ public class JobActivityProgress extends AppCompatActivity {
 
     }
 
+    private void setPageCurrent(int status) {
+        switch (status) {
+            case 0:
+                addFragmentToContainer(getSupportFragmentManager(), binding.progressPages, new AcceptedFragment(JobActivityProgress.this, purchase, distributionModel, false));
+                break;
+
+            case 1:
+                addFragmentToContainer(getSupportFragmentManager(), binding.progressPages, new CollectingFragment(JobActivityProgress.this, purchase, distributionModel, false));
+               break;
+
+            case 2:
+                addFragmentToContainer(getSupportFragmentManager(), binding.progressPages, new OnTheWayFragment(JobActivityProgress.this, purchase, distributionModel, false));
+                break;
+
+            case 3:
+                addFragmentToContainer(getSupportFragmentManager(), binding.progressPages, new ArrivedFragment(JobActivityProgress.this, purchase, distributionModel, false));
+                break;
+            case 4:
+            case 5:
+                addFragmentToContainer(getSupportFragmentManager(), binding.progressPages, new ReviewFragment(JobActivityProgress.this, purchase, distributionModel));
+                break;
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -79,21 +95,10 @@ public class JobActivityProgress extends AppCompatActivity {
         jobInProgress();
         purchaseViewModel.getADistributionLive(purchaseId).observe(this, optionalDistributionModel -> {
             jobOutProgress();
-            optionalDistributionModel.ifPresent(d -> setUpJobPager(purchase, d));
+            optionalDistributionModel.ifPresent(this::setPageData);
         });
     }
 
-    private void setUpJobPager(Models.Purchase purchase, Models.DistributionModel distribution) {
-        ViewPager2 jobPager = binding.progressPages;
-        CircleIndicator3 indicator = binding.indicator;
-        jobPagerAdapter = new JobProgressPagerAdapter(JobActivityProgress.this, getSupportFragmentManager(), getLifecycle(), purchase, distribution, false);
-        jobPager.setUserInputEnabled(false);
-        jobPager.setAdapter(jobPagerAdapter);
-        jobPager.setPageTransformer(new DepthPageTransformer());
-        jobPagerAdapter.registerAdapterDataObserver(indicator.getAdapterDataObserver());
-        indicator.setViewPager(jobPager);
-        setPageData(distribution);
-    }
 
     public static void update(JobActivityProgress jobActivityProgress, Models.DistributionUpdateForm form) {
         jobInProgress();
@@ -103,13 +108,9 @@ public class JobActivityProgress extends AppCompatActivity {
         });
     }
 
-    private void updatePage (Models.DistributionModel distribution) {
-        Arrays.stream(DistributionStatus.values()).filter(i -> i.getCode() == distribution.getStatus()).findFirst().ifPresent(status -> binding.toolbar.setSubtitle(status.getDescription()));
-        jobPagerAdapter = new JobProgressPagerAdapter(JobActivityProgress.this, getSupportFragmentManager(), getLifecycle(), purchase, distribution, false);
-        binding.progressPages.setAdapter(jobPagerAdapter);
+    private void updatePage(Models.DistributionModel distribution) {
+        Arrays.stream(DistributionStatus.values()).filter(i -> i.getCode() == distribution.getStatus()).findFirst().ifPresent(status -> binding.indicator.setText(status.getDescription()));
         currentStatus.setValue(Optional.of(distribution.getStatus()));
-        jobPagerAdapter.notifyDataSetChanged();
-
     }
 
     public static void jobInProgress() {
@@ -124,9 +125,9 @@ public class JobActivityProgress extends AppCompatActivity {
         distributionModel = distribution;
         System.out.println("STATUS IS " + distribution.getStatus());
         Optional<DistributionStatus> distributionStatus = Arrays.stream(DistributionStatus.values()).filter(i -> i.getCode() == distribution.getStatus()).findFirst();
-        binding.toolbar.setTitle(purchase.getAddress());
-        distributionStatus.ifPresent(status -> binding.toolbar.setSubtitle(status.getDescription()));
-        jobPagerAdapter.notifyDataSetChanged();
+        binding.toolbar.setSubtitle(purchase.getAddress());
+        binding.toolbar.setTitle("Job progress");
+        distributionStatus.ifPresent(status -> binding.indicator.setText(status.getDescription()));
         currentStatus.setValue(Optional.of(distribution.getStatus()));
 
 
@@ -147,14 +148,13 @@ public class JobActivityProgress extends AppCompatActivity {
     }
 
 
-
     private void addRefreshListener() {
         refreshData().observe(this, refresh -> {
             if (refresh.isPresent()) {
                 getDistribution(purchase.getId());
             }
         });
-        observeStatus().observe(this,status ->status.ifPresent(s->binding.progressPages.setCurrentItem(s)));
+        observeStatus().observe(this, status -> status.ifPresent(this::setPageCurrent));
     }
 
     private void removeListeners() {
@@ -163,11 +163,11 @@ public class JobActivityProgress extends AppCompatActivity {
     }
 
     //listener for updates
-    private LiveData<Optional<Boolean>> refreshData () {
+    private LiveData<Optional<Boolean>> refreshData() {
         return refreshJobPurchaseProgress;
     }
 
-    private LiveData<Optional<Integer>> observeStatus () {
+    private LiveData<Optional<Integer>> observeStatus() {
         return currentStatus;
     }
 

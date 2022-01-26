@@ -26,6 +26,7 @@ public class JobProgressPagerAdapter extends FragmentStateAdapter {
     private final JobActivityProgress activity;
     private final boolean readOnly;
 
+
     public JobProgressPagerAdapter(JobActivityProgress activity, @NonNull FragmentManager fm, Lifecycle lifecycle, Models.Purchase purchase, Models.DistributionModel distribution, boolean readOnly) {
         super(fm, lifecycle);
         this.purchase = purchase;

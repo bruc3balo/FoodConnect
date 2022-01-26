@@ -23,34 +23,46 @@
             app:subtitleTextColor="@color/semiWhite"
             app:titleTextColor="@color/white" />
 
-        <me.relex.circleindicator.CircleIndicator3
+        <TextView
             android:layout_margin="5dp"
             android:id="@+id/indicator"
             android:minHeight="50dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:ci_drawable_unselected="@drawable/purple_dot_big"
-            app:ci_drawable="@drawable/black_dot"
+            android:text="@string/hy"
+            android:gravity="center"
+            android:textSize="29sp"
+            android:textColor="@color/black"
+            android:fontFamily="serif"
             android:layout_gravity="center" />
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:background="@color/semiGrey"
+            android:layout_marginStart="40dp"
+            android:layout_marginEnd="40dp"/>
 
-        <androidx.viewpager2.widget.ViewPager2
+        <androidx.fragment.app.FragmentContainerView
             android:layout_weight="1"
-            android:id="@+id/progressPages"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:padding="10dp"
             android:layout_gravity="center"
-            android:isScrollContainer="true"
-            android:padding="10dp" />
+            android:id="@+id/progressPages"/>
 
 
     </LinearLayout>
 
-    <ProgressBar
+    <com.github.ybq.android.spinkit.SpinKitView
+        android:id="@+id/pb"
+        style="@style/SpinKitView.Large.WanderingCubes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:indeterminateTint="@color/black"
-        android:id="@+id/pb"/>
+        app:SpinKit_Color="@android:color/holo_red_dark" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -83,7 +83,6 @@ public class ProgressActivity extends AppCompatActivity {
                 break;
         }
 
-
         setWindowColors(this);
 
     }

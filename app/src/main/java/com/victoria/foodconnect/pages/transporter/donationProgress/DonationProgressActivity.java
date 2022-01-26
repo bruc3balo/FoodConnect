@@ -6,6 +6,7 @@ import static com.victoria.foodconnect.globals.GlobalVariables.READ_ONLY;
 import static com.victoria.foodconnect.login.LoginActivity.setWindowColors;
 import static com.victoria.foodconnect.pages.ProgressActivity.inSpinnerProgress;
 import static com.victoria.foodconnect.pages.ProgressActivity.outSpinnerProgress;
+import static com.victoria.foodconnect.pages.seller.SellerActivity.addFragmentToContainer;
 import static com.victoria.foodconnect.pages.transporter.MoreActivity.PURCHASE;
 import static com.victoria.foodconnect.utils.DataOpts.getObjectMapper;
 
@@ -31,7 +32,12 @@ import com.victoria.foodconnect.domain.Domain;
 import com.victoria.foodconnect.globals.purchaseDb.PurchaseViewModel;
 import com.victoria.foodconnect.models.Models;
 import com.victoria.foodconnect.pagerTransformers.DepthPageTransformer;
+import com.victoria.foodconnect.pages.transporter.jobProgress.AcceptedFragment;
+import com.victoria.foodconnect.pages.transporter.jobProgress.ArrivedFragment;
+import com.victoria.foodconnect.pages.transporter.jobProgress.CollectingFragment;
 import com.victoria.foodconnect.pages.transporter.jobProgress.JobActivityProgress;
+import com.victoria.foodconnect.pages.transporter.jobProgress.OnTheWayFragment;
+import com.victoria.foodconnect.pages.transporter.jobProgress.ReviewFragment;
 import com.victoria.foodconnect.utils.DistributionStatus;
 
 import java.util.Arrays;
@@ -45,7 +51,6 @@ public class DonationProgressActivity extends AppCompatActivity {
     private Models.Donation donation;
     private Domain.AppUser user;
     private Models.DonationDistribution distributionModel;
-    private DonationProgressPagerAdapter donationProgressPagerAdapter;
     private PurchaseViewModel purchaseViewModel;
     @SuppressLint("StaticFieldLeak")
     private static SpinKitView pb;
@@ -83,21 +88,34 @@ public class DonationProgressActivity extends AppCompatActivity {
         donationInProgress();
         purchaseViewModel.getADonationDistributionLive(donationId).observe(this, optionalDistributionModel -> {
             donationOutProgress();
-            optionalDistributionModel.ifPresent(d -> setUpDonationPager(donation, d));
+            optionalDistributionModel.ifPresent(this::setPageData);
         });
     }
 
-    private void setUpDonationPager(Models.Donation donation, Models.DonationDistribution distribution) {
-        ViewPager2 jobPager = binding.progressPages;
-        CircleIndicator3 indicator = binding.indicator;
-        donationProgressPagerAdapter = new DonationProgressPagerAdapter(DonationProgressActivity.this, getSupportFragmentManager(), getLifecycle(), donation, distribution, readOnly);
-        jobPager.setUserInputEnabled(false);
-        jobPager.setAdapter(donationProgressPagerAdapter);
-        jobPager.setPageTransformer(new DepthPageTransformer());
-        donationProgressPagerAdapter.registerAdapterDataObserver(indicator.getAdapterDataObserver());
-        indicator.setViewPager(jobPager);
-        setPageData(distribution);
+    private void setPageCurrent(int status) {
+        switch (status) {
+            case 0:
+                addFragmentToContainer(getSupportFragmentManager(), binding.progressPages, new StartFragment(DonationProgressActivity.this, distributionModel, donation, false));
+                break;
+
+            case 1:
+                addFragmentToContainer(getSupportFragmentManager(), binding.progressPages, new ToCollectionFragment(DonationProgressActivity.this, distributionModel, donation, false));
+                break;
+
+            case 2:
+                addFragmentToContainer(getSupportFragmentManager(), binding.progressPages, new DeliverFragment(DonationProgressActivity.this, distributionModel, donation, false));
+                break;
+
+            case 3:
+                addFragmentToContainer(getSupportFragmentManager(), binding.progressPages, new ArrivedDonationFragment(DonationProgressActivity.this, distributionModel, donation, false));
+                break;
+            case 4:
+            case 5:
+                addFragmentToContainer(getSupportFragmentManager(), binding.progressPages, new ReviewFragment(DonationProgressActivity.this, donation, distributionModel));
+                break;
+        }
     }
+
 
     public static void updateDonationDistribution(DonationProgressActivity donationProgressActivity, Models.DonorDistributionUpdateForm form) {
         donationInProgress();
@@ -108,13 +126,9 @@ public class DonationProgressActivity extends AppCompatActivity {
     }
 
     private void updatePage(Models.DonationDistribution distribution) {
-        Arrays.stream(DistributionStatus.values()).filter(i -> i.getCode() == distribution.getStatus()).findFirst().ifPresent(status -> binding.toolbar.setSubtitle(status.getDescription()));
-        donationProgressPagerAdapter = new DonationProgressPagerAdapter(DonationProgressActivity.this, getSupportFragmentManager(), getLifecycle(), donation, distribution, false);
-        binding.progressPages.setAdapter(donationProgressPagerAdapter);
+        Arrays.stream(DistributionStatus.values()).filter(i -> i.getCode() == distribution.getStatus()).findFirst().ifPresent(status -> binding.indicator.setText(status.getDescription()));
         currentStatus.setValue(Optional.of(distribution.getStatus()));
-        donationProgressPagerAdapter.notifyDataSetChanged();
     }
-
 
     public static void donationInProgress() {
         inSpinnerProgress(pb, null);
@@ -128,9 +142,9 @@ public class DonationProgressActivity extends AppCompatActivity {
         distributionModel = distribution;
         System.out.println("STATUS IS " + distribution.getStatus());
         Optional<DistributionStatus> distributionStatus = Arrays.stream(DistributionStatus.values()).filter(i -> i.getCode() == distribution.getStatus()).findFirst();
-        binding.toolbar.setTitle(donation.getDelivery_address());
-        distributionStatus.ifPresent(status -> binding.toolbar.setSubtitle(status.getDescription()));
-        donationProgressPagerAdapter.notifyDataSetChanged();
+        binding.toolbar.setSubtitle(donation.getDelivery_address());
+        binding.toolbar.setTitle("Donation progress");
+        distributionStatus.ifPresent(status -> binding.indicator.setText(status.getDescription()));
         currentStatus.setValue(Optional.of(distribution.getStatus()));
 
         switch (distribution.getStatus()) {
@@ -159,7 +173,7 @@ public class DonationProgressActivity extends AppCompatActivity {
             }
         });
 
-        observeStatus().observe(this, status -> status.ifPresent(s -> binding.progressPages.setCurrentItem(s)));
+        observeStatus().observe(this, status -> status.ifPresent(this::setPageCurrent));
     }
 
     private void removeListeners() {
