@@ -85,8 +85,7 @@ public class BeneficiaryActivity extends AppCompatActivity {
         if (userRepository != null) {
             userRepository.getUserLive().observe(this, appUser -> {
                 if (appUser.isPresent()) {
-                    toolbar.setTitle(appUser.get().getUsername());
-                    toolbar.setSubtitle(appUser.get().getRole());
+                    binding.text.setText("Welcome "+appUser.get().getUsername());
                     setNavDetails(appUser.get(), binding.beneNavigation.getHeaderView(0), BeneficiaryActivity.this);
                 }
             });
