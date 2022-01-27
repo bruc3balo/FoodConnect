@@ -9,7 +9,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="300dp"
         android:fitsSystemWindows="true"
         android:theme="@style/Theme.Settings.AppBarOverlay">
 
@@ -27,14 +27,35 @@
             app:toolbarId="@+id/toolbar">
 
 
-            <ImageView
+            <LinearLayout
+                android:layout_gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:layout_margin="30dp"
-                android:contentDescription="@string/logo"
-                android:src="@mipmap/food_connect_logo" />
+                android:orientation="vertical">
 
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:layout_gravity="center"
+                    android:layout_margin="30dp"
+                    android:contentDescription="@string/logo"
+                    android:src="@mipmap/food_connect_logo" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="120dp"
+                    android:padding="25dp"
+                    android:textSize="18sp"
+                    android:textColor="@color/white"
+                    android:fontFamily="sans-serif"
+                    android:text="A Food Distribution and Tracking System that aims at solving the 2nd SDG"/>
+
+
+            </LinearLayout>
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
